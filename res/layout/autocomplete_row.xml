@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:paddingRight="12dp"
+              android:paddingLeft="12dp"
+              android:paddingBottom="6dp">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null">
+        <TextView
+                android:id="@+id/title"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:background="@drawable/lilatext_background"
+                android:hapticFeedbackEnabled="true"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="11dp"
+                android:layout_marginBottom="0dp"
+                android:textColor="@color/greenbubble_text"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:textSize = "16dp"
+                android:layout_alignParentLeft="true" />
+    </RelativeLayout>
+</LinearLayout>

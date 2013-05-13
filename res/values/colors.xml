@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="album_medium">#80000000</color>
+    <color name="album_medium_pressed">#CC000000</color>
+    <color name="invite_friends_fb_pressed">#003366</color>
+    <color name="invite_friends_fb">#3D5A98</color>
+    <color name="invite_friends_email_pressed">#505050</color>
+    <color name="invite_friends_email">#727272</color>
+    <color name="topiclist_bg">#CC000000</color>
+    <color name="tags_bg">#30000000</color>
+    <color name="signup_fragment_texthint">#E2E2E2</color>
+    <color name="settings_account_text">#555555</color>
+    <color name="photowidget_photoframe">#ff242424</color>
+    <color name="photofiltering_bg">#FF333333</color>
+    <color name="photofiltering_toast_bg">#7F000000</color>
+    <color name="photofiltering_toast_text">#FFFFFFFF</color>
+    <color name="login_fragment_bg">#77FFFFFF</color>
+    <color name="white_full_alpha">#FF777777</color>
+    <color name="discover_album_description">#959595</color>
+    <color name="cropimage">#55000000</color>
+    <color name="whitetext_bg">#88FFFFFF</color>
+    <color name="blackbubble_bg">#99000000</color>
+    <color name="view_bg">#3C000000</color>
+    <color name="upload_add">#88FFFFFF</color>
+    <color name="upload_add_big">#88000000</color>
+    <color name="smart_sharing_bg">#5D000000</color>
+    <color name="settings_gradiant_purple">#9933FF</color>
+    <color name="settings_gradiant_blue">#3333FF</color>
+    <color name="pinktext_background_pressed">#a45a88</color>
+    <color name="pinktext_background_active_start">#FF33FF</color>
+    <color name="pinktext_background_active_end">#CC33CC</color>
+    <color name="phototitle_bg">#585858</color>
+    <color name="orangetext_background_pressed">#b47a2a</color>
+    <color name="orangetext_background_active">#ff9933</color>
+    <color name="lilatext_background_pressed">#663366</color>
+    <color name="lilatext_background_active">#9966CC</color>
+    <color name="lilatext_background_start">#ACD0A7FF</color>
+    <color name="lilatext_background_end">#AC9D48FF</color>
+    
+    <color name="custom_progress">#404040</color>
+
+    <color name="black_no_alpha">#00000000</color>
+    <color name="black_full_alpha">#FF000000</color>
+        
+    <color name="lightblue_background">#9999cc</color>
+    
+    <color name="settings_gradient_orange">#FF6600</color>
+    
+    
+    <color name="green_solid">#99CC66</color>
+    <color name="green_pressed_solid">#669933</color>
+    
+    <color name="blue_gradiant_start">#A9BCFF</color>
+    <color name="blue_gradiant_end">#0039FF</color>
+    <color name="blue_background">#003388</color>
+    <color name="hack_button">#909090</color>
+    <color name="view_pager_indicator_inactive">#1F1F1F</color>
+    <color name="discover_header_active">#BB333333</color>
+    <color name="discover_header_pressed">#1e1e1e</color>
+    <color name="settings_element_bg">#1e1e1e</color>
+    <color name="settings_element_bg_pressed">#2e2e2e</color>
+    <color name="translucent_black">#B0000000</color>
+    <color name="actionbar_separator">#000000</color>
+    <color name="actionbar_title">#FFFFFF</color>
+    <color name="actionbar_background_start">#575757</color>
+    <color name="actionbar_background_end">#363636</color>
+    <color name="actionbar_background_item_pressed_start">#00FF00</color>
+    <color name="actionbar_background_item_pressed_end">#00FF00</color>
+    <color name="list_dark">#666666</color>
+    <color name="list_title_dark">#666666</color>
+    <color name="list_detail_dark">#333333</color>
+    <color name="list_title_light">#FFFFFF</color>
+    <color name="list_detail_light">#FFFFFF</color>
+    <color name="list_detail_light_opaque">#6CFFFFFF</color> 
+    <color name="list_separator">#B3B3B3</color>
+    <color name="modal_bg">#666666</color>
+    <color name="confirmation_grey">#393939</color>
+    <!--  color name="text_grey">#CBCBCB</color> -->
+    <color name="text_dark_grey">#818181</color>
+    <color name="text_grey">#777777</color>
+    <color name="comment_text">#CCCCCC</color>
+    <color name="text_light_grey">#CCCCCC</color>
+    <color name="text_settings">#E6E6E6</color>
+    <color name="text_empty_profiles">#E6E6E6</color>
+    <color name="text_settings_inactive">#999999</color>
+    <color name="photogname_grey">#eeeeee</color>    
+    <color name="bubble_text">#ffff99</color>
+	<color name="orangebubble_text">#FFE6BE</color>
+	<color name="greenbubble_text">#ebe0f5</color>
+	<color name="greenbubble_text_pressed">#ebe0f5</color>
+	<color name="lilabubble_text">#ebf5e0</color>
+	<color name="lilabubble_text_pressed">#ebf5e0</color>
+	<color name="pinkbubble_text">#ffedff</color>
+	<color name="pinkbubble_text_pressed">#574f57</color>
+	<color name="phototitle">#BDBDBD</color>
+	<color name="lightpinkbubble_text">#ff66ff</color>
+    <color name="bluebubble_text">#ded9fc</color>
+	<color name="bluebubble_text_pressed">#4b4756</color>
+	<color name="whitebubble_text">#666666</color>
+	<color name="whitebubble_text_pressed">#232323</color>
+	<color name="lightbluebubble_text">#3300ff</color>
+	<color name="light_grey_background">#D9D9D9</color>
+	<color name="grey_background">#333333</color>
+	<color name="grey_background_pressed">#1a1a1a</color>
+	<color name="greybubble_text">#666666</color>
+	<color name="light_grey_text">#999999</color>
+	<color name="lighter_grey_text">#A4A4A4</color>
+	<color name="whitebubble2_text">#4d4d4d</color>
+	<color name="userbubbledescription_text">#616161</color>
+	<color name="anotherfuckinggrey">#808080</color>
+	<color name="yetanotherfuckinggrey">#838383</color>
+	<color name="commentlist_author_text">#1A1A1A</color>
+	<color name="commentlist_text">#666666</color>
+	<color name="peoplelist_text">#5E5E5E</color>
+	<color name="dark_yellow">#BFBF73</color>
+	<color name="light_yellow">#FFFF99</color>
+	<color name="bgcolor">#050505</color>		
+	<color name="no_friends_body">#E6E6E6</color>
+	
+	<color name="news_item_seperator_first">#1a1a1a</color>
+	<color name="news_item_seperator_second">#464646</color>
+	
+	<color name="slidemenu_background">#1e1e1e</color>
+	
+	<color name="menu_item_background">#404040</color>
+	<color name="menu_item_top">#4D4D4D</color>
+	<color name="menu_item_break">#1A1A1A</color>
+	<color name="menu_item_search_bg">#2B2B2B</color>
+	
+	<color name="action_bar_bg">#2B2B2B</color>
+	<color name="actionbar_news_num">#E6E6E6</color>
+	
+	<color name="gridphoto_bg">#242424</color>
+	<color name="white_100opacity">#FFFFFFFF</color>
+	<color name="white_80opacity">#CCFFFFFF</color>
+	
+	<color name="settings_text_inactive">#595959</color>
+	
+	<color name="sticky_header_another_background">#E6232323</color>
+	<color name="sticky_header_inactive">#BB363636</color>
+	<color name="sticky_header_tag">#9966CC</color>
+	<color name="sticky_header_venue">#99CC66</color>
+	
+	<color name="find_friends_fb_bg">#3D5A98</color>
+	<color name="find_friends_fb_bg_pressed">#003366</color>
+	
+	<color name="find_friends_tw_bg">#28A8E0</color>
+	<color name="find_friends_tw_bg_pressed">#2C6B84</color>
+	
+	<color name="find_friends_eyeem_bg">#727272</color>
+	<color name="find_friends_eyeem_bg_pressed">#505050</color>
+    <color name="person_row_selected_bg">#66000000</color>
+		
+</resources>
