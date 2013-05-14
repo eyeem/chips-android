@@ -83,6 +83,7 @@ public class AutocompletePopover extends RelativeLayout {
 
    public void hide() {
       setVisibility(View.GONE);
+      et.endManualMode();
    }
 
    public static class Adapter extends BaseAdapter {

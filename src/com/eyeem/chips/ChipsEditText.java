@@ -110,7 +110,8 @@ public class ChipsEditText extends EditText {
    }
 
    public void endManualMode() {
-      makeChip(manualStart, getSelectionEnd());
+      if (manualStart > getSelectionEnd() && manualModeOn)
+         makeChip(manualStart, getSelectionEnd());
       manualModeOn = false;
    }
 
@@ -210,7 +211,9 @@ public class ChipsEditText extends EditText {
       int ascent = layout.getLineAscent(line);
       float x = layout.getPrimaryHorizontal(pos);
       float y = baseline + ascent;
-      return new Point((int)x, (int)y);
+      Point p = new Point((int)x, (int)y);
+      p.offset(getPaddingLeft(), getPaddingTop());
+      return p;
    }
 
    public static class EditAction {
