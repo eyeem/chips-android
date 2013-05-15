@@ -136,8 +136,19 @@ public class ChipsEditText extends EditText {
    }
 
    TextWatcher autocompleteWatcher = new TextWatcher() {
+      ImageSpan manipulatedSpan;
+
       @Override
       public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+         manipulatedSpan = null;
+         if (after < count && !manualModeOn) {
+            ImageSpan[] spans = ((Spannable)s).getSpans(start, start+count, ImageSpan.class);
+            if (spans.length == 1) {
+               manipulatedSpan = spans[0];
+            } else {
+               manipulatedSpan = null;
+            }
+         }
       }
 
       @Override
@@ -163,6 +174,12 @@ public class ChipsEditText extends EditText {
             } else {
                makeChip(manualStart, end);
             }
+         } else if (!manualModeOn && manipulatedSpan != null) {
+            int start = s.getSpanStart(manipulatedSpan);
+            int end = s.getSpanEnd(manipulatedSpan);
+            if (start > -1 && end > -1)
+               s.delete(start, end);
+            manipulatedSpan = null;
          }
          popover.reposition();
       }
