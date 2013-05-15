@@ -156,7 +156,8 @@ public class ChipsEditText extends EditText {
       if (lastEditAction != null) {
          String text = lastEditAction.text.toLowerCase();
          for (String item : availableItems) {
-            if ((text.length() > 1 && item.toLowerCase().startsWith(text)) || (item.toLowerCase().contains(text) && text.length() > 3)) {
+            if ((text.length() > 1 && item.toLowerCase().startsWith(text))
+               || (manualModeOn && item.toLowerCase().contains(text) && text.length() > 3)) {
                filteredItems.add(item);
             }
          }
