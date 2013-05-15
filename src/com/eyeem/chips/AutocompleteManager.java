@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class AutocompleteManager {
    Resolver resolver;
+   String latestQuery;
 
    public void setResolver(Resolver resolver) {
       this.resolver = resolver;
@@ -20,6 +21,7 @@ public class AutocompleteManager {
    }
 
    public void search(String query) {
+      latestQuery = query;
       if (query != null) {
          if (query.trim().length() < 3)
             new SearchTask("").start(); // autocomplete with defaults
@@ -68,7 +70,7 @@ public class AutocompleteManager {
       @Override
       protected void onPostExecute(ArrayList<String> results) {
          super.onPostExecute(results);
-         if (resolver != null && results != null) {
+         if (resolver != null && results != null && (latestQuery.startsWith(query) || latestQuery.equals(query))) {
             resolver.update(query, results);
          }
          decrement();

@@ -180,6 +180,7 @@ public class ChipsEditText extends EditText {
             if (start > -1 && end > -1)
                s.delete(start, end);
             manipulatedSpan = null;
+            manualModeOn = false;
          }
          popover.reposition();
       }
