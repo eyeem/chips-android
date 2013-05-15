@@ -25,6 +25,8 @@ public class ChipsEditText extends EditText {
    ArrayList<String> filteredItems = new ArrayList<String>();
    EditAction lastEditAction;
    AutocompletePopover popover;
+   AutocompleteManager manager;
+   boolean autoShow;
 
    public ChipsEditText(Context context) {
       super(context);
@@ -42,8 +44,26 @@ public class ChipsEditText extends EditText {
    }
 
    void init() {
+      manager = new AutocompleteManager();
+      manager.setResolver(new AutocompleteManager.Resolver() {
+         @Override
+         public ArrayList<String> getSuggestions(String query) throws Exception {
+            if (resolver == null)
+               return null;
+            return resolver.getSuggestions(query);
+         }
+
+         @Override
+         public void update(String query, ArrayList<String> results) {
+            setAvailableItems(results);
+         }
+      });
       addTextChangedListener(autocompleteWatcher);
       setOnEditorActionListener(editorActionListener);
+   }
+
+   public void resetAutocompleList() {
+      manager.search("");
    }
 
    public void setAutocomplePopover(AutocompletePopover popover) {
@@ -58,7 +78,7 @@ public class ChipsEditText extends EditText {
       LayoutInflater lf = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
       TextView textView = (TextView) lf.inflate(R.layout.chips, null);
       textView.setText(text); // set text
-      // capture bitmapt of genreated textview
+      // capture bitmap of generated textview
       int spec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
       textView.measure(spec, spec);
       textView.layout(0, 0, textView.getMeasuredWidth(), textView.getMeasuredHeight());
@@ -125,6 +145,8 @@ public class ChipsEditText extends EditText {
          String textForAutocomplete = null;
          try {
             textForAutocomplete = s.toString().substring(start, start+count);
+            if (resolver != null)
+               manager.search(textForAutocomplete);
             if (!TextUtils.isEmpty(textForAutocomplete)) {
                showAutocomplete(new EditAction(textForAutocomplete, start, before, count));
             }
@@ -146,7 +168,7 @@ public class ChipsEditText extends EditText {
       }
    };
 
-   public void setAvailableItems(ArrayList<String> items) {
+   protected void setAvailableItems(ArrayList<String> items) {
       availableItems = items;
       filter();
    }
@@ -155,12 +177,13 @@ public class ChipsEditText extends EditText {
       filteredItems.clear();
       if (lastEditAction != null) {
          String text = lastEditAction.text.toLowerCase();
-         for (String item : availableItems) {
-            if ((text.length() > 1 && item.toLowerCase().startsWith(text))
-               || (manualModeOn && item.toLowerCase().contains(text) && text.length() > 3)) {
-               filteredItems.add(item);
+         if (!TextUtils.isEmpty(text))
+            for (String item : availableItems) {
+               if ((text.length() > 1 && item.toLowerCase().startsWith(text))
+                  || (manualModeOn && item.toLowerCase().contains(text) && text.length() > 3)) {
+                  filteredItems.add(item);
+               }
             }
-         }
       }
       if (filteredItems.size() > 0) {
          popover.setItems(filteredItems);
@@ -174,6 +197,8 @@ public class ChipsEditText extends EditText {
    }
 
    public void showAutocomplete(EditAction editAction) {
+      if (!autoShow && !manualModeOn)
+         return;
       lastEditAction = editAction;
       filter();
    }
@@ -232,5 +257,15 @@ public class ChipsEditText extends EditText {
          this.before = before;
          this.count = count;
       }
+   }
+
+   public void setAutocompleteResolver(AutocompleteResolver resolver) {
+      this.resolver = resolver;
+   }
+
+   private AutocompleteResolver resolver;
+
+   public interface AutocompleteResolver {
+      public ArrayList<String> getSuggestions(String query) throws Exception;
    }
 }
