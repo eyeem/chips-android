@@ -17,6 +17,7 @@ public class AutocompleteManager {
 
    public interface Resolver {
       public ArrayList<String> getSuggestions(String query) throws Exception;
+      public ArrayList<String> getDefaultSuggestions();
       public void update(String query, ArrayList<String> results);
    }
 
@@ -81,6 +82,10 @@ public class AutocompleteManager {
       }
 
       public void start() {
+         if (TextUtils.isEmpty(query) && resolver != null) {
+            resolver.update("", resolver.getDefaultSuggestions());
+            return;
+         }
          boolean alreadyQueriedSomethingSimilar = false;
          for (java.util.Map.Entry<String, ArrayList<String>> e : queriesSoFar.entrySet()) {
             if (query.startsWith(e.getKey()) && e.getValue().size() == 0) {

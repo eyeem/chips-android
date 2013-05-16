@@ -54,6 +54,11 @@ public class ChipsEditText extends EditText {
          }
 
          @Override
+         public ArrayList<String> getDefaultSuggestions() {
+            return resolver.getDefaultSuggestions();
+         }
+
+         @Override
          public void update(String query, ArrayList<String> results) {
             setAvailableItems(results);
          }
@@ -133,6 +138,7 @@ public class ChipsEditText extends EditText {
       if (manualStart > getSelectionEnd() && manualModeOn)
          makeChip(manualStart, getSelectionEnd());
       manualModeOn = false;
+      popover.hide();
    }
 
    TextWatcher autocompleteWatcher = new TextWatcher() {
@@ -157,6 +163,10 @@ public class ChipsEditText extends EditText {
             return;
          String textForAutocomplete = null;
          try {
+            if (manualModeOn && manualStart < start) {
+               count += start - manualStart;
+               start = manualStart;
+            }
             textForAutocomplete = s.toString().substring(start, start+count);
             if (resolver != null)
                manager.search(textForAutocomplete);
@@ -291,5 +301,6 @@ public class ChipsEditText extends EditText {
 
    public interface AutocompleteResolver {
       public ArrayList<String> getSuggestions(String query) throws Exception;
+      public ArrayList<String> getDefaultSuggestions();
    }
 }
