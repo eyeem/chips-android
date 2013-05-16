@@ -130,15 +130,22 @@ public class ChipsEditText extends EditText {
    int manualStart;
 
    public void startManualMode() {
+      lastEditAction = null;
       manualModeOn = true;
       manualStart = getSelectionStart();
    }
 
    public void endManualMode() {
-      if (manualStart < getSelectionEnd() && manualModeOn)
+      boolean madeChip = false;
+      if (manualStart < getSelectionEnd() && manualModeOn) {
          makeChip(manualStart, getSelectionEnd());
+         madeChip = true;
+      }
       manualModeOn = false;
       popover.hide();
+      if (madeChip && getSelectionEnd() == getText().length()) {
+         getText().append(" ");
+      }
    }
 
    public void cancelManualMode() {

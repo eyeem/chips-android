@@ -40,7 +40,8 @@ public class AutocompleteManager {
       private String query = null;
 
       private SearchTask(String query) {
-         this.query = query;
+         if (query != null)
+            this.query = query.trim();
       }
 
       @Override
