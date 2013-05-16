@@ -256,11 +256,19 @@ public class ChipsEditText extends EditText {
    TextView.OnEditorActionListener editorActionListener = new TextView.OnEditorActionListener() {
       @Override
       public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-         if (actionId == EditorInfo.IME_ACTION_DONE && manualModeOn) {
-            endManualMode();
-            return true;
-         } else if (actionId == EditorInfo.IME_ACTION_DONE && !manualModeOn) {
-            hideKeyboard();
+         if (keyEvent == null) {
+            // CustomViewAbove seems to send enter keyevent for some reason (part one)
+            if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED)
+               actionId = EditorInfo.IME_ACTION_DONE;
+            if (actionId == EditorInfo.IME_ACTION_DONE && manualModeOn) {
+               endManualMode();
+               return true;
+            } else if (actionId == EditorInfo.IME_ACTION_DONE && !manualModeOn) {
+               hideKeyboard();
+               return true;
+            }
+         } else if (keyEvent != null && actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
+            // CustomViewAbove seems to send enter keyevent for some reason  (part two)
             return true;
          }
          return false;
