@@ -43,6 +43,12 @@ public class AutocompletePopover extends RelativeLayout {
       lv.setAdapter(adapter);
       lv.setOnItemClickListener(onItemClickListener);
       setVisibility(View.GONE);
+      findViewById(R.id.x).setOnClickListener(new OnClickListener() {
+         @Override
+         public void onClick(View v) {
+            et.cancelManualMode();
+         }
+      });
    }
 
    public void setChipsEditText(ChipsEditText et) {
@@ -107,7 +113,6 @@ public class AutocompletePopover extends RelativeLayout {
 
       @Override
       public View getView(int position, View c, ViewGroup parent) {
-         ((ListView)parent).setBackgroundColor(0x77000000);
          ((ListView)parent).setDivider(null);
          ((ListView)parent).setSelector(new ColorDrawable(0x0));
          // boilerplate code

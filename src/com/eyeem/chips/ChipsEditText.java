@@ -135,8 +135,16 @@ public class ChipsEditText extends EditText {
    }
 
    public void endManualMode() {
-      if (manualStart > getSelectionEnd() && manualModeOn)
+      if (manualStart < getSelectionEnd() && manualModeOn)
          makeChip(manualStart, getSelectionEnd());
+      manualModeOn = false;
+      popover.hide();
+   }
+
+   public void cancelManualMode() {
+      if (manualStart < getSelectionEnd() && manualModeOn) {
+         getText().delete(manualStart, getSelectionEnd());
+      }
       manualModeOn = false;
       popover.hide();
    }
@@ -164,6 +172,7 @@ public class ChipsEditText extends EditText {
          String textForAutocomplete = null;
          try {
             if (manualModeOn && manualStart < start) {
+               // we do dis cause android gives us latest word and we operate on a sentence
                count += start - manualStart;
                start = manualStart;
             }
