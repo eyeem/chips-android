@@ -153,6 +153,8 @@ public class ChipsEditText extends EditText {
 
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count) {
+         if (!shouldShow())
+            return;
          String textForAutocomplete = null;
          try {
             textForAutocomplete = s.toString().substring(start, start+count);
@@ -205,7 +207,9 @@ public class ChipsEditText extends EditText {
       }
       if (filteredItems.size() > 0) {
          popover.setItems(filteredItems);
-         popover.show();
+         if (shouldShow()) {
+            popover.show();
+         }
       } else {
          if (!manualModeOn) {
             popover.hide();
@@ -214,9 +218,11 @@ public class ChipsEditText extends EditText {
       }
    }
 
+   private boolean shouldShow() {
+      return autoShow || manualModeOn;
+   }
+
    public void showAutocomplete(EditAction editAction) {
-      if (!autoShow && !manualModeOn)
-         return;
       lastEditAction = editAction;
       filter();
    }
