@@ -6,20 +6,27 @@
         android:layout_height="wrap_content"
         >
     <ImageView
-        android:alpha="0.55"
+        android:alpha="0.58"
         android:src="@drawable/suggesttri"
         android:id="@+id/triangle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"/>
-    <ListView
-            android:paddingTop="16dp"
-            android:background="#77000000"
-            android:id="@+id/suggestions"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_below="@id/triangle"
+    <ScrollView
+        android:layout_below="@id/triangle"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingTop="16dp"
+        android:background="#77000000"
+        android:id="@+id/suggestions"
+        >
+        <LinearLayout
+            android:id="@+id/suggestions_container"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             />
+        </ScrollView>
     <ImageView
             android:src="@drawable/bigx_touch"
             android:id="@+id/x"

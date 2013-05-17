@@ -2,7 +2,6 @@ package com.eyeem.chips;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -15,11 +14,11 @@ import java.util.ArrayList;
 
 public class AutocompletePopover extends RelativeLayout {
 
-   ListView lv;
+   LinearLayout ll;
    RelativeLayout root;
    ChipsEditText et;
-   Adapter adapter = new Adapter();
-   View tri;
+   Adapter adapter;
+   ImageView tri;
 
    public AutocompletePopover(Context context) {
       super(context);
@@ -38,10 +37,12 @@ public class AutocompletePopover extends RelativeLayout {
 
    void init() {
       LayoutInflater.from(getContext()).inflate(R.layout.autocomplete_popover, this, true);
-      lv = (ListView)findViewById(R.id.suggestions);
-      tri = findViewById(R.id.triangle);
-      lv.setAdapter(adapter);
-      lv.setOnItemClickListener(onItemClickListener);
+      // below was a ListView but there were rendering issues on older Androids thus this ugly code
+      ll = (LinearLayout)findViewById(R.id.suggestions_container);
+      adapter = new Adapter(ll);
+      adapter.onItemClickListener = onItemClickListener;
+      tri = (ImageView)findViewById(R.id.triangle);
+      tri.setAlpha((int)(0.58f*255)); // old androids
       setVisibility(View.GONE);
       findViewById(R.id.x).setOnClickListener(new OnClickListener() {
          @Override
@@ -96,10 +97,12 @@ public class AutocompletePopover extends RelativeLayout {
 
       ArrayList<String> items = new ArrayList<String>();
       LayoutInflater li;
+      LinearLayout ll;
 
-      public Adapter() {
+      public Adapter(LinearLayout ll) {
          //Resources r = ApplicationController.instance().getResources();
          //_16dp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
+         this.ll = ll;
       }
 
       public void setItems(ArrayList<String> items) {
@@ -112,9 +115,7 @@ public class AutocompletePopover extends RelativeLayout {
       @Override public long getItemId(int position) { return position; }
 
       @Override
-      public View getView(int position, View c, ViewGroup parent) {
-         ((ListView)parent).setDivider(null);
-         ((ListView)parent).setSelector(new ColorDrawable(0x0));
+      public View getView(final int position, View c, ViewGroup parent) {
          // boilerplate code
          if (li == null) {
             li = LayoutInflater.from(parent.getContext());
@@ -131,6 +132,12 @@ public class AutocompletePopover extends RelativeLayout {
          String text = items.get(position);
          // attach data
          h.title.setText(text);
+         h.title.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               onItemClickListener.onItemClick(null, v, position, 0);
+            }
+         });
 
          return c;
       }
@@ -138,6 +145,18 @@ public class AutocompletePopover extends RelativeLayout {
       public static class ViewHolder {
          TextView title;
       }
+
+      @Override
+      public void notifyDataSetChanged() {
+         ll.removeAllViews();
+         for (int i = 0; i < items.size(); i++) {
+            View view = getView(i, null, ll);
+            final int pos = i;
+            ll.addView(view);
+         }
+      }
+
+      public AdapterView.OnItemClickListener onItemClickListener;
    }
 
    public AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
