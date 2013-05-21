@@ -2,13 +2,14 @@ package com.eyeem.chips;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Point;
+import android.content.res.Resources;
+import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.*;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.inputmethod.EditorInfo;
@@ -65,6 +66,8 @@ public class ChipsEditText extends EditText {
       });
       addTextChangedListener(autocompleteWatcher);
       setOnEditorActionListener(editorActionListener);
+      // TODO override way cursor is being displayed
+      setCursorVisible(false);
    }
 
    public void resetAutocompleList() {
@@ -82,6 +85,7 @@ public class ChipsEditText extends EditText {
       // inflate chips_edittext layout
       LayoutInflater lf = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
       TextView textView = (TextView) lf.inflate(R.layout.chips, null);
+      textView.setTextSize(getTextSize());
       textView.setText(text); // set text
       // capture bitmap of generated textview
       int spec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
@@ -94,15 +98,52 @@ public class ChipsEditText extends EditText {
       textView.setDrawingCacheEnabled(true);
       Bitmap cacheBmp = textView.getDrawingCache();
       Bitmap viewBmp = cacheBmp.copy(Bitmap.Config.ARGB_8888, true);
+      Resources r = getResources();
+      final int certainOffsetValue = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25, r.getDisplayMetrics());
       textView.destroyDrawingCache();  // destory drawable
       // create bitmap drawable for imagespan
-      BitmapDrawable bmpDrawable = new BitmapDrawable(viewBmp);
-      bmpDrawable.setBounds(0, 0, bmpDrawable.getIntrinsicWidth(), bmpDrawable.getIntrinsicHeight());
+      HackyBitmapDrawable bmpDrawable = new HackyBitmapDrawable(viewBmp);
+      bmpDrawable.setRealHeight(bmpDrawable.getIntrinsicHeight());
+      bmpDrawable.setBounds(0, 0, bmpDrawable.getIntrinsicWidth(), (int)getTextSize());
+
       // create and set imagespan
       ImageSpan[] spansToClear = getText().getSpans(start, end, ImageSpan.class);
       for (ImageSpan span : spansToClear)
          getText().removeSpan(span);
-      getText().setSpan(new ImageSpan(bmpDrawable), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      getText().setSpan(new ImageSpan(bmpDrawable) {
+         @Override
+         public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
+            //super.draw(canvas, text, start, end, x, top, y, bottom + certainOffsetValue, paint);
+            bottom -= certainOffsetValue;
+            HackyBitmapDrawable b = (HackyBitmapDrawable)getDrawable();
+            canvas.save();
+
+            int transY = bottom - b.getBounds().bottom;
+            //if (mVerticalAlignment == ALIGN_BASELINE) {
+               transY -= paint.getFontMetricsInt().descent;
+            //}
+
+            canvas.translate(x, transY);
+            Bitmap bitmap = b.getBitmap();
+            Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            Rect dst = new Rect(0, 0, b.getIntrinsicWidth(), b.realHeight);
+            canvas.drawBitmap(bitmap, src, dst, null);
+            //b.draw(canvas);
+            canvas.restore();
+         }
+      }, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+   }
+
+   public static class HackyBitmapDrawable extends BitmapDrawable {
+      int realHeight;
+
+      public HackyBitmapDrawable(Bitmap bitmap) {
+         super(bitmap);
+      }
+
+      public void setRealHeight(int realHeight) {
+         this.realHeight = realHeight;
+      }
    }
 
    public void addBubble(String text, int start) {
@@ -284,7 +325,7 @@ public class ChipsEditText extends EditText {
    public void showKeyboard() {
       InputMethodManager inputMgr = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
       //inputMgr.toggleSoftInput(InputMethodManager.SHOW_, 0);
-      inputMgr.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+      inputMgr.showSoftInput(this, InputMethodManager.SHOW_FORCED);
    }
 
    public Point getCursorPosition() {
