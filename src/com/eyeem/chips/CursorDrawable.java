@@ -15,7 +15,6 @@ public class CursorDrawable extends Drawable {
       this.editText = editText;
       this.paint = new Paint();
 
-      paint.setColor(Color.BLACK);
       paint.setAntiAlias(true);
       paint.setFakeBoldText(true);
       paint.setStyle(Paint.Style.FILL);
@@ -41,7 +40,14 @@ public class CursorDrawable extends Drawable {
       Point p = editText.getInnerCursorPosition();
       canvas.save();
       canvas.translate(p.x, p.y);
-      canvas.drawRect(0, 0, cursorWidth, textSize, paint);
+      // FIXME make this more abstract
+      if (editText.manualModeOn) {
+         paint.setColor(0x779966CC); // lilatext color
+         canvas.drawRect(0, 0, cursorWidth, textSize, paint);
+      } else {
+         paint.setColor(0x88000000);
+         canvas.drawRect(0, 0, cursorWidth, textSize, paint);
+      }
       canvas.restore();
    }
 

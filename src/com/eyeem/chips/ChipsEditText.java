@@ -93,7 +93,7 @@ public class ChipsEditText extends EditText {
       Field field_mCursorDrawable = value_mEditor.getClass().getDeclaredField("mCursorDrawable");
       field_mCursorDrawable.setAccessible(true);
       Drawable[] cursorDrawable = (Drawable[])field_mCursorDrawable.get(value_mEditor);
-      float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getContext().getResources().getDisplayMetrics());
+      float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1.5f, getContext().getResources().getDisplayMetrics());
       if (this.cursorDrawable == null)
          this.cursorDrawable = new CursorDrawable(this, getTextSize()*1.5f, width);
       for (int i=0; i<cursorDrawable.length; i++) {
