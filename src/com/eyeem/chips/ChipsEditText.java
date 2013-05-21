@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.text.*;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
@@ -28,6 +27,7 @@ public class ChipsEditText extends EditText {
    AutocompletePopover popover;
    AutocompleteManager manager;
    boolean autoShow;
+   Paint bmpPaint;
 
    public ChipsEditText(Context context) {
       super(context);
@@ -66,8 +66,11 @@ public class ChipsEditText extends EditText {
       });
       addTextChangedListener(autocompleteWatcher);
       setOnEditorActionListener(editorActionListener);
+
       // TODO override way cursor is being displayed
       setCursorVisible(false);
+      bmpPaint = new Paint();
+      bmpPaint.setFilterBitmap(true);
    }
 
    public void resetAutocompleList() {
@@ -86,6 +89,8 @@ public class ChipsEditText extends EditText {
       LayoutInflater lf = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
       TextView textView = (TextView) lf.inflate(R.layout.chips, null);
       textView.setTextSize(getTextSize());
+      textView.setMaxWidth(getWidth());
+      textView.setMaxLines(1);
       textView.setText(text); // set text
       // capture bitmap of generated textview
       int spec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
@@ -114,6 +119,7 @@ public class ChipsEditText extends EditText {
          @Override
          public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
             //super.draw(canvas, text, start, end, x, top, y, bottom + certainOffsetValue, paint);
+            // TODO reuse code from AwesomeBubbles
             bottom -= certainOffsetValue;
             HackyBitmapDrawable b = (HackyBitmapDrawable)getDrawable();
             canvas.save();
@@ -127,7 +133,8 @@ public class ChipsEditText extends EditText {
             Bitmap bitmap = b.getBitmap();
             Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
             Rect dst = new Rect(0, 0, b.getIntrinsicWidth(), b.realHeight);
-            canvas.drawBitmap(bitmap, src, dst, null);
+
+            canvas.drawBitmap(bitmap, src, dst, bmpPaint);
             //b.draw(canvas);
             canvas.restore();
          }
