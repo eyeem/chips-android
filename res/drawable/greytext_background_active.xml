@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <stroke android:width="3dp"/>
+    <corners android:radius="3dp" />
+    
+     <gradient
+		android:startColor="@color/actionbar_title"
+	 	android:endColor="@color/text_settings_inactive"
+		android:angle="270"/>
+    
+</shape>

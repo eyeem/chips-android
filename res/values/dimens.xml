@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bubble_text_size">14dp</dimen>
+    <dimen name="bubble_country_text_size">16dp</dimen>
+    <dimen name="bubble_padding">8dp</dimen>
+    <dimen name="bubble_radius">2dp</dimen>
+    <dimen name="bubble_v_spacing">3dp</dimen>
+    <dimen name="bubble_h_spacing">3dp</dimen>
+</resources>

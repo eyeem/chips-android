@@ -69,12 +69,14 @@ public class ChipsEditText extends EditText {
       addTextChangedListener(autocompleteWatcher);
       setOnEditorActionListener(editorActionListener);
 
-      //setCursorVisible(false);
+      bubbleStyles = new AwesomeBubbles.BubbleStyles(getContext());
+
       bmpPaint = new Paint();
       bmpPaint.setFilterBitmap(true);
 
    }
 
+   AwesomeBubbles.BubbleStyles bubbleStyles;
    CursorDrawable cursorDrawable;
    boolean hijacked;
 
@@ -131,31 +133,13 @@ public class ChipsEditText extends EditText {
       String text = getText().toString();
       text = text.substring(start, end);
 
-      // inflate chips_edittext layout
-      LayoutInflater lf = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-      TextView textView = (TextView) lf.inflate(R.layout.chips, null);
-      textView.setTextSize(getTextSize());
-      textView.setMaxWidth(getWidth());
-      textView.setMaxLines(1);
-      textView.setText(text); // set text
-      // capture bitmap of generated textview
-      int spec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-      textView.measure(spec, spec);
-      textView.layout(0, 0, textView.getMeasuredWidth(), textView.getMeasuredHeight());
-      Bitmap b = Bitmap.createBitmap(textView.getWidth(), textView.getHeight(), Bitmap.Config.ARGB_8888);
-      Canvas canvas = new Canvas(b);
-      canvas.translate(-textView.getScrollX(), -textView.getScrollY());
-      textView.draw(canvas);
-      textView.setDrawingCacheEnabled(true);
-      Bitmap cacheBmp = textView.getDrawingCache();
-      Bitmap viewBmp = cacheBmp.copy(Bitmap.Config.ARGB_8888, true);
-      Resources r = getResources();
-      final int certainOffsetValue = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25, r.getDisplayMetrics());
-      textView.destroyDrawingCache();  // destory drawable
       // create bitmap drawable for imagespan
-      HackyBitmapDrawable bmpDrawable = new HackyBitmapDrawable(viewBmp);
-      bmpDrawable.setRealHeight(bmpDrawable.getIntrinsicHeight());
+      TextPaint tp = new TextPaint();
+      int maxWidth = getWidth() - getPaddingRight() - getPaddingLeft();
+      BubbleDrawable bmpDrawable = new BubbleDrawable((int)getTextSize(), text, bubbleStyles.get(0), maxWidth, tp);
       bmpDrawable.setBounds(0, 0, bmpDrawable.getIntrinsicWidth(), (int)getTextSize());
+
+      final int certainOffsetValue = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25, getContext().getResources().getDisplayMetrics());
 
       // create and set imagespan
       ImageSpan[] spansToClear = getText().getSpans(start, end, ImageSpan.class);
@@ -164,10 +148,10 @@ public class ChipsEditText extends EditText {
       getText().setSpan(new ImageSpan(bmpDrawable) {
          @Override
          public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
-            //super.draw(canvas, text, start, end, x, top, y, bottom + certainOffsetValue, paint);
+            //super.draw(canvas, text, start, end, x, top, y, bottom, paint);
             // TODO reuse code from AwesomeBubbles
             bottom -= certainOffsetValue;
-            HackyBitmapDrawable b = (HackyBitmapDrawable)getDrawable();
+            BubbleDrawable b = (BubbleDrawable)getDrawable();
             canvas.save();
 
             int transY = bottom - b.getBounds().bottom;
@@ -176,27 +160,16 @@ public class ChipsEditText extends EditText {
             //}
 
             canvas.translate(x, transY);
-            Bitmap bitmap = b.getBitmap();
+            /*Bitmap bitmap = b.getBitmap();
             Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
             Rect dst = new Rect(0, 0, b.getIntrinsicWidth(), b.realHeight);
 
-            canvas.drawBitmap(bitmap, src, dst, bmpPaint);
+            canvas.drawBitmap(bitmap, src, dst, bmpPaint);*/
+            b.draw(canvas);
             //b.draw(canvas);
             canvas.restore();
          }
       }, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-   }
-
-   public static class HackyBitmapDrawable extends BitmapDrawable {
-      int realHeight;
-
-      public HackyBitmapDrawable(Bitmap bitmap) {
-         super(bitmap);
-      }
-
-      public void setRealHeight(int realHeight) {
-         this.realHeight = realHeight;
-      }
    }
 
    public void addBubble(String text, int start) {
