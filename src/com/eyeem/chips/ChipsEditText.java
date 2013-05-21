@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.*;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.*;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
@@ -17,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class ChipsEditText extends EditText {
@@ -67,10 +69,54 @@ public class ChipsEditText extends EditText {
       addTextChangedListener(autocompleteWatcher);
       setOnEditorActionListener(editorActionListener);
 
-      // TODO override way cursor is being displayed
-      setCursorVisible(false);
+      //setCursorVisible(false);
       bmpPaint = new Paint();
       bmpPaint.setFilterBitmap(true);
+
+   }
+
+   CursorDrawable cursorDrawable;
+   boolean hijacked;
+
+   public void hijackCursor() throws Exception {
+      // we need to access TextView.mEditor (private) and from there
+      // replace drawables in mCursorDrawable array. This way we provide
+      // our own Drawable where we can custom the way cursor is displayed
+      if (hijacked)
+         return;
+      Field field_mEditor = TextView.class.getDeclaredField("mEditor");
+      field_mEditor.setAccessible(true);
+      Object value_mEditor = field_mEditor.get(this);
+      Field field_mCursorDrawable = value_mEditor.getClass().getDeclaredField("mCursorDrawable");
+      field_mCursorDrawable.setAccessible(true);
+      Drawable[] cursorDrawable = (Drawable[])field_mCursorDrawable.get(value_mEditor);
+      float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getContext().getResources().getDisplayMetrics());
+      if (this.cursorDrawable == null)
+         this.cursorDrawable = new CursorDrawable(this, getTextSize()*1.5f, width);
+      for (int i=0; i<cursorDrawable.length; i++) {
+         if (cursorDrawable[i] == this.cursorDrawable) {
+            hijacked = true;
+            break;
+         } else if (cursorDrawable[i] != null) {
+            cursorDrawable[i] = this.cursorDrawable;
+            hijacked = true;
+            break;
+         }
+      }
+      if (!hijacked) {
+         cursorDrawable[0] = this.cursorDrawable;
+      }
+   }
+
+   @Override
+   public boolean onPreDraw() {
+      boolean value = super.onPreDraw();
+      try {
+         hijackCursor();
+      } catch (Exception e) {
+         // unfortunately stuck with shitty cursor
+      }
+      return value;
    }
 
    public void resetAutocompleList() {
@@ -335,7 +381,7 @@ public class ChipsEditText extends EditText {
       inputMgr.showSoftInput(this, InputMethodManager.SHOW_FORCED);
    }
 
-   public Point getCursorPosition() {
+   public Point getInnerCursorPosition() {
       int pos = getSelectionStart();
       Layout layout = getLayout();
       int line = layout.getLineForOffset(pos);
@@ -343,7 +389,11 @@ public class ChipsEditText extends EditText {
       int ascent = layout.getLineAscent(line);
       float x = layout.getPrimaryHorizontal(pos);
       float y = baseline + ascent;
-      Point p = new Point((int)x, (int)y);
+      return new Point((int)x, (int)y);
+   }
+
+   public Point getCursorPosition() {
+      Point p = getInnerCursorPosition();
       p.offset(getPaddingLeft(), getPaddingTop());
       return p;
    }
