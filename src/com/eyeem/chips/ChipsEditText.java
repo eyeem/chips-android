@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.text.*;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -155,18 +156,20 @@ public class ChipsEditText extends EditText {
             canvas.save();
 
             int transY = bottom - b.getBounds().bottom;
-            //if (mVerticalAlignment == ALIGN_BASELINE) {
+
+            int line = getLayout().getLineForOffset(start);
+            int lineStart = getLayout().getLineStart(line);
+            int lineEnd = getLayout().getLineEnd(line);
+            if (lineStart == start && lineEnd == end) {
+               // if there's no text around ImageSpan android will misalign
+               // FIXME this magic number must be justified somehow by fontMetrics etc
+               transY += (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getContext().getResources().getDisplayMetrics());
+            } else {
                transY -= paint.getFontMetricsInt().descent;
-            //}
+            }
 
             canvas.translate(x, transY);
-            /*Bitmap bitmap = b.getBitmap();
-            Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-            Rect dst = new Rect(0, 0, b.getIntrinsicWidth(), b.realHeight);
-
-            canvas.drawBitmap(bitmap, src, dst, bmpPaint);*/
             b.draw(canvas);
-            //b.draw(canvas);
             canvas.restore();
          }
       }, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
