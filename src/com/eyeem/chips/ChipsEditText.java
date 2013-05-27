@@ -412,7 +412,9 @@ public class ChipsEditText extends EditText {
          if (getScrollY() != 0)
             return;
 
-         int pos = start;
+         int pos = getText().getSpanStart(this);
+         if (pos == -1)
+            return;
          Layout layout = getLayout();
          int line = layout.getLineForOffset(pos);
          float x = layout.getPrimaryHorizontal(pos);
