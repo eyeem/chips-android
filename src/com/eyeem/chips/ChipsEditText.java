@@ -1,18 +1,13 @@
 package com.eyeem.chips;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.*;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.*;
-import android.text.style.ImageSpan;
+import android.text.style.ReplacementSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
@@ -74,7 +69,6 @@ public class ChipsEditText extends EditText {
 
       bmpPaint = new Paint();
       bmpPaint.setFilterBitmap(true);
-
    }
 
    AwesomeBubbles.BubbleStyles bubbleStyles;
@@ -122,6 +116,15 @@ public class ChipsEditText extends EditText {
       return value;
    }
 
+   @Override
+   protected void onDraw(Canvas canvas) {
+      super.onDraw(canvas);
+      while (!redrawStack.isEmpty()) {
+         BubbleSpan span = redrawStack.remove(0);
+         span.redraw(canvas);
+      }
+   }
+
    public void resetAutocompleList() {
       manager.search("");
    }
@@ -134,45 +137,17 @@ public class ChipsEditText extends EditText {
       String text = getText().toString();
       text = text.substring(start, end);
 
-      // create bitmap drawable for imagespan
+      // create bitmap drawable for ReplacementSpan
       TextPaint tp = new TextPaint();
       int maxWidth = getWidth() - getPaddingRight() - getPaddingLeft();
       BubbleDrawable bmpDrawable = new BubbleDrawable((int)getTextSize(), text, bubbleStyles.get(0), maxWidth, tp);
       bmpDrawable.setBounds(0, 0, bmpDrawable.getIntrinsicWidth(), (int)getTextSize());
 
-      final int certainOffsetValue = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25, getContext().getResources().getDisplayMetrics());
-
-      // create and set imagespan
-      ImageSpan[] spansToClear = getText().getSpans(start, end, ImageSpan.class);
-      for (ImageSpan span : spansToClear)
+      // create and set ReplacementSpan
+      ReplacementSpan[] spansToClear = getText().getSpans(start, end, ReplacementSpan.class);
+      for (ReplacementSpan span : spansToClear)
          getText().removeSpan(span);
-      getText().setSpan(new ImageSpan(bmpDrawable) {
-         @Override
-         public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
-            //super.draw(canvas, text, start, end, x, top, y, bottom, paint);
-            // TODO reuse code from AwesomeBubbles
-            bottom -= certainOffsetValue;
-            BubbleDrawable b = (BubbleDrawable)getDrawable();
-            canvas.save();
-
-            int transY = bottom - b.getBounds().bottom;
-
-            int line = getLayout().getLineForOffset(start);
-            int lineStart = getLayout().getLineStart(line);
-            int lineEnd = getLayout().getLineEnd(line);
-            if (lineStart == start && lineEnd == end) {
-               // if there's no text around ImageSpan android will misalign
-               // FIXME this magic number must be justified somehow by fontMetrics etc
-               transY += (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getContext().getResources().getDisplayMetrics());
-            } else {
-               transY -= paint.getFontMetricsInt().descent;
-            }
-
-            canvas.translate(x, transY);
-            b.draw(canvas);
-            canvas.restore();
-         }
-      }, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      getText().setSpan(new BubbleSpan(bmpDrawable), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
    }
 
    public void addBubble(String text, int start) {
@@ -227,13 +202,13 @@ public class ChipsEditText extends EditText {
    }
 
    TextWatcher autocompleteWatcher = new TextWatcher() {
-      ImageSpan manipulatedSpan;
+      ReplacementSpan manipulatedSpan;
 
       @Override
       public void beforeTextChanged(CharSequence s, int start, int count, int after) {
          manipulatedSpan = null;
          if (after < count && !manualModeOn) {
-            ImageSpan[] spans = ((Spannable)s).getSpans(start, start+count, ImageSpan.class);
+            ReplacementSpan[] spans = ((Spannable)s).getSpans(start, start+count, ReplacementSpan.class);
             if (spans.length == 1) {
                manipulatedSpan = spans[0];
             } else {
@@ -400,5 +375,60 @@ public class ChipsEditText extends EditText {
    public interface AutocompleteResolver {
       public ArrayList<String> getSuggestions(String query) throws Exception;
       public ArrayList<String> getDefaultSuggestions();
+   }
+
+   public ArrayList<BubbleSpan> redrawStack = new ArrayList<BubbleSpan>();
+
+   public class BubbleSpan extends ReplacementSpan {
+      BubbleDrawable d;
+      int start;
+      float baselineDiff;
+
+      public BubbleSpan(BubbleDrawable d) {
+         this.d = d;
+      }
+
+      @Override
+      public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
+         this.start = start;
+         canvas.save();
+
+         //int transY = bottom - d.getBounds().bottom - paint.getFontMetricsInt().descent;
+         baselineDiff = d.bubble.style.bubblePadding/2;
+         float transY = top - baselineDiff;
+
+         canvas.translate(x, transY);
+         d.draw(canvas);
+         if (getLayout().getLineForOffset(start) == 0) {
+            // we do this because for some Androids the first line's bubbles
+            // get cut off by inner scroll boundary - we redraw those
+            // bubbles after onDraw passes
+            redrawStack.add(this);
+         }
+         canvas.restore();
+      }
+
+      public void redraw(Canvas canvas) {
+         if (getScrollY() != 0)
+            return;
+
+         int pos = start;
+         Layout layout = getLayout();
+         int line = layout.getLineForOffset(pos);
+         float x = layout.getPrimaryHorizontal(pos);
+         float y = layout.getLineTop(line);
+         x += getPaddingLeft();
+         y += getPaddingTop();
+
+         canvas.save();
+         canvas.translate(x, y - baselineDiff);
+         d.draw(canvas);
+         canvas.restore();
+      }
+
+      @Override
+      public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
+         return d.getIntrinsicWidth();
+      }
    }
 }

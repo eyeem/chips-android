@@ -83,6 +83,7 @@ public class AwesomeBubble {
       text_paint.setTextSize(style.textSize);
       text_paint.setColor(isPressed ? style.textPressedColor : style.textColor);
       text_paint.setShader(text_shader);
+      text_paint.setAntiAlias(true);
       textLayout.draw(canvas);
       canvas.translate(-rect.left-style.bubblePadding, -rect.top-style.bubblePadding);
    }
