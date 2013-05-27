@@ -26,6 +26,7 @@ public class ChipsEditText extends EditText {
    AutocompleteManager manager;
    boolean autoShow;
    Paint bmpPaint;
+   int maxBubbleCount = -1;
 
    public ChipsEditText(Context context) {
       super(context);
@@ -64,6 +65,7 @@ public class ChipsEditText extends EditText {
       });
       addTextChangedListener(autocompleteWatcher);
       setOnEditorActionListener(editorActionListener);
+      setFilters(new InputFilter[]{hashFilter});
 
       bubbleStyles = new AwesomeBubbles.BubbleStyles(getContext());
 
@@ -174,7 +176,17 @@ public class ChipsEditText extends EditText {
    boolean manualModeOn;
    int manualStart;
 
+   public void setMaxBubbleCount(int maxBubbleCount) {
+      this.maxBubbleCount = maxBubbleCount;
+   }
+
+   public boolean canAddMoreBubbles() {
+      return maxBubbleCount == -1 || getText().getSpans(0, getText().length(), BubbleSpan.class).length < maxBubbleCount;
+   }
+
    public void startManualMode() {
+      if (!canAddMoreBubbles())
+         return;
       lastEditAction = null;
       manualModeOn = true;
       manualStart = getSelectionStart();
@@ -433,4 +445,47 @@ public class ChipsEditText extends EditText {
          return d.getIntrinsicWidth();
       }
    }
+
+   InputFilter hashFilter = new InputFilter() {
+
+      void toggleManualMode() {
+         if (manualModeOn && manualStart != getSelectionStart()) {
+            endManualMode();
+            startManualMode();
+            resetAutocompleList();
+            popover.show();
+         } else {
+            startManualMode();
+            resetAutocompleList();
+            popover.show();
+         }
+      }
+
+      @Override
+      public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+
+         if (source instanceof SpannableStringBuilder) {
+            SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder)source;
+            for (int i = end - 1; i >= start; i--) {
+               char currentChar = source.charAt(i);
+               if (currentChar == '#') {
+                  sourceAsSpannableBuilder.delete(i, i+1);
+                  toggleManualMode();
+               }
+            }
+            return source;
+         } else {
+            StringBuilder filteredStringBuilder = new StringBuilder();
+            for (int i = 0; i < end; i++) {
+               char currentChar = source.charAt(i);
+               if (currentChar != '#') {
+                  filteredStringBuilder.append(currentChar);
+               } else {
+                  toggleManualMode();
+               }
+            }
+            return filteredStringBuilder.toString();
+         }
+      }
+   };
 }

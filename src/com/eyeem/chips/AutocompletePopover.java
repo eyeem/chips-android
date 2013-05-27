@@ -83,6 +83,8 @@ public class AutocompletePopover extends RelativeLayout {
    }
 
    public void show() {
+      if (!et.canAddMoreBubbles())
+         return;
       reposition();
       setVisibility(View.VISIBLE);
    }
