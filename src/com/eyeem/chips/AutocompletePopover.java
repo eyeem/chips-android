@@ -174,8 +174,8 @@ public class AutocompletePopover extends RelativeLayout {
                }
             } catch (Exception e) {}
          }
-         et.addBubble(textToAdd, et.getSelectionStart());
-         if (et.getSelectionEnd() == et.length()) {
+         et.addBubble(textToAdd, et.manualStart);
+         if (et.getSelectionEnd() == et.length() || et.getSelectionEnd() + 1 == et.length()) {
             et.append(" ");
          }
          hide();

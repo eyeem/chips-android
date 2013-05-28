@@ -63,9 +63,9 @@ public class ChipsEditText extends EditText {
             setAvailableItems(results);
          }
       });
+      addTextChangedListener(hashWatcher);
       addTextChangedListener(autocompleteWatcher);
       setOnEditorActionListener(editorActionListener);
-      setFilters(new InputFilter[]{hashFilter});
 
       bubbleStyles = new AwesomeBubbles.BubbleStyles(getContext());
 
@@ -137,6 +137,10 @@ public class ChipsEditText extends EditText {
 
    public void makeChip(int start, int end) {
       String text = getText().toString();
+      if (start < 0)
+         start = 0;
+      if (end > text.length())
+         end = text.length();
       text = text.substring(start, end);
 
       // create bitmap drawable for ReplacementSpan
@@ -446,45 +450,28 @@ public class ChipsEditText extends EditText {
       }
    }
 
-   InputFilter hashFilter = new InputFilter() {
+   private TextWatcher hashWatcher = new TextWatcher() {
+      String before;
+      String after;
 
-      void toggleManualMode() {
-         if (manualModeOn && manualStart != getSelectionStart()) {
-            endManualMode();
-            startManualMode();
-            resetAutocompleList();
-            popover.show();
-         } else {
-            startManualMode();
-            resetAutocompleList();
-            popover.show();
-         }
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+         before = s.toString();
       }
 
       @Override
-      public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+         after = s.toString();
+      }
 
-         if (source instanceof SpannableStringBuilder) {
-            SpannableStringBuilder sourceAsSpannableBuilder = (SpannableStringBuilder)source;
-            for (int i = end - 1; i >= start; i--) {
-               char currentChar = source.charAt(i);
-               if (currentChar == '#') {
-                  sourceAsSpannableBuilder.delete(i, i+1);
-                  toggleManualMode();
-               }
-            }
-            return source;
-         } else {
-            StringBuilder filteredStringBuilder = new StringBuilder();
-            for (int i = 0; i < end; i++) {
-               char currentChar = source.charAt(i);
-               if (currentChar != '#') {
-                  filteredStringBuilder.append(currentChar);
-               } else {
-                  toggleManualMode();
-               }
-            }
-            return filteredStringBuilder.toString();
+      @Override
+      public void afterTextChanged(Editable s) {
+         if (after.length() > before.length() && after.lastIndexOf('#') > before.lastIndexOf('#') && !manualModeOn) {
+            int lastIndex = after.lastIndexOf('#');
+            s.delete(lastIndex, lastIndex+1);
+            startManualMode();
+            resetAutocompleList();
+            popover.show();
          }
       }
    };
