@@ -7,7 +7,7 @@ import android.view.View;
 
 public class AwesomeBubble {
    String text;
-   Rect rect;
+   private Rect rect;
    StaticLayout textLayout;
    boolean isPressed;
    boolean isFullWidth;
@@ -114,5 +114,9 @@ public class AwesomeBubble {
             Intent myStreamIntent = new Intent(view.getContext(), AlbumViewPagerActivity.class);
             myStreamIntent.putExtra(AlbumPhotosFragment.EXTRA_KEY_ALBUM_ID, album.albumId);
             view.getContext().startActivity(myStreamIntent);*/
+   }
+
+   public Rect rect() {
+      return rect;
    }
 }
