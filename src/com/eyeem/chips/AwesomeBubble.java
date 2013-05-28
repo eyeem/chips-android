@@ -13,10 +13,10 @@ public class AwesomeBubble {
    boolean isFullWidth;
    // EyeemAlbum album;
    LinearGradient text_shader;
-   AwesomeBubbles.BubbleStyle style;
+   BubbleStyle style;
    TextPaint text_paint;
 
-   public AwesomeBubble (String text, int containerWidth, AwesomeBubbles.BubbleStyle style, TextPaint text_paint) {
+   public AwesomeBubble (String text, int containerWidth, BubbleStyle style, TextPaint text_paint) {
       this.style = style;
       this.text_paint = text_paint;
       this.text = text;

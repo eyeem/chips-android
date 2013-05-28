@@ -67,13 +67,11 @@ public class ChipsEditText extends EditText {
       addTextChangedListener(autocompleteWatcher);
       setOnEditorActionListener(editorActionListener);
 
-      bubbleStyles = new AwesomeBubbles.BubbleStyles(getContext());
-
       bmpPaint = new Paint();
       bmpPaint.setFilterBitmap(true);
    }
 
-   AwesomeBubbles.BubbleStyles bubbleStyles;
+
    CursorDrawable cursorDrawable;
    boolean hijacked;
 
@@ -135,30 +133,14 @@ public class ChipsEditText extends EditText {
       this.popover = popover;
    }
 
-   public void makeChip(int start, int end) {
-      String text = getText().toString();
-      if (start < 0)
-         start = 0;
-      if (end > text.length())
-         end = text.length();
-      text = text.substring(start, end);
-
-      // create bitmap drawable for ReplacementSpan
-      TextPaint tp = new TextPaint();
-      int maxWidth = getWidth() - getPaddingRight() - getPaddingLeft();
-      BubbleDrawable bmpDrawable = new BubbleDrawable((int)getTextSize(), text, bubbleStyles.get(0), maxWidth, tp);
-      bmpDrawable.setBounds(0, 0, bmpDrawable.getIntrinsicWidth(), (int)getTextSize());
-
-      // create and set ReplacementSpan
-      ReplacementSpan[] spansToClear = getText().getSpans(start, end, ReplacementSpan.class);
-      for (ReplacementSpan span : spansToClear)
-         getText().removeSpan(span);
-      getText().setSpan(new BubbleSpan(bmpDrawable), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-   }
-
    public void addBubble(String text, int start) {
       getText().insert(start, text);
       makeChip(start, start+text.length());
+   }
+
+   protected void makeChip(int start, int end) {
+      int maxWidth = getWidth() - getPaddingLeft() - getPaddingRight();
+      Utils.bubblify(getText(), start, end, maxWidth, DefaultBubbles.get(0, getContext()), this);
    }
 
    @Override
@@ -394,61 +376,6 @@ public class ChipsEditText extends EditText {
    }
 
    public ArrayList<BubbleSpan> redrawStack = new ArrayList<BubbleSpan>();
-
-   public class BubbleSpan extends ReplacementSpan {
-      BubbleDrawable d;
-      int start;
-      float baselineDiff;
-
-      public BubbleSpan(BubbleDrawable d) {
-         this.d = d;
-      }
-
-      @Override
-      public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
-         this.start = start;
-         canvas.save();
-
-         //int transY = bottom - d.getBounds().bottom - paint.getFontMetricsInt().descent;
-         baselineDiff = d.bubble.style.bubblePadding/2;
-         float transY = top - baselineDiff;
-
-         canvas.translate(x, transY);
-         d.draw(canvas);
-         if (getLayout().getLineForOffset(start) == 0) {
-            // we do this because for some Androids the first line's bubbles
-            // get cut off by inner scroll boundary - we redraw those
-            // bubbles after onDraw passes
-            redrawStack.add(this);
-         }
-         canvas.restore();
-      }
-
-      public void redraw(Canvas canvas) {
-         if (getScrollY() != 0)
-            return;
-
-         int pos = getText().getSpanStart(this);
-         if (pos == -1)
-            return;
-         Layout layout = getLayout();
-         int line = layout.getLineForOffset(pos);
-         float x = layout.getPrimaryHorizontal(pos);
-         float y = layout.getLineTop(line);
-         x += getPaddingLeft();
-         y += getPaddingTop();
-
-         canvas.save();
-         canvas.translate(x, y - baselineDiff);
-         d.draw(canvas);
-         canvas.restore();
-      }
-
-      @Override
-      public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
-         return d.getIntrinsicWidth();
-      }
-   }
 
    private TextWatcher hashWatcher = new TextWatcher() {
       String before;

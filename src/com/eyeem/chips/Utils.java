@@ -1,7 +1,10 @@
 package com.eyeem.chips;
 
 import android.text.Editable;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.style.ReplacementSpan;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,5 +26,26 @@ public class Utils {
 
    public interface FlatteningFactory {
       public String out(String in);
+   }
+
+   public static void bubblify(Editable editable, int start, int end,
+                               int maxWidth, BubbleStyle bubbleStyle, ChipsEditText et) {
+      String text = editable.toString();
+      if (start < 0)
+         start = 0;
+      if (end > text.length())
+         end = text.length();
+      text = text.substring(start, end);
+
+      // create bitmap drawable for ReplacementSpan
+      TextPaint tp = new TextPaint();
+      AwesomeBubble bubble = new AwesomeBubble(text, maxWidth, bubbleStyle, tp);
+
+      // create and set ReplacementSpan
+      ReplacementSpan[] spansToClear = editable.getSpans(start, end, ReplacementSpan.class);
+      for (ReplacementSpan span : spansToClear)
+         editable.removeSpan(span);
+      BubbleSpan span = et == null ? new BubbleSpan(bubble) : new BubbleSpan(bubble, et);
+      editable.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
    }
 }
