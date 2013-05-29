@@ -55,7 +55,7 @@ public class AwesomeBubble {
    }
 
    public int getWidth() {
-      return textLayout.getWidth() + 2*style.bubblePadding;
+      return textLayout.getWidth() + 4*style.bubblePadding;
    }
 
    public int getHeight() {
@@ -63,7 +63,7 @@ public class AwesomeBubble {
    }
 
    public void setPosition(int x, int y) {
-      rect = new Rect(x, y, x+textLayout.getWidth()+2*style.bubblePadding, y+textLayout.getHeight()+2*style.bubblePadding);
+      rect = new Rect(x, y, x + getWidth(), y + getHeight());
    }
 
    public void draw(Canvas canvas) {
@@ -74,13 +74,13 @@ public class AwesomeBubble {
          style.active.setBounds(rect);
          style.active.draw(canvas);
       }
-      canvas.translate(rect.left+style.bubblePadding, rect.top+style.bubblePadding);
+      canvas.translate(rect.left+2*style.bubblePadding, rect.top+style.bubblePadding);
       text_paint.setTextSize(style.textSize);
       text_paint.setColor(isPressed ? style.textPressedColor : style.textColor);
       text_paint.setShader(text_shader);
       text_paint.setAntiAlias(true);
       textLayout.draw(canvas);
-      canvas.translate(-rect.left-style.bubblePadding, -rect.top-style.bubblePadding);
+      canvas.translate(-rect.left-2*style.bubblePadding, -rect.top-style.bubblePadding);
    }
 
    public int h_spacing() {
@@ -94,25 +94,6 @@ public class AwesomeBubble {
 
    public String text() {
       return text;
-   }
-
-   public void action(View view) {
-            /*if (album == null)
-               return;
-            if (EyeemAlbum.TYPE_TAG.equals(album.type))
-               Track.button("topic tag");
-            else if (EyeemAlbum.TYPE_VENUE.equals(album.type))
-               Track.button("location tag");
-            else if (EyeemAlbum.TYPE_CITY.equals(album.type))
-               Track.button("city name");
-            else if (EyeemAlbum.TYPE_COUNTRY.equals(album.type))
-               Track.button("country name");
-            else if (EyeemAlbum.TYPE_EVENT.equals(album.type))
-               Track.button("event name");
-            view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
-            Intent myStreamIntent = new Intent(view.getContext(), AlbumViewPagerActivity.class);
-            myStreamIntent.putExtra(AlbumPhotosFragment.EXTRA_KEY_ALBUM_ID, album.albumId);
-            view.getContext().startActivity(myStreamIntent);*/
    }
 
    public Rect rect() {

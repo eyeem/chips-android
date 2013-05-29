@@ -140,7 +140,7 @@ public class ChipsEditText extends EditText {
 
    protected void makeChip(int start, int end) {
       int maxWidth = getWidth() - getPaddingLeft() - getPaddingRight();
-      Utils.bubblify(getText(), start, end, maxWidth, DefaultBubbles.get(0, getContext()), this);
+      Utils.bubblify(getText(), start, end, maxWidth, DefaultBubbles.get(0, getContext()), this, null);
    }
 
    @Override

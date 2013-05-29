@@ -112,7 +112,7 @@ public class ChipsTextView extends View {
 
       int width = widthSize;
       build(width);
-      int height = layout == null ? 0 : layout.getHeight() + getPaddingTop()/2;
+      int height = layout == null ? 0 : layout.getHeight() + getPaddingTop();
 
       this.setMeasuredDimension(width, height);
    }
@@ -122,7 +122,7 @@ public class ChipsTextView extends View {
          layout = null;
       // render + save positions of bubbles
       // TODO rebuild bubbles
-      layout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, 2.0f, 1, false);
+      layout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, 1.25f, 1, false);
       // add bubbles from the text and create positions for them
       int paddingLeft = getPaddingLeft();
       int paddingTop = getPaddingTop();

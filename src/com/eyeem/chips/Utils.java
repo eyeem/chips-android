@@ -29,7 +29,7 @@ public class Utils {
    }
 
    public static void bubblify(Editable editable, int start, int end,
-                               int maxWidth, BubbleStyle bubbleStyle, ChipsEditText et) {
+                               int maxWidth, BubbleStyle bubbleStyle, ChipsEditText et, Object data) {
       String text = editable.toString();
       if (start < 0)
          start = 0;
@@ -46,6 +46,7 @@ public class Utils {
       for (ReplacementSpan span : spansToClear)
          editable.removeSpan(span);
       BubbleSpan span = et == null ? new BubbleSpan(bubble) : new BubbleSpan(bubble, et);
+      span.data = data;
       editable.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
    }
 }
