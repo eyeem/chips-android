@@ -6,7 +6,7 @@ import android.text.Layout;
 import android.text.style.ReplacementSpan;
 
 public class BubbleSpan extends ReplacementSpan {
-   AwesomeBubble bubble;
+   public AwesomeBubble bubble;
    ChipsEditText et;
    int start;
    float baselineDiff;

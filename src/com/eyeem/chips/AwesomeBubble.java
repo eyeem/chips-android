@@ -35,11 +35,6 @@ public class AwesomeBubble {
       setPosition(0, 0);
    }
 
-   // public Bubble (EyeemAlbum album, int maxWidth, int style) {
-   //   this(album.name, maxWidth, style);
-   //   this.album = album;
-   //}
-
    public AwesomeBubble resetWidth(int width) {
       textLayout = new StaticLayout(textLayout.getText(), text_paint, width, Layout.Alignment.ALIGN_NORMAL, 1.0f, 1, false);
       return this;
@@ -95,6 +90,10 @@ public class AwesomeBubble {
 
    public void setPressed(boolean value) {
       this.isPressed = value;
+   }
+
+   public String text() {
+      return text;
    }
 
    public void action(View view) {
