@@ -95,7 +95,9 @@ public class ChipsTextView extends View {
       for (BubbleSpan span : text.getSpans(0, text.length(), BubbleSpan.class)) {
          spans.add(span);
       }
-      requestLayout();
+      if (getWidth() > 0) {
+         requestLayout();
+      }
    }
 
    @Override
@@ -118,10 +120,15 @@ public class ChipsTextView extends View {
    }
 
    private void build(int width) {
-      if (width == 0 || TextUtils.isEmpty(text))
+      if (width == 0 || TextUtils.isEmpty(text)) {
          layout = null;
+         return;
+      }
       // render + save positions of bubbles
       // TODO rebuild bubbles
+      for (BubbleSpan span : spans) {
+         span.bubble.resetWidth(width);
+      }
       layout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, 1.25f, 1, false);
       // add bubbles from the text and create positions for them
       int paddingLeft = getPaddingLeft();

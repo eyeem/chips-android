@@ -15,11 +15,18 @@ public class AwesomeBubble {
    LinearGradient text_shader;
    BubbleStyle style;
    TextPaint text_paint;
+   int containerWidth = 0;
 
    public AwesomeBubble (String text, int containerWidth, BubbleStyle style, TextPaint text_paint) {
       this.style = style;
       this.text_paint = text_paint;
       this.text = text;
+      resetWidth(containerWidth);
+   }
+
+   public AwesomeBubble resetWidth(int containerWidth) {
+      if (this.containerWidth == containerWidth)
+         return this;
       SpannableStringBuilder main = new SpannableStringBuilder();
       main.append(text);
       main.setSpan(new StyleSpan(Typeface.BOLD), 0, main.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -27,16 +34,11 @@ public class AwesomeBubble {
 
       int maximum_w = containerWidth - 2*style.bubblePadding;
       int desired_w = (int)StaticLayout.getDesiredWidth(main, text_paint);
-      int best_w = Math.min(maximum_w, desired_w);
+      int best_w = Math.max(Math.min(maximum_w, desired_w), 0);
       textLayout = new StaticLayout(main, text_paint, best_w, Layout.Alignment.ALIGN_NORMAL, 1.0f, 1, false);
       if (desired_w > maximum_w)
          makeOneLiner();
-      //this.isFullWidth = (best_w + 2*style.bubblePadding >= containerWidth);
       setPosition(0, 0);
-   }
-
-   public AwesomeBubble resetWidth(int width) {
-      textLayout = new StaticLayout(textLayout.getText(), text_paint, width, Layout.Alignment.ALIGN_NORMAL, 1.0f, 1, false);
       return this;
    }
 
@@ -55,11 +57,11 @@ public class AwesomeBubble {
    }
 
    public int getWidth() {
-      return textLayout.getWidth() + 4*style.bubblePadding;
+      return textLayout == null ? 0 : textLayout.getWidth() + 4*style.bubblePadding;
    }
 
    public int getHeight() {
-      return textLayout.getHeight() + 2*style.bubblePadding;
+      return textLayout == null ? 0 : textLayout.getHeight() + 2*style.bubblePadding;
    }
 
    public void setPosition(int x, int y) {
@@ -67,6 +69,8 @@ public class AwesomeBubble {
    }
 
    public void draw(Canvas canvas) {
+      if (textLayout == null)
+         return;
       if (isPressed && style.pressed != null) {
          style.pressed.setBounds(rect);
          style.pressed.draw(canvas);
