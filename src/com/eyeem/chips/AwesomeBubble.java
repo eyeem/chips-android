@@ -3,15 +3,12 @@ package com.eyeem.chips;
 import android.graphics.*;
 import android.text.*;
 import android.text.style.StyleSpan;
-import android.view.View;
 
 public class AwesomeBubble {
    String text;
    private Rect rect;
    StaticLayout textLayout;
    boolean isPressed;
-   boolean isFullWidth;
-   // EyeemAlbum album;
    LinearGradient text_shader;
    BubbleStyle style;
    TextPaint text_paint;
@@ -85,11 +82,6 @@ public class AwesomeBubble {
       text_paint.setAntiAlias(true);
       textLayout.draw(canvas);
       canvas.translate(-rect.left-2*style.bubblePadding, -rect.top-style.bubblePadding);
-   }
-
-   public int h_spacing() {
-      //return style.nextNeedsSpacing ? myStyles.h_spacing : 0;
-      return 0;
    }
 
    public void setPressed(boolean value) {
