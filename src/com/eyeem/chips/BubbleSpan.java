@@ -27,17 +27,29 @@ public class BubbleSpan extends ReplacementSpan {
       canvas.save();
 
       //int transY = bottom - d.getBounds().bottom - paint.getFontMetricsInt().descent;
-      baselineDiff = ((float)bubble.style.bubblePadding) * 0.6f;
+
+      if (et != null) {
+         // we do this because for some Androids the first line's bubbles
+         // get cut off by inner scroll boundary - we redraw those
+         // bubbles after onDraw passes
+         // ...also edittext's layouting is erratic and baselineDiff is something
+         // I have trouble calculating
+         if (et.getLayout().getLineForOffset(start) == 0) {
+            // especially firstline has bigger next line space than others
+            et.redrawStack.add(this);
+            baselineDiff = ((float)bubble.style.bubblePadding) * -2.0f;
+         } else {
+            baselineDiff = ((float)bubble.style.bubblePadding) * -1.5f;
+         }
+      } else {
+         // this is for ChipsTextView which base on StaticLayout... much less
+         // troubles here
+         baselineDiff = ((float)bubble.style.bubblePadding) * 0.6f;
+      }
       float transY = top - baselineDiff;
 
       canvas.translate(x, transY);
       bubble.draw(canvas);
-      if (et != null && et.getLayout().getLineForOffset(start) == 0) {
-         // we do this because for some Androids the first line's bubbles
-         // get cut off by inner scroll boundary - we redraw those
-         // bubbles after onDraw passes
-         et.redrawStack.add(this);
-      }
       canvas.restore();
    }
 
