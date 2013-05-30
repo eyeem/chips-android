@@ -138,7 +138,7 @@ public class ChipsEditText extends EditText {
       makeChip(start, start+text.length());
    }
 
-   protected void makeChip(int start, int end) {
+   public void makeChip(int start, int end) {
       int maxWidth = getWidth() - getPaddingLeft() - getPaddingRight();
       Utils.bubblify(getText(), start, end, maxWidth, DefaultBubbles.get(0, getContext()), this, null);
    }
@@ -326,13 +326,15 @@ public class ChipsEditText extends EditText {
 
    public void showKeyboard() {
       InputMethodManager inputMgr = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-      //inputMgr.toggleSoftInput(InputMethodManager.SHOW_, 0);
       inputMgr.showSoftInput(this, InputMethodManager.SHOW_FORCED);
    }
 
    public Point getInnerCursorPosition() {
       int pos = getSelectionStart();
       Layout layout = getLayout();
+      if (layout == null) {
+         return new Point(0, 0);
+      }
       int line = layout.getLineForOffset(pos);
       int baseline = layout.getLineBaseline(line);
       int ascent = layout.getLineAscent(line);
@@ -402,4 +404,26 @@ public class ChipsEditText extends EditText {
          }
       }
    };
+
+   int previousWidth = 0;
+
+   @Override
+   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+      super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+      int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+      if (previousWidth != widthSize) {
+         previousWidth = widthSize;
+         int maxBubbleWidth = widthSize - getPaddingLeft() - getPaddingTop();
+         Editable e = getText();
+         BubbleSpan[] spans = e.getSpans(0, getText().length(), BubbleSpan.class);
+         for (int i = 0; i < spans.length; i++) {
+            BubbleSpan span = spans[i];
+            span.bubble.resetWidth(maxBubbleWidth);
+            int start = getText().getSpanStart(spans[i]);
+            int end = getText().getSpanEnd(spans[i]);
+            e.removeSpan(span);
+            e.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+         }
+      }
+   }
 }

@@ -108,6 +108,9 @@ public class AutocompletePopover extends RelativeLayout {
       }
 
       public void setItems(ArrayList<String> items) {
+         if (items == null) {
+            items = new ArrayList<String>();
+         }
          this.items = items;
          notifyDataSetChanged();
       }
