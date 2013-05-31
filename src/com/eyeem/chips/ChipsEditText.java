@@ -134,13 +134,16 @@ public class ChipsEditText extends EditText {
    }
 
    public void addBubble(String text, int start) {
+      if (start > getText().length()) {
+         start = getText().length();
+      }
       getText().insert(start, text);
       makeChip(start, start+text.length());
    }
 
    public void makeChip(int start, int end) {
       int maxWidth = getWidth() - getPaddingLeft() - getPaddingRight();
-      Utils.bubblify(getText(), start, end, maxWidth, DefaultBubbles.get(0, getContext()), this, null);
+      Utils.bubblify(getText(), null, start, end, maxWidth, DefaultBubbles.get(0, getContext()), this, null);
    }
 
    @Override

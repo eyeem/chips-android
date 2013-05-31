@@ -28,14 +28,16 @@ public class Utils {
       public String out(String in);
    }
 
-   public static void bubblify(Editable editable, int start, int end,
+   public static void bubblify(Editable editable, String text, int start, int end,
                                int maxWidth, BubbleStyle bubbleStyle, ChipsEditText et, Object data) {
-      String text = editable.toString();
-      if (start < 0)
-         start = 0;
-      if (end > text.length())
-         end = text.length();
-      text = text.substring(start, end);
+      if (text == null) {
+         text = editable.toString();
+         if (start < 0)
+            start = 0;
+         if (end > text.length())
+            end = text.length();
+         text = text.substring(start, end);
+      }
 
       // create bitmap drawable for ReplacementSpan
       TextPaint tp = new TextPaint();
