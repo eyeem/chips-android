@@ -47,8 +47,8 @@ public class Utils {
       ReplacementSpan[] spansToClear = editable.getSpans(start, end, ReplacementSpan.class);
       for (ReplacementSpan span : spansToClear)
          editable.removeSpan(span);
-      BubbleSpan span = et == null ? new BubbleSpan(bubble) : new BubbleSpan(bubble, et);
-      span.data = data;
+      BubbleSpan span = et == null ? new BubbleSpanImpl(bubble) : new BubbleSpanImpl(bubble, et);
+      span.setData(data);
       editable.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
    }
 }

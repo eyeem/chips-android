@@ -421,7 +421,7 @@ public class ChipsEditText extends EditText {
          BubbleSpan[] spans = e.getSpans(0, getText().length(), BubbleSpan.class);
          for (int i = 0; i < spans.length; i++) {
             BubbleSpan span = spans[i];
-            span.bubble.resetWidth(maxBubbleWidth);
+            span.resetWidth(maxBubbleWidth);
             int start = getText().getSpanStart(spans[i]);
             int end = getText().getSpanEnd(spans[i]);
             e.removeSpan(span);

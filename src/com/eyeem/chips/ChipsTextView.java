@@ -15,11 +15,11 @@ import java.util.HashMap;
 /**
  * ChipsTextView
  */
-public class ChipsTextView extends View {
+public class ChipsTextView extends View implements ILayoutCallback {
 
    BubbleSpan selectedSpan;
    ArrayList<BubbleSpan> spans = new ArrayList<BubbleSpan>();
-   HashMap<BubbleSpan, Rect> positions = new HashMap<BubbleSpan, Rect>();
+   HashMap<BubbleSpan, ArrayList<Rect>> positions = new HashMap<BubbleSpan, ArrayList<Rect>>();
    Spannable text;
    TextPaint textPaint;
    StaticLayout layout;
@@ -51,15 +51,15 @@ public class ChipsTextView extends View {
             selectBubble(x, y);
             break;
          case MotionEvent.ACTION_MOVE:
-            if (selectedSpan != null) selectedSpan.bubble.setPressed(boundsOf(selectedSpan).contains(x,y));
+            if (selectedSpan != null) selectedSpan.setPressed(spanContains(selectedSpan, x, y), (Spannable)layout.getText());
             break;
          case MotionEvent.ACTION_UP:
-            if (listener != null && selectedSpan != null && boundsOf(selectedSpan).contains(x,y)) {
+            if (listener != null && selectedSpan != null && spanContains(selectedSpan, x, y)) {
                listener.onBubbleClicked(this, selectedSpan);
             }
             // fall through
          case MotionEvent.ACTION_CANCEL:
-            if (selectedSpan != null) selectedSpan.bubble.setPressed(false);
+            if (selectedSpan != null) selectedSpan.setPressed(false, (Spannable)layout.getText());
             selectedSpan = null;
             break;
 
@@ -70,14 +70,18 @@ public class ChipsTextView extends View {
       return true;
    }
 
-   Rect boundsOf(BubbleSpan span) {
-      return positions.get(span);
+   boolean spanContains(BubbleSpan span, int x, int y) {
+      for (Rect rect : positions.get(span)) {
+         if (rect.contains(x, y))
+            return true;
+      }
+      return false;
    }
 
    public void selectBubble(int x, int y) {
       for (BubbleSpan span : spans) {
-         if (boundsOf(span).contains(x, y)) {
-            span.bubble.setPressed(true);
+         if (spanContains(span, x, y)) {
+            span.setPressed(true, (Spannable)layout.getText());
             selectedSpan = span;
             return;
          }
@@ -120,6 +124,7 @@ public class ChipsTextView extends View {
    }
 
    private void build(int width) {
+      positions.clear();
       if (width == 0 || TextUtils.isEmpty(text)) {
          layout = null;
          return;
@@ -127,28 +132,43 @@ public class ChipsTextView extends View {
       // render + save positions of bubbles
       // TODO rebuild bubbles
       for (BubbleSpan span : spans) {
-         span.bubble.resetWidth(width);
+         span.resetWidth(width);
       }
       layout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, 1.25f, 1, false);
       // add bubbles from the text and create positions for them
-      int paddingLeft = getPaddingLeft();
-      int paddingTop = getPaddingTop();
       for (BubbleSpan span : spans) {
-         int start = ((Spannable)layout.getText()).getSpanStart(span);
-         Point startPoint = getCursorPosition(start);
-         Rect position = new Rect(span.bubble.rect());
-         position.offset(startPoint.x+paddingLeft, startPoint.y+paddingTop);
-         positions.put(span, position);
+         positions.put(span, span.rect(this));
       }
    }
 
-   private Point getCursorPosition(int pos) {
+   @Override
+   public Point getCursorPosition(int pos) {
       int line = layout.getLineForOffset(pos);
       int baseline = layout.getLineBaseline(line);
       int ascent = layout.getLineAscent(line);
       float x = layout.getPrimaryHorizontal(pos);
       float y = baseline + ascent;
-      return new Point((int)x, (int)y);
+      return new Point((int)x+getPaddingLeft(), (int)y+getPaddingTop());
+   }
+
+   @Override
+   public int getLine(int pos) {
+      return layout.getLineForOffset(pos);
+   }
+
+   @Override
+   public Spannable getSpannable() {
+      return ((Spannable)layout.getText());
+   }
+
+   @Override
+   public int getLineEnd(int line) {
+      return layout.getLineEnd(line);
+   }
+
+   @Override
+   public int getLineHeight() {
+      return layout.getLineBottom(0);
    }
 
    public interface OnBubbleClickedListener {
