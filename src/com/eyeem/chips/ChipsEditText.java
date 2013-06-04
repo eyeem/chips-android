@@ -269,7 +269,7 @@ public class ChipsEditText extends EditText {
       filteredItems.clear();
       if (lastEditAction != null) {
          String text = lastEditAction.text.toLowerCase();
-         if (!TextUtils.isEmpty(text))
+         if (!TextUtils.isEmpty(text) && availableItems != null)
             for (String item : availableItems) {
                if ((text.length() > 1 && item.toLowerCase().startsWith(text))
                   || (manualModeOn && item.toLowerCase().contains(text) && text.length() > 3)) {
