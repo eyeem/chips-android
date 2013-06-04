@@ -12,4 +12,5 @@ public interface BubbleSpan {
    public ArrayList<Rect> rect(ILayoutCallback callback);
    public void redraw(Canvas canvas);
    public void setData(Object data);
+   public Object data();
 }

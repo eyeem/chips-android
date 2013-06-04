@@ -51,4 +51,11 @@ public class Utils {
       span.setData(data);
       editable.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
    }
+
+   public static void tapify(Editable editable, int start, int end, int activeColor, int inactiveColor, Object data) {
+      BubbleSpan span = new TapableSpan(activeColor, inactiveColor);
+      span.setData(data);
+      editable.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      span.setPressed(false, editable);
+   }
 }

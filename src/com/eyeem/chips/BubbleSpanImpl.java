@@ -109,4 +109,9 @@ public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
    public void setData(Object data) {
       this.data = data;
    }
+
+   @Override
+   public Object data() {
+      return data;
+   }
 }
