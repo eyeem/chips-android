@@ -39,12 +39,14 @@ public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
          // bubbles after onDraw passes
          // ...also edittext's layouting is erratic and baselineDiff is something
          // I have trouble calculating
+         float multipler = -1.5f;
          if (et.getLayout().getLineForOffset(start) == 0) {
             // especially firstline has bigger next line space than others
             et.redrawStack.add(this);
-            baselineDiff = ((float)bubble.style.bubblePadding) * -2.0f;
+            baselineDiff = ((float)bubble.style.bubblePadding) * multipler;
          } else {
-            baselineDiff = ((float)bubble.style.bubblePadding) * -1.5f;
+            multipler += 1.0f;
+            baselineDiff = ((float)bubble.style.bubblePadding) * multipler;
          }
       } else {
          // this is for ChipsTextView which base on StaticLayout... much less
