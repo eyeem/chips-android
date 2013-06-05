@@ -30,20 +30,19 @@ public class AwesomeBubble {
       main.setSpan(new StyleSpan(Typeface.BOLD), 0, main.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
       text_paint.setTextSize(style.textSize);
 
-      int maximum_w = containerWidth - 2*style.bubblePadding;
+      int maximum_w = containerWidth - 4*style.bubblePadding;
       int desired_w = (int)StaticLayout.getDesiredWidth(main, text_paint);
       int best_w = Math.max(Math.min(maximum_w, desired_w), 0);
       textLayout = new StaticLayout(main, text_paint, best_w, Layout.Alignment.ALIGN_NORMAL, 1.0f, 1, false);
       text_shader = null;
       if (desired_w > maximum_w)
-         makeOneLiner();
+         makeOneLiner(maximum_w);
       setPosition(0, 0);
       return this;
    }
 
-   public AwesomeBubble makeOneLiner() {
+   public AwesomeBubble makeOneLiner(int width) {
       text_paint.setTextSize(style.textSize);
-      int width = textLayout.getWidth();
       int i = text_paint.breakText(textLayout.getText().toString(), true, (float)width, null);
       while (i > 0 && textLayout.getLineCount() > 1) {
          textLayout = new StaticLayout(textLayout.getText().subSequence(0, i), text_paint, width, Layout.Alignment.ALIGN_NORMAL, 1.0f, 1, false);
