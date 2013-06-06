@@ -168,6 +168,7 @@ public class AutocompletePopover extends RelativeLayout {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
          et.manualModeOn = false;
+         et.muteHashWatcher(true);
          String textToAdd = adapter.items.get(position);
          if (et.lastEditAction != null) {
             try {
@@ -182,6 +183,7 @@ public class AutocompletePopover extends RelativeLayout {
             et.append(" ");
          }
          hide();
+         et.muteHashWatcher(false);
       }
    };
 }

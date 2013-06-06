@@ -382,22 +382,33 @@ public class ChipsEditText extends EditText {
 
    public ArrayList<BubbleSpan> redrawStack = new ArrayList<BubbleSpan>();
 
+   boolean muteHashWatcher;
+   void muteHashWatcher(boolean value) {
+      muteHashWatcher = value;
+   }
+
    private TextWatcher hashWatcher = new TextWatcher() {
       String before;
       String after;
 
       @Override
       public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+         if (muteHashWatcher)
+            return;
          before = s.toString();
       }
 
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count) {
+         if (muteHashWatcher)
+            return;
          after = s.toString();
       }
 
       @Override
       public void afterTextChanged(Editable s) {
+         if (muteHashWatcher)
+            return;
          if (after.length() > before.length() && after.lastIndexOf('#') > before.lastIndexOf('#') && !manualModeOn) {
             int lastIndex = after.lastIndexOf('#');
             s.delete(lastIndex, lastIndex+1);

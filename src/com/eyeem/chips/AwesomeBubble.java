@@ -48,7 +48,7 @@ public class AwesomeBubble {
          textLayout = new StaticLayout(textLayout.getText().subSequence(0, i), text_paint, width, Layout.Alignment.ALIGN_NORMAL, 1.0f, 1, false);
          i--;
       }
-      text_shader = new LinearGradient(width-style.bubblePadding*4, 0, width, 0,
+      text_shader = new LinearGradient(width*0.85f, 0, width, 0,
          new int[]{style.textColor, 0x00ffffff},
          new float[]{0, 1}, Shader.TileMode.CLAMP);
       return this;
