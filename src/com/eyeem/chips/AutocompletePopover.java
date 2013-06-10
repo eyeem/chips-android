@@ -20,6 +20,7 @@ public class AutocompletePopover extends RelativeLayout {
    Adapter adapter;
    ImageView tri;
 
+
    public AutocompletePopover(Context context) {
       super(context);
       init();
@@ -89,10 +90,16 @@ public class AutocompletePopover extends RelativeLayout {
       setVisibility(View.VISIBLE);
    }
 
+   public boolean isHidden() {
+      return getVisibility() == View.GONE;
+   }
+
    public void hide() {
       setVisibility(View.GONE);
       if (et.manualModeOn)
          et.endManualMode();
+      if (onHideListener != null)
+         onHideListener.onHide(this);
    }
 
    public static class Adapter extends BaseAdapter {
@@ -186,4 +193,13 @@ public class AutocompletePopover extends RelativeLayout {
          et.muteHashWatcher(false);
       }
    };
+
+   OnHideListener onHideListener;
+   public void setOnHideListener(OnHideListener onHideListener) {
+      this.onHideListener = onHideListener;
+   }
+
+   public interface OnHideListener {
+      public void onHide(View view);
+   }
 }

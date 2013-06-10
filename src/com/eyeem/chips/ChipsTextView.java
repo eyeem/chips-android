@@ -118,19 +118,19 @@ public class ChipsTextView extends View implements ILayoutCallback {
 
       int width = widthSize;
       build(width);
-      int height = layout == null ? 0 : layout.getHeight() + getPaddingTop();
+      int height = layout == null ? 0 : layout.getHeight() + getPaddingTop() + getPaddingBottom();
 
       this.setMeasuredDimension(width, height);
    }
 
    private void build(int width) {
       positions.clear();
-      if (width == 0 || TextUtils.isEmpty(text)) {
+      width = width - getPaddingLeft() - getPaddingRight();
+      if (width <= 0 || TextUtils.isEmpty(text)) {
          layout = null;
          return;
       }
       // render + save positions of bubbles
-      // TODO rebuild bubbles
       for (BubbleSpan span : spans) {
          span.resetWidth(width);
       }
