@@ -409,12 +409,19 @@ public class ChipsEditText extends EditText {
       public void afterTextChanged(Editable s) {
          if (muteHashWatcher)
             return;
-         if (after.length() > before.length() && after.lastIndexOf('#') > before.lastIndexOf('#') && !manualModeOn) {
-            int lastIndex = after.lastIndexOf('#');
-            s.delete(lastIndex, lastIndex+1);
-            startManualMode();
-            resetAutocompleList();
-            popover.show();
+         if (after.length() > before.length() && after.lastIndexOf('#') > before.lastIndexOf('#')) {
+               int lastIndex = after.lastIndexOf('#');
+               s.delete(lastIndex, lastIndex + 1);
+            if (!manualModeOn) {
+               startManualMode();
+               resetAutocompleList();
+               popover.show();
+            } else {
+               endManualMode();
+               if (canAddMoreBubbles()) {
+                  startManualMode();
+               }
+            }
          }
       }
    };
