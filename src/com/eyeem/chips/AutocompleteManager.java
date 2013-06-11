@@ -1,6 +1,6 @@
 package com.eyeem.chips;
 
-import android.os.AsyncTask;
+import android.os.Handler;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -10,6 +10,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AutocompleteManager {
    Resolver resolver;
    String latestQuery;
+   Handler handler;
+   boolean tryToBeSmart;
+
+   AutocompleteManager() {
+      handler = new Handler();
+      tryToBeSmart = true;
+   }
 
    public void setResolver(Resolver resolver) {
       this.resolver = resolver;
@@ -35,7 +42,7 @@ public class AutocompleteManager {
    private AtomicInteger searchVenueTaskCount = new AtomicInteger(0);
    private HashMap<String, ArrayList<String>> queriesSoFar = new HashMap<String, ArrayList<String>>();
 
-   private class SearchTask extends AsyncTask<Void, Void, ArrayList<String>> {
+   private class SearchTask {
 
       private String query = null;
 
@@ -44,14 +51,11 @@ public class AutocompleteManager {
             this.query = query.trim();
       }
 
-      @Override
       protected void onPreExecute() {
-         super.onPreExecute();
          searchVenueTaskCount.incrementAndGet();
       }
 
-      @Override
-      protected ArrayList<String> doInBackground(Void... params) {
+      protected ArrayList<String> doInBackground() {
          try {
             ArrayList<String> results = resolver.getSuggestions(query);
             if (results != null && !TextUtils.isEmpty(query))
@@ -63,19 +67,37 @@ public class AutocompleteManager {
          return null;
       }
 
-      @Override
       protected void onCancelled() {
-         super.onCancelled();
          decrement();
       }
 
-      @Override
       protected void onPostExecute(ArrayList<String> results) {
-         super.onPostExecute(results);
          if (resolver != null && results != null && (latestQuery.startsWith(query) || latestQuery.equals(query))) {
             resolver.update(query, results);
          }
          decrement();
+      }
+
+      private void execute() {
+         onPreExecute();
+         Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+               try {
+                  final ArrayList<String> results = doInBackground();
+                  handler.post(new Runnable() {
+                     @Override
+                     public void run() {
+                        onPostExecute(results);
+                     }
+                  });
+               } catch (Throwable t) {
+                  onCancelled();
+               }
+            }
+         });
+         t.setPriority(Thread.MIN_PRIORITY);
+         t.start();
       }
 
       private void decrement() {
@@ -89,7 +111,7 @@ public class AutocompleteManager {
          }
          boolean alreadyQueriedSomethingSimilar = false;
          for (java.util.Map.Entry<String, ArrayList<String>> e : queriesSoFar.entrySet()) {
-            if (query.startsWith(e.getKey()) && e.getValue().size() == 0) {
+            if (tryToBeSmart && query.startsWith(e.getKey()) && e.getValue().size() == 0) {
                // further queries make no sense
                alreadyQueriedSomethingSimilar = true;
                break;
@@ -103,7 +125,7 @@ public class AutocompleteManager {
             }
          }
          if (!alreadyQueriedSomethingSimilar) {
-            this.execute((Void)null);
+            this.execute();
          }
       }
    }
