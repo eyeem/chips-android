@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.text.*;
 import android.text.style.ReplacementSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ChipsEditText extends EditText {
 
@@ -25,8 +28,8 @@ public class ChipsEditText extends EditText {
    AutocompletePopover popover;
    AutocompleteManager manager;
    boolean autoShow;
-   Paint bmpPaint;
    int maxBubbleCount = -1;
+   Timer cursorTimer;
 
    public ChipsEditText(Context context) {
       super(context);
@@ -67,62 +70,34 @@ public class ChipsEditText extends EditText {
       addTextChangedListener(autocompleteWatcher);
       setOnEditorActionListener(editorActionListener);
 
-      bmpPaint = new Paint();
-      bmpPaint.setFilterBitmap(true);
-   }
-
-
-   CursorDrawable cursorDrawable;
-   boolean hijacked;
-
-   public void hijackCursor() throws Exception {
-      // we need to access TextView.mEditor (private) and from there
-      // replace drawables in mCursorDrawable array. This way we provide
-      // our own Drawable where we can custom the way cursor is displayed
-      if (hijacked)
-         return;
-      Field field_mEditor = TextView.class.getDeclaredField("mEditor");
-      field_mEditor.setAccessible(true);
-      Object value_mEditor = field_mEditor.get(this);
-      Field field_mCursorDrawable = value_mEditor.getClass().getDeclaredField("mCursorDrawable");
-      field_mCursorDrawable.setAccessible(true);
-      Drawable[] cursorDrawable = (Drawable[])field_mCursorDrawable.get(value_mEditor);
+      setCursorVisible(false);
       float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1.5f, getContext().getResources().getDisplayMetrics());
-      if (this.cursorDrawable == null)
-         this.cursorDrawable = new CursorDrawable(this, getTextSize()*1.5f, width);
-      for (int i=0; i<cursorDrawable.length; i++) {
-         if (cursorDrawable[i] == this.cursorDrawable) {
-            hijacked = true;
-            break;
-         } else if (cursorDrawable[i] != null) {
-            cursorDrawable[i] = this.cursorDrawable;
-            hijacked = true;
-            break;
-         }
-      }
-      if (!hijacked) {
-         cursorDrawable[0] = this.cursorDrawable;
-      }
+      this.cursorDrawable = new CursorDrawable(this, getTextSize()*1.5f, width);
+      cursorTimer = new Timer();
+      cursorTimer.schedule(cursorTask, 0, 500);
    }
 
-   @Override
-   public boolean onPreDraw() {
-      boolean value = super.onPreDraw();
-      try {
-         hijackCursor();
-      } catch (Exception e) {
-         // unfortunately stuck with shitty cursor
+   TimerTask cursorTask = new TimerTask() {
+      @Override
+      public void run() {
+         cursorBlink = !cursorBlink;
+         postInvalidate();
       }
-      return value;
-   }
+   };
+   boolean cursorBlink;
+   CursorDrawable cursorDrawable;
 
    @Override
    protected void onDraw(Canvas canvas) {
+      Log.i("CHIPS", "onDraw, blink = " + cursorBlink);
       super.onDraw(canvas);
       while (!redrawStack.isEmpty()) {
          BubbleSpan span = redrawStack.remove(0);
          span.redraw(canvas);
       }
+      // TODO draw cursor
+      if (cursorBlink)
+         cursorDrawable.draw(canvas);
    }
 
    public void resetAutocompleList() {

@@ -37,7 +37,7 @@ public class CursorDrawable extends Drawable {
 
    @Override
    public void draw(Canvas canvas) {
-      Point p = editText.getInnerCursorPosition();
+      Point p = editText.getCursorPosition();
       canvas.save();
       canvas.translate(p.x, p.y);
       // FIXME make this more abstract
