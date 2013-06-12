@@ -29,7 +29,6 @@ public class ChipsEditText extends EditText {
    AutocompleteManager manager;
    boolean autoShow;
    int maxBubbleCount = -1;
-   Timer cursorTimer;
 
    public ChipsEditText(Context context) {
       super(context);
@@ -72,16 +71,30 @@ public class ChipsEditText extends EditText {
 
       setCursorVisible(false);
       float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1.5f, getContext().getResources().getDisplayMetrics());
-      this.cursorDrawable = new CursorDrawable(this, getTextSize()*1.5f, width);
-      cursorTimer = new Timer();
-      cursorTimer.schedule(cursorTask, 0, 500);
+      this.cursorDrawable = new CursorDrawable(this, getTextSize()*1.5f, width, getContext());
    }
 
-   TimerTask cursorTask = new TimerTask() {
+   @Override
+   protected void onAttachedToWindow() {
+      Log.i("CHIPS", "onAttachedToWindow");
+      super.onAttachedToWindow();
+      post(cursorRunnable);
+   }
+
+   @Override
+   protected void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      Log.i("CHIPS", "onDetachedFromWindow");
+      super.onAttachedToWindow();
+      removeCallbacks(cursorRunnable);
+   }
+
+   Runnable cursorRunnable = new Runnable() {
       @Override
       public void run() {
          cursorBlink = !cursorBlink;
          postInvalidate();
+         postDelayed(cursorRunnable, 500);
       }
    };
    boolean cursorBlink;
@@ -95,9 +108,7 @@ public class ChipsEditText extends EditText {
          BubbleSpan span = redrawStack.remove(0);
          span.redraw(canvas);
       }
-      // TODO draw cursor
-      if (cursorBlink)
-         cursorDrawable.draw(canvas);
+      cursorDrawable.draw(canvas, cursorBlink);
    }
 
    public void resetAutocompleList() {

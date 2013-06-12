@@ -31,28 +31,7 @@ public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
       this.start = start;
       canvas.save();
 
-      //int transY = bottom - d.getBounds().bottom - paint.getFontMetricsInt().descent;
-
-      if (et != null) {
-         // we do this because for some Androids the first line's bubbles
-         // get cut off by inner scroll boundary - we redraw those
-         // bubbles after onDraw passes
-         // ...also edittext's layouting is erratic and baselineDiff is something
-         // I have trouble calculating
-         float multipler = -1.5f;
-         if (et.getLayout().getLineForOffset(start) == 0) {
-            // especially firstline has bigger next line space than others
-            et.redrawStack.add(this);
-            baselineDiff = ((float)bubble.style.bubblePadding) * multipler;
-         } else {
-            multipler += 1.0f;
-            baselineDiff = ((float)bubble.style.bubblePadding) * multipler;
-         }
-      } else {
-         // this is for ChipsTextView which base on StaticLayout... much less
-         // troubles here
-         baselineDiff = ((float)bubble.style.bubblePadding) * 0.6f;
-      }
+      baselineDiff = lineCorrectionLogic(start, et, bubble, this);
       float transY = top - baselineDiff;
 
       canvas.translate(x, transY);
@@ -115,5 +94,31 @@ public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
    @Override
    public Object data() {
       return data;
+   }
+
+   public static float lineCorrectionLogic(int start, ChipsEditText et, AwesomeBubble bubble, BubbleSpanImpl span) {
+      float baselineDiff = 0.0f;
+      if (et != null) {
+         // we do this because for some Androids the first line's bubbles
+         // get cut off by inner scroll boundary - we redraw those
+         // bubbles after onDraw passes
+         // ...also edittext's layouting is erratic and baselineDiff is something
+         // I have trouble calculating
+         float multipler = -1.5f;
+         if (et.getLayout().getLineForOffset(start) == 0) {
+            // especially firstline has bigger next line space than others
+            if (span != null)
+               et.redrawStack.add(span);
+            baselineDiff = ((float)bubble.style.bubblePadding) * multipler;
+         } else {
+            multipler += 1.0f;
+            baselineDiff = ((float)bubble.style.bubblePadding) * multipler;
+         }
+      } else {
+         // this is for ChipsTextView which base on StaticLayout... much less
+         // troubles here
+         baselineDiff = ((float)bubble.style.bubblePadding) * 0.6f;
+      }
+      return baselineDiff;
    }
 }
