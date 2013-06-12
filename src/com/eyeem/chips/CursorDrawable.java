@@ -32,8 +32,6 @@ public class CursorDrawable {
       canvas.save();
       canvas.translate(p.x, p.y);
       if (editText.manualModeOn) {
-         // line position correction logic required
-
          // calculate cursor offset
          int x_offset = 0;
          int y_offset = bubble.style.bubblePadding;

@@ -76,7 +76,6 @@ public class ChipsEditText extends EditText {
 
    @Override
    protected void onAttachedToWindow() {
-      Log.i("CHIPS", "onAttachedToWindow");
       super.onAttachedToWindow();
       post(cursorRunnable);
    }
@@ -84,8 +83,6 @@ public class ChipsEditText extends EditText {
    @Override
    protected void onDetachedFromWindow() {
       super.onDetachedFromWindow();
-      Log.i("CHIPS", "onDetachedFromWindow");
-      super.onAttachedToWindow();
       removeCallbacks(cursorRunnable);
    }
 
@@ -102,7 +99,6 @@ public class ChipsEditText extends EditText {
 
    @Override
    protected void onDraw(Canvas canvas) {
-      Log.i("CHIPS", "onDraw, blink = " + cursorBlink);
       super.onDraw(canvas);
       while (!redrawStack.isEmpty()) {
          BubbleSpan span = redrawStack.remove(0);
