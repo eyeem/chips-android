@@ -416,7 +416,7 @@ public class ChipsEditText extends EditText {
                startManualMode();
                resetAutocompleList();
                popover.show();
-            } else {
+            } else if (manualModeOn && manualStart < lastIndex) {
                endManualMode();
                if (canAddMoreBubbles()) {
                   startManualMode();
