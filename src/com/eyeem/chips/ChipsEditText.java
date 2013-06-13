@@ -29,6 +29,7 @@ public class ChipsEditText extends EditText {
    AutocompleteManager manager;
    boolean autoShow;
    int maxBubbleCount = -1;
+   public CharSequence savedHint;
 
    public ChipsEditText(Context context) {
       super(context);
@@ -72,6 +73,7 @@ public class ChipsEditText extends EditText {
       setCursorVisible(false);
       float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1.5f, getContext().getResources().getDisplayMetrics());
       this.cursorDrawable = new CursorDrawable(this, getTextSize()*1.5f, width, getContext());
+      this.savedHint = getHint();
    }
 
    @Override
@@ -98,13 +100,29 @@ public class ChipsEditText extends EditText {
    CursorDrawable cursorDrawable;
 
    @Override
+   public boolean onPreDraw() {
+      CharSequence hint = getHint();
+      boolean empty = TextUtils.isEmpty(getText());
+      if (manualModeOn && empty) {
+         if (!TextUtils.isEmpty(hint)) {
+            setHint("");
+         }
+      } else if (!manualModeOn && empty && !TextUtils.isEmpty(savedHint)) {
+         setHint(savedHint);
+      };
+      return super.onPreDraw();
+   }
+
+   @Override
    protected void onDraw(Canvas canvas) {
       super.onDraw(canvas);
       while (!redrawStack.isEmpty()) {
          BubbleSpan span = redrawStack.remove(0);
          span.redraw(canvas);
       }
-      cursorDrawable.draw(canvas, cursorBlink);
+      if (isFocused()) {
+         cursorDrawable.draw(canvas, cursorBlink);
+      }
    }
 
    public void resetAutocompleList() {
