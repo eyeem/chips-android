@@ -1,7 +1,9 @@
 package com.eyeem.chips;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.util.TypedValue;
 
 /**
  * @author vishna
@@ -18,6 +20,7 @@ public class DefaultBubbles {
 
    public static int v_spacing;
    public static int h_spacing;
+   public static int long_bubble_workaround;
 
    public static BubbleStyle get(int type, Context context) {
       if (array == null) {
@@ -28,10 +31,12 @@ public class DefaultBubbles {
 
    public static void init(Context context) {
       context = context.getApplicationContext();
-      int textSize = context.getResources().getDimensionPixelSize(R.dimen.bubble_text_size);
-      int padding = context.getResources().getDimensionPixelSize(R.dimen.bubble_padding);
-      v_spacing = context.getResources().getDimensionPixelSize(R.dimen.bubble_v_spacing);
-      h_spacing = context.getResources().getDimensionPixelSize(R.dimen.bubble_h_spacing);
+      Resources r = context.getResources();
+      int textSize = r.getDimensionPixelSize(R.dimen.bubble_text_size);
+      int padding = r.getDimensionPixelSize(R.dimen.bubble_padding);
+      v_spacing = r.getDimensionPixelSize(R.dimen.bubble_v_spacing);
+      h_spacing = r.getDimensionPixelSize(R.dimen.bubble_h_spacing);
+      long_bubble_workaround = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
 
       array = new BubbleStyle[] {
          new BubbleStyle(

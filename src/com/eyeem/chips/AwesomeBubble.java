@@ -22,6 +22,7 @@ public class AwesomeBubble {
    }
 
    public AwesomeBubble resetWidth(int containerWidth) {
+      containerWidth -= DefaultBubbles.long_bubble_workaround;
       if (this.containerWidth == containerWidth)
          return this;
       this.containerWidth = containerWidth;
