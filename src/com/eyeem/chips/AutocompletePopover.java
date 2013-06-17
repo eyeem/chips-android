@@ -45,12 +45,14 @@ public class AutocompletePopover extends RelativeLayout {
       tri = (ImageView)findViewById(R.id.triangle);
       tri.setAlpha((int)(0.58f*255)); // old androids
       setVisibility(View.GONE);
-      findViewById(R.id.x).setOnClickListener(new OnClickListener() {
+      OnClickListener x = new OnClickListener() {
          @Override
          public void onClick(View v) {
             et.cancelManualMode();
          }
-      });
+      };
+      findViewById(R.id.x).setOnClickListener(x);
+      findViewById(R.id.x_border).setOnClickListener(x);
    }
 
    public void setChipsEditText(ChipsEditText et) {

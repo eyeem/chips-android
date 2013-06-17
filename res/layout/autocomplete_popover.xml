@@ -27,14 +27,24 @@
             android:layout_height="wrap_content"
             />
         </ScrollView>
-    <ImageView
-            android:src="@drawable/bigx_touch"
-            android:id="@+id/x"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_width="wrap_content"
+    <LinearLayout
             android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/x_border"
+            android:orientation="horizontal"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp"
+            android:paddingLeft="20dp"
+            android:paddingBottom="20dp"
             android:layout_alignTop="@id/suggestions"
-            android:layout_alignRight="@id/suggestions"/>
+            android:layout_alignRight="@id/suggestions">
+        <ImageView
+                android:src="@drawable/bigx_touch"
+                android:id="@+id/x"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:duplicateParentState="true"
+                />
+    </LinearLayout>
 </RelativeLayout>
 </merge>
