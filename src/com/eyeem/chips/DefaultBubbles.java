@@ -3,6 +3,9 @@ package com.eyeem.chips;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.text.TextPaint;
+import android.util.Log;
 import android.util.TypedValue;
 
 /**
@@ -36,7 +39,6 @@ public class DefaultBubbles {
       int padding = r.getDimensionPixelSize(R.dimen.bubble_padding);
       v_spacing = r.getDimensionPixelSize(R.dimen.bubble_v_spacing);
       h_spacing = r.getDimensionPixelSize(R.dimen.bubble_h_spacing);
-      long_bubble_workaround = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
 
       array = new BubbleStyle[] {
          new BubbleStyle(
@@ -64,5 +66,14 @@ public class DefaultBubbles {
             context.getResources().getDimensionPixelSize(R.dimen.bubble_country_text_size),
             0xffcccccc, 0xff000000, 0, false) // CITY_COUNTRY
       };
+
+      // calculate workaround per device
+      TextPaint paint = new TextPaint();
+      float _dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
+      paint.setAntiAlias(true);
+      paint.setTextSize(_dp);
+      paint.setColor(Color.BLACK);
+      long_bubble_workaround = (int)paint.measureText(" ");
+      Log.i("CHIPS", "long_bubble_workaround = "+long_bubble_workaround);
    }
 }
