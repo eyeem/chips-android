@@ -191,6 +191,7 @@ public class ChipsEditText extends EditText {
       popover.hide();
       if (madeChip && getSelectionEnd() == getText().length()) {
          getText().append(" ");
+         setSelection(getText().length());
       }
    }
 
@@ -411,6 +412,7 @@ public class ChipsEditText extends EditText {
             return;
          if (after.length() > before.length() && after.lastIndexOf('#') > before.lastIndexOf('#')) {
                int lastIndex = after.lastIndexOf('#');
+            if (manualModeOn || canAddMoreBubbles())
                s.delete(lastIndex, lastIndex + 1);
             if (!manualModeOn) {
                startManualMode();
