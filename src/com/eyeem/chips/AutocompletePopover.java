@@ -43,7 +43,6 @@ public class AutocompletePopover extends RelativeLayout {
       adapter = new Adapter(ll);
       adapter.onItemClickListener = onItemClickListener;
       tri = (ImageView)findViewById(R.id.triangle);
-      tri.setAlpha((int)(0.58f*255)); // old androids
       setVisibility(View.GONE);
       OnClickListener x = new OnClickListener() {
          @Override

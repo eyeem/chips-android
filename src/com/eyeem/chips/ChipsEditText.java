@@ -2,11 +2,9 @@ package com.eyeem.chips;
 
 import android.content.Context;
 import android.graphics.*;
-import android.graphics.drawable.Drawable;
 import android.text.*;
 import android.text.style.ReplacementSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
@@ -15,10 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ChipsEditText extends EditText {
 
@@ -186,6 +181,7 @@ public class ChipsEditText extends EditText {
       if (manualStart < getSelectionEnd() && manualModeOn) {
          makeChip(manualStart, getSelectionEnd());
          madeChip = true;
+         onBubbleCountChanged();
       }
       manualModeOn = false;
       popover.hide();
@@ -252,8 +248,10 @@ public class ChipsEditText extends EditText {
          } else if (!manualModeOn && manipulatedSpan != null) {
             int start = s.getSpanStart(manipulatedSpan);
             int end = s.getSpanEnd(manipulatedSpan);
-            if (start > -1 && end > -1)
+            if (start > -1 && end > -1) {
                s.delete(start, end);
+               onBubbleCountChanged();
+            }
             manipulatedSpan = null;
             manualModeOn = false;
          }
@@ -460,5 +458,20 @@ public class ChipsEditText extends EditText {
             e.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
          }
       }
+   }
+
+   ArrayList<Listener> listeners = new ArrayList<Listener>();
+
+   protected void onBubbleCountChanged() {
+      for (Listener listener : listeners)
+         listener.onBubbleAdded();
+   }
+
+   public void addListener(Listener listener) {
+      listeners.add(listener);
+   }
+
+   public interface Listener {
+      public void onBubbleAdded();
    }
 }
