@@ -265,13 +265,15 @@ public class ChipsEditText extends EditText {
    }
 
    private void filter() {
-      ArrayList<String> availableItems = this.availableItems;
+      ArrayList<String> availableItems = new ArrayList<String>();
+      if (this.availableItems != null)
+         availableItems.addAll(this.availableItems);
       if (availableItems != null && availableItems.size() > 0) {
          BubbleSpan[] spans = getText().getSpans(0, getText().length(), BubbleSpan.class);
          for (BubbleSpan span : spans) {
             int start = getText().getSpanStart(span);
             int end = getText().getSpanEnd(span);
-            if (start == -1 || end == -1 || end <= start)
+            if (start == -1 || end == -1 || end <= start || manualStart == start)
                continue;
             String text = getText().subSequence(start, end).toString();
             availableItems.remove(text);
