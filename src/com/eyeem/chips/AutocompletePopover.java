@@ -47,6 +47,7 @@ public class AutocompletePopover extends RelativeLayout {
       OnClickListener x = new OnClickListener() {
          @Override
          public void onClick(View v) {
+            et.onXPressed();
             et.cancelManualMode();
          }
       };
@@ -175,6 +176,7 @@ public class AutocompletePopover extends RelativeLayout {
    public AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+         et.onBubbleSelected(position);
          et.manualModeOn = false;
          et.muteHashWatcher(true);
          String textToAdd = adapter.items.get(position);

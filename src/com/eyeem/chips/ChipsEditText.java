@@ -321,9 +321,11 @@ public class ChipsEditText extends EditText {
                actionId = EditorInfo.IME_ACTION_DONE;
             if (actionId == EditorInfo.IME_ACTION_DONE && manualModeOn) {
                endManualMode();
+               onActionDone();
                return true;
             } else if (actionId == EditorInfo.IME_ACTION_DONE && !manualModeOn) {
                hideKeyboard();
+               onActionDone();
                return true;
             }
          } else if (keyEvent != null && actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
@@ -466,7 +468,22 @@ public class ChipsEditText extends EditText {
 
    protected void onBubbleCountChanged() {
       for (Listener listener : listeners)
-         listener.onBubbleAdded();
+         listener.onBubbleCountChanged();
+   }
+
+   protected void onActionDone() {
+      for (Listener listener : listeners)
+         listener.onActionDone();
+   }
+
+   protected void onBubbleSelected(int position) {
+      for (Listener listener : listeners)
+         listener.onBubbleSelected(position);
+   }
+
+   protected void onXPressed() {
+      for (Listener listener : listeners)
+         listener.onXPressed();
    }
 
    public void addListener(Listener listener) {
@@ -474,6 +491,9 @@ public class ChipsEditText extends EditText {
    }
 
    public interface Listener {
-      public void onBubbleAdded();
+      public void onBubbleCountChanged();
+      public void onActionDone();
+      public void onBubbleSelected(int position);
+      public void onXPressed();
    }
 }
