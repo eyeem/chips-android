@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ChipsEditText extends EditText {
+public class ChipsEditText extends MultilineEditText {
 
    ArrayList<String> availableItems = new ArrayList<String>();
    ArrayList<String> filteredItems = new ArrayList<String>();
@@ -139,22 +139,6 @@ public class ChipsEditText extends EditText {
    public void makeChip(int start, int end) {
       int maxWidth = getWidth() - getPaddingLeft() - getPaddingRight();
       Utils.bubblify(getText(), null, start, end, maxWidth, DefaultBubbles.get(0, getContext()), this, null);
-   }
-
-   @Override
-   public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
-      InputConnection connection = super.onCreateInputConnection(outAttrs);
-      int imeActions = outAttrs.imeOptions&EditorInfo.IME_MASK_ACTION;
-      if ((imeActions&EditorInfo.IME_ACTION_DONE) != 0) {
-         // clear the existing action
-         outAttrs.imeOptions ^= imeActions;
-         // set the DONE action
-         outAttrs.imeOptions |= EditorInfo.IME_ACTION_DONE;
-      }
-      if ((outAttrs.imeOptions&EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
-         outAttrs.imeOptions &= ~EditorInfo.IME_FLAG_NO_ENTER_ACTION;
-      }
-      return connection;
    }
 
    boolean manualModeOn;
