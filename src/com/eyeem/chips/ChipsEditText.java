@@ -133,12 +133,25 @@ public class ChipsEditText extends MultilineEditText {
          start = getText().length();
       }
       getText().insert(start, text);
-      makeChip(start, start+text.length());
+      makeChip(start, start+text.length(), true);
    }
 
-   public void makeChip(int start, int end) {
+   boolean finalizing;
+
+   public void makeChip(int start, int end, boolean finalize) {
+      if (finalizing)
+         return;
       int maxWidth = getWidth() - getPaddingLeft() - getPaddingRight();
-      Utils.bubblify(getText(), null, start, end, maxWidth, DefaultBubbles.get(0, getContext()), this, null);
+      String finalText = null;
+      if (finalize) {
+         finalizing = true;
+         getText().insert(start, " ");
+         getText().insert(end+1, " ");
+         end += 2;
+         finalText = getText().subSequence(start+1, end-1).toString();
+      }
+      Utils.bubblify(getText(), finalText, start, end, maxWidth, DefaultBubbles.get(0, getContext()), this, null);
+      finalizing = false;
    }
 
    boolean manualModeOn;
@@ -156,7 +169,8 @@ public class ChipsEditText extends MultilineEditText {
       if (!canAddMoreBubbles())
          return;
       int i = getSelectionStart() - 1;
-      if (i >= 0 && !Character.isWhitespace(getText().charAt(i))) {
+      if (i >= 0 &&
+         (!Character.isWhitespace(getText().charAt(i)) || hasBubbleAt(i))) {
          getText().insert(i+1, " ");
       }
       lastEditAction = null;
@@ -164,10 +178,14 @@ public class ChipsEditText extends MultilineEditText {
       manualStart = getSelectionStart();
    }
 
+   public boolean hasBubbleAt(int position) {
+      return getText().getSpans(position, position+1, BubbleSpanImpl.class).length > 0;
+   }
+
    public void endManualMode() {
       boolean madeChip = false;
       if (manualStart < getSelectionEnd() && manualModeOn) {
-         makeChip(manualStart, getSelectionEnd());
+         makeChip(manualStart, getSelectionEnd(), true);
          madeChip = true;
          onBubbleCountChanged();
       }
@@ -231,7 +249,7 @@ public class ChipsEditText extends MultilineEditText {
             if (end < manualStart) {
                manualModeOn = false;
             } else {
-               makeChip(manualStart, end);
+               makeChip(manualStart, end, false);
             }
          } else if (!manualModeOn && manipulatedSpan != null) {
             int start = s.getSpanStart(manipulatedSpan);
