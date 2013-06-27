@@ -272,8 +272,10 @@ public class ChipsEditText extends MultilineEditText {
 
    private void filter() {
       ArrayList<String> availableItems = new ArrayList<String>();
-      if (this.availableItems != null)
-         availableItems.addAll(this.availableItems);
+      if (this.availableItems != null) {
+         for (String item : this.availableItems)
+            availableItems.add(item.trim().toLowerCase());
+      }
       if (availableItems != null && availableItems.size() > 0) {
          BubbleSpan[] spans = getText().getSpans(0, getText().length(), BubbleSpan.class);
          for (BubbleSpan span : spans) {
@@ -281,7 +283,7 @@ public class ChipsEditText extends MultilineEditText {
             int end = getText().getSpanEnd(span);
             if (start == -1 || end == -1 || end <= start || manualStart == start)
                continue;
-            String text = getText().subSequence(start, end).toString();
+            String text = getText().subSequence(start, end).toString().trim().toLowerCase();
             availableItems.remove(text);
          }
       }
