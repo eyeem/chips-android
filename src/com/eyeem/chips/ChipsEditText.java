@@ -121,6 +121,7 @@ public class ChipsEditText extends MultilineEditText {
    }
 
    public void resetAutocompleList() {
+      lastEditAction = null;
       manager.search("");
    }
 
@@ -166,6 +167,7 @@ public class ChipsEditText extends MultilineEditText {
    }
 
    public void startManualMode() {
+      resetAutocompleList();
       if (!canAddMoreBubbles())
          return;
       int i = getSelectionStart() - 1;
@@ -438,7 +440,6 @@ public class ChipsEditText extends MultilineEditText {
                s.delete(lastIndex, lastIndex + 1);
             if (!manualModeOn) {
                startManualMode();
-               resetAutocompleList();
                popover.show();
             } else if (manualModeOn && manualStart < lastIndex) {
                endManualMode();
