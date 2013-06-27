@@ -155,6 +155,10 @@ public class ChipsEditText extends MultilineEditText {
    public void startManualMode() {
       if (!canAddMoreBubbles())
          return;
+      int i = getSelectionStart() - 1;
+      if (i >= 0 && !Character.isWhitespace(getText().charAt(i))) {
+         getText().insert(i+1, " ");
+      }
       lastEditAction = null;
       manualModeOn = true;
       manualStart = getSelectionStart();
