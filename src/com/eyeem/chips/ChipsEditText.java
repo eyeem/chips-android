@@ -283,7 +283,7 @@ public class ChipsEditText extends MultilineEditText {
          for (BubbleSpan span : spans) {
             int start = getText().getSpanStart(span);
             int end = getText().getSpanEnd(span);
-            if (start == -1 || end == -1 || end <= start || manualStart == start)
+            if (start == -1 || end == -1 || end <= start || (manualStart == start && manualModeOn))
                continue;
             String text = getText().subSequence(start, end).toString().trim().toLowerCase();
             availableItems.remove(text);
