@@ -19,7 +19,7 @@ public class AutocompletePopover extends RelativeLayout {
    ChipsEditText et;
    Adapter adapter;
    ImageView tri;
-
+   ScrollView scrollView;
 
    public AutocompletePopover(Context context) {
       super(context);
@@ -40,6 +40,7 @@ public class AutocompletePopover extends RelativeLayout {
       LayoutInflater.from(getContext()).inflate(R.layout.autocomplete_popover, this, true);
       // below was a ListView but there were rendering issues on older Androids thus this ugly code
       ll = (LinearLayout)findViewById(R.id.suggestions_container);
+      scrollView = (ScrollView)findViewById(R.id.suggestions);
       adapter = new Adapter(ll);
       adapter.onItemClickListener = onItemClickListener;
       tri = (ImageView)findViewById(R.id.triangle);
@@ -204,5 +205,9 @@ public class AutocompletePopover extends RelativeLayout {
 
    public interface OnHideListener {
       public void onHide(View view);
+   }
+
+   public void scrollToTop() {
+      scrollView.scrollTo(0, 0);
    }
 }

@@ -268,6 +268,7 @@ public class ChipsEditText extends MultilineEditText {
    };
 
    protected void setAvailableItems(ArrayList<String> items) {
+      popover.scrollToTop();
       availableItems = items;
       filter();
    }
