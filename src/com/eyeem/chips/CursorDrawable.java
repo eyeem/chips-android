@@ -56,4 +56,18 @@ public class CursorDrawable {
       }
       canvas.restore();
    }
+
+   public Point bubble_offset() {
+      int x_offset = 0;
+      int y_offset = 0;
+      if (editText.manualModeOn) {
+         y_offset = bubble.style.bubblePadding;
+         if (editText.manualStart == editText.getSelectionStart()) { // empty bubble case
+            x_offset = -bubble.getWidth() / 2;
+         } else {
+            x_offset = 2 * bubble.style.bubblePadding;
+         }
+      }
+      return new Point(x_offset, y_offset);
+   }
 }

@@ -79,6 +79,8 @@ public class AutocompletePopover extends RelativeLayout {
 
    public void reposition() {
       Point p = et.getCursorPosition();
+      Point bOff = et.cursorDrawable.bubble_offset();
+      p.offset(-bOff.x, -bOff.y);
       int verticaloffset = -(int)(et.getHeight() - p.y - 2*et.getTextSize());
       int h = root().getHeight() - et.getHeight() - verticaloffset;
       ((RelativeLayout.LayoutParams)getLayoutParams()).topMargin = et.getHeight() + verticaloffset;
