@@ -263,7 +263,10 @@ public class ChipsEditText extends MultilineEditText {
             manipulatedSpan = null;
             manualModeOn = false;
          }
-         popover.reposition();
+         if (manualModeOn)
+            popover.reposition();
+         else
+            popover.hide();
       }
    };
 
