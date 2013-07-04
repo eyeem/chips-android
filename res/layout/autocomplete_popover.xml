@@ -16,16 +16,11 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:paddingTop="16dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
         android:background="#77000000"
         android:id="@+id/suggestions"
-        >
-        <LinearLayout
-            android:id="@+id/suggestions_container"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-        </ScrollView>
+        />
     <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"

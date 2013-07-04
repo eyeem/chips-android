@@ -1,20 +1,19 @@
 package com.eyeem.chips;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.text.Editable;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
+import android.view.*;
 import android.widget.*;
+import com.asolutions.widget.RowLayout;
 
 import java.util.ArrayList;
 
 public class AutocompletePopover extends RelativeLayout {
 
-   LinearLayout ll;
+   ViewGroup vg;
    RelativeLayout root;
    ChipsEditText et;
    Adapter adapter;
@@ -39,9 +38,17 @@ public class AutocompletePopover extends RelativeLayout {
    void init() {
       LayoutInflater.from(getContext()).inflate(R.layout.autocomplete_popover, this, true);
       // below was a ListView but there were rendering issues on older Androids thus this ugly code
-      ll = (LinearLayout)findViewById(R.id.suggestions_container);
       scrollView = (ScrollView)findViewById(R.id.suggestions);
-      adapter = new Adapter(ll);
+      int rotation = ((Activity)getContext()).getWindowManager().getDefaultDisplay().getRotation();
+      boolean isLandscape = rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270;
+      if (isLandscape) {
+         vg = new RowLayout(getContext(), null);
+      } else {
+         vg = new LinearLayout(getContext());
+         ((LinearLayout) vg).setOrientation(LinearLayout.VERTICAL);
+      }
+      scrollView.addView(vg, -2, -2);
+      adapter = new Adapter(vg);
       adapter.onItemClickListener = onItemClickListener;
       tri = (ImageView)findViewById(R.id.triangle);
       setVisibility(View.GONE);
@@ -111,12 +118,12 @@ public class AutocompletePopover extends RelativeLayout {
 
       ArrayList<String> items = new ArrayList<String>();
       LayoutInflater li;
-      LinearLayout ll;
+      ViewGroup vg;
 
-      public Adapter(LinearLayout ll) {
+      public Adapter(ViewGroup vg) {
          //Resources r = ApplicationController.instance().getResources();
          //_16dp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
-         this.ll = ll;
+         this.vg = vg;
       }
 
       public void setItems(ArrayList<String> items) {
@@ -165,11 +172,11 @@ public class AutocompletePopover extends RelativeLayout {
 
       @Override
       public void notifyDataSetChanged() {
-         ll.removeAllViews();
+         vg.removeAllViews();
          for (int i = 0; i < items.size(); i++) {
-            View view = getView(i, null, ll);
+            View view = getView(i, null, vg);
             final int pos = i;
-            ll.addView(view);
+            vg.addView(view);
          }
       }
 
