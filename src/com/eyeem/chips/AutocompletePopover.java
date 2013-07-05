@@ -2,6 +2,7 @@ package com.eyeem.chips;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.text.Editable;
 import android.util.AttributeSet;
@@ -39,8 +40,7 @@ public class AutocompletePopover extends RelativeLayout {
       LayoutInflater.from(getContext()).inflate(R.layout.autocomplete_popover, this, true);
       // below was a ListView but there were rendering issues on older Androids thus this ugly code
       scrollView = (ScrollView)findViewById(R.id.suggestions);
-      int rotation = ((Activity)getContext()).getWindowManager().getDefaultDisplay().getRotation();
-      boolean isLandscape = rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270;
+      boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
       if (isLandscape) {
          vg = new RowLayout(getContext(), null);
       } else {
