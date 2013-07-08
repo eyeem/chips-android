@@ -135,6 +135,7 @@ public class ChipsEditText extends MultilineEditText {
       }
       getText().insert(start, text);
       makeChip(start, start+text.length(), true);
+      onBubbleCountChanged();
    }
 
    boolean finalizing;
@@ -258,8 +259,8 @@ public class ChipsEditText extends MultilineEditText {
             int end = s.getSpanEnd(manipulatedSpan);
             if (start > -1 && end > -1) {
                s.delete(start, end);
-               onBubbleCountChanged();
             }
+            onBubbleCountChanged();
             manipulatedSpan = null;
             manualModeOn = false;
          }
