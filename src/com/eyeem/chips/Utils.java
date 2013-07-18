@@ -5,12 +5,24 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.ReplacementSpan;
+import android.widget.EditText;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Utils {
-   public static String flatten(CharSequence charSequence, HashMap<Class<?>, FlatteningFactory> factories) {
+   public static String flatten(EditText editor, HashMap<Class<?>, FlatteningFactory> factories) {
+      try {
+         return flatten(editor.getText(), factories);
+      } catch (IndexOutOfBoundsException ioobe) {
+         // known platform issue https://code.google.com/p/android/issues/detail?id=5164
+         // workaround is to set seletion to the end
+         editor.setSelection(editor.getText().length(), editor.getText().length());
+         return flatten(editor.getText(), factories);
+      }
+   }
+
+   private static String flatten(CharSequence charSequence, HashMap<Class<?>, FlatteningFactory> factories) {
       Editable out = new SpannableStringBuilder(charSequence);
       for (Map.Entry<Class<?>, FlatteningFactory> e : factories.entrySet()) {
          Object spans[] = out.getSpans(0, out.length(), e.getKey());
