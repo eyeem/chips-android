@@ -71,10 +71,12 @@ public class ChipsTextView extends View implements ILayoutCallback {
    }
 
    boolean spanContains(BubbleSpan span, int x, int y) {
-      for (Rect rect : positions.get(span)) {
-         if (rect.contains(x, y))
-            return true;
-      }
+      ArrayList<Rect> rects = positions.get(span);
+      if (rects != null)
+         for (Rect rect : rects) {
+            if (rect.contains(x, y))
+               return true;
+         }
       return false;
    }
 
