@@ -31,13 +31,21 @@ public class AwesomeBubble {
       main.setSpan(new StyleSpan(Typeface.BOLD), 0, main.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
       text_paint.setTextSize(style.textSize);
 
+      int correction = 0;
+      if (android.os.Build.VERSION.SDK_INT >= 18) {
+         // so with 4.3, StaticLayout.getDesiredWidth started giving bad results
+         // adding 1px helps
+         correction = 1;
+      }
+
       int maximum_w = containerWidth - 4*style.bubblePadding;
-      int desired_w = (int)StaticLayout.getDesiredWidth(main, text_paint);
+      int desired_w = (int)StaticLayout.getDesiredWidth(main, text_paint) + correction;
       int best_w = Math.max(Math.min(maximum_w, desired_w), 0);
       textLayout = new StaticLayout(main, text_paint, best_w, Layout.Alignment.ALIGN_NORMAL, 1.0f, 1, false);
       text_shader = null;
-      if (desired_w > maximum_w)
+      if (desired_w > maximum_w) {
          makeOneLiner(maximum_w);
+      }
       setPosition(0, 0);
       return this;
    }
