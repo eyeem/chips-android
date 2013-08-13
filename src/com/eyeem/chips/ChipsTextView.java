@@ -136,8 +136,13 @@ public class ChipsTextView extends View implements ILayoutCallback {
       for (BubbleSpan span : spans) {
          span.resetWidth(width);
       }
-      // FIXME sometimes java.lang.ArrayIndexOutOfBoundsException happens here
-      layout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, 1.25f, 1, false);
+      try {
+         layout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, 1.25f, 1, false);
+      } catch (java.lang.ArrayIndexOutOfBoundsException e) {
+         // sometimes java.lang.ArrayIndexOutOfBoundsException happens here, seems to be jelly bean bug
+         // workaround is too expensive to implement https://gist.github.com/pyricau/3424004
+         return; // layout stays null, we show nothing (h == 0)
+      }
       // add bubbles from the text and create positions for them
       for (BubbleSpan span : spans) {
          positions.put(span, span.rect(this));
