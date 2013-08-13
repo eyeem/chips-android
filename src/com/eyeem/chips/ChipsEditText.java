@@ -147,10 +147,17 @@ public class ChipsEditText extends MultilineEditText {
       String finalText = null;
       if (finalize) {
          finalizing = true;
-         getText().insert(start, " ");
-         getText().insert(end+1, " ");
-         end += 2;
-         finalText = getText().subSequence(start+1, end-1).toString();
+         try {
+            getText().insert(start, " ");
+            getText().insert(end + 1, " ");
+            end += 2;
+            finalText = getText().subSequence(start + 1, end - 1).toString();
+         } catch (java.lang.IndexOutOfBoundsException e) {
+            finalizing = false;
+            return;
+            // possibly some other entity (Random Shit Keyboard™) is changing
+            // the text here in the meanwhile resulting in a crash
+         }
       }
       Utils.bubblify(getText(), finalText, start, end, maxWidth, DefaultBubbles.get(0, getContext()), this, null);
       finalizing = false;
