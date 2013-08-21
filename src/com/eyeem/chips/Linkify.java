@@ -73,6 +73,22 @@ public class Linkify {
             add(e);
          return true;
       }
+
+      /**
+       * This works on assumptions that mPhoto.entities are grouped and
+       * ordered e.g. album|album|link|link|mention|person|person|city
+       * They should be cause this is what Linkify.computeEntites does
+       * @param type of album that is required
+       * @return Ordered array of album entites of one type
+       */
+      public ArrayList<Linkify.Entity> subEntities (int type) {
+         ArrayList<Linkify.Entity> albums = new ArrayList<Linkify.Entity>();
+         for (Linkify.Entity entity : this) {
+            if (entity.type == type)
+               albums.add(entity);
+         }
+         return albums;
+      }
    }
 
    public static class Entity implements Serializable {
