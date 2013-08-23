@@ -70,4 +70,55 @@ public class Utils {
       editable.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
       span.setPressed(false, editable);
    }
+
+   public final static String TEXT_ONLY = "text_only";
+   public final static String TAGS_ONLY = "tags_only";
+   public final static String MIXED = "mixed";
+   public final static String TEXT_FIRST = "text_first";
+   public final static String TAGS_FIRST = "tags_first";
+   public final static String NONE = "none";
+
+   /**
+    * Calculates what kind of text setup this is
+    * @param edit
+    * @return TEXT_ONLY, TAGS_ONLY, MIXED, TEXT_FIRST, TAGS_FIRST, NONE
+    */
+   public static String tag_setup(ChipsEditText edit) {
+      if (edit.length() == 0)
+         return NONE;
+      if (edit.getBubbleCount() == 0)
+         return TEXT_ONLY;
+      String assumption = null;
+      Editable e = edit.getText();
+      boolean firstiesEnded = false;
+      for (int i = 1; i <= e.length(); i++) {
+         char c[] = new char[1];
+         e.getChars(i-1, i, c, 0);
+         if (Character.isWhitespace(c[0]))
+            continue;
+         boolean isSpan = e.getSpans(i-1, i, BubbleSpan.class).length > 0;
+         if (assumption == null) {
+            assumption = isSpan ? TAGS_FIRST : TEXT_FIRST;
+         } else if (assumption.equals(TAGS_FIRST)) {
+            if (!isSpan) {
+               if (!firstiesEnded) {
+                  firstiesEnded = true;
+               }
+            } else if (isSpan && firstiesEnded) {
+               return MIXED;
+            }
+         } else if (assumption.equals(TEXT_FIRST)) {
+            if (isSpan) {
+               if (!firstiesEnded) {
+                  firstiesEnded = true;
+               }
+            } else if (!isSpan && firstiesEnded) {
+               return MIXED;
+            }
+         }
+      }
+      if (!firstiesEnded && assumption.equals(TAGS_FIRST))
+         return  TAGS_ONLY;
+      return assumption;
+   }
 }
