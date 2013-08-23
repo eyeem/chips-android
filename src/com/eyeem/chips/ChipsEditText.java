@@ -171,7 +171,15 @@ public class ChipsEditText extends MultilineEditText {
    }
 
    public boolean canAddMoreBubbles() {
-      return maxBubbleCount == -1 || getText().getSpans(0, getText().length(), BubbleSpan.class).length < maxBubbleCount;
+      return maxBubbleCount == -1 || getBubbleCount() < maxBubbleCount;
+   }
+
+   public int getBubbleCount() {
+      try {
+         return getText().getSpans(0, getText().length(), BubbleSpan.class).length;
+      } catch (Exception e) {
+         return 0;
+      }
    }
 
    public void startManualMode() {
