@@ -24,6 +24,7 @@ public class ChipsTextView extends View implements ILayoutCallback {
    TextPaint textPaint;
    StaticLayout layout;
    OnBubbleClickedListener listener;
+   float lineSpacing = 1.25f;
 
    public ChipsTextView(Context context) {
       super(context);
@@ -137,7 +138,7 @@ public class ChipsTextView extends View implements ILayoutCallback {
          span.resetWidth(width);
       }
       try {
-         layout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, 1.25f, 1, false);
+         layout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, 1, false);
       } catch (java.lang.ArrayIndexOutOfBoundsException e) {
          // sometimes java.lang.ArrayIndexOutOfBoundsException happens here, seems to be jelly bean bug
          // workaround is too expensive to implement https://gist.github.com/pyricau/3424004
@@ -185,5 +186,9 @@ public class ChipsTextView extends View implements ILayoutCallback {
 
    public void setOnBubbleClickedListener(OnBubbleClickedListener listener) {
       this.listener = listener;
+   }
+
+   public void setLineSpacing(float value) {
+      lineSpacing = value;
    }
 }
