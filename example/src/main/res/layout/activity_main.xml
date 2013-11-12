@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:id="@+id/root"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <com.eyeem.chips.ChipsEditText
+        android:hint="Input your text here and then press update!"
+        android:inputType="textMultiLine|textNoSuggestions"
+        android:paddingTop="18dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:id="@+id/chipsMultiAutoCompleteTextview1"
+        android:layout_width="fill_parent"
+        android:layout_height="120dp"
+        android:layout_alignParentTop="true"
+        android:gravity="top"
+        android:textSize="16dp"
+        android:ems="10"
+        android:text="" >
+    </com.eyeem.chips.ChipsEditText>
+
+
+    <Button
+        android:layout_below="@id/chipsMultiAutoCompleteTextview1"
+        android:layout_alignRight="@id/chipsMultiAutoCompleteTextview1"
+            android:id="@+id/check"
+            android:text="Update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="update"/>
+
+    <Button
+            android:layout_below="@id/chipsMultiAutoCompleteTextview1"
+            android:layout_toLeftOf="@id/check"
+            android:id="@+id/edit"
+            android:text="Add bubble"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="toggleEdit"
+            />
+
+    <Button
+            android:layout_below="@id/chipsMultiAutoCompleteTextview1"
+            android:layout_toLeftOf="@id/edit"
+            android:id="@+id/tag_setup"
+            android:text="Tag setup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="tagSetup"
+            />
+
+    <com.eyeem.chips.ChipsTextView
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:background="#ff777777"
+            android:paddingTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/chipsTextView"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/edit" />
+
+    <com.eyeem.chips.AutocompletePopover
+            android:id="@+id/popover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+</RelativeLayout>
