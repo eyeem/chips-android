@@ -92,7 +92,8 @@ public class AutocompletePopover extends RelativeLayout {
       int h = root().getHeight() - et.getHeight() - verticaloffset;
       ((RelativeLayout.LayoutParams)getLayoutParams()).topMargin = et.getHeight() + verticaloffset;
       getLayoutParams().height = h;
-      ((LayoutParams)tri.getLayoutParams()).leftMargin = p.x - tri.getWidth()/2;
+      ((LayoutParams)tri.getLayoutParams()).leftMargin = p.x - tri.getWidth()/2 + ((LayoutParams)et.getLayoutParams()).leftMargin;
+      tri.requestLayout();
    }
 
    public void show() {
