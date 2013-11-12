@@ -1,0 +1,17 @@
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.8'
+}
+
+buildscript {
+    repositories {
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.+'
+        classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.1-SNAPSHOT'
+    }
+}
