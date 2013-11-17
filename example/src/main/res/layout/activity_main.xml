@@ -53,6 +53,12 @@
             android:onClick="tagSetup"
             />
 
+    <SeekBar
+        android:layout_below="@id/edit"
+        android:id="@+id/seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <com.eyeem.chips.ChipsTextView
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
@@ -65,7 +71,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/chipsTextView"
             android:layout_alignParentLeft="true"
-            android:layout_below="@id/edit" />
+            android:layout_below="@id/seek_bar" />
 
     <com.eyeem.chips.AutocompletePopover
             android:id="@+id/popover"

@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
 import android.widget.*;
@@ -24,6 +25,7 @@ public class MainActivity extends Activity {
    RelativeLayout root;
    AutocompletePopover popover;
    Button edit;
+   SeekBar seekBar;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,26 @@ public class MainActivity extends Activity {
       root = (RelativeLayout) findViewById(R.id.root);
       edit = (Button) findViewById(R.id.edit);
       popover = (AutocompletePopover)findViewById(R.id.popover);
+      seekBar = (SeekBar)findViewById(R.id.seek_bar);
+      seekBar.setMax(24 - 10);
+      seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+         @Override
+         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            int calculatedProgress = 10 + progress;
+            //Log.i("MainActivity", "progress = " + calculatedProgress);
+            TextPaint paint = new TextPaint();
+            Resources r = getResources();
+            float _dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, calculatedProgress, r.getDisplayMetrics());
+            paint.setAntiAlias(true);
+            paint.setTextSize(_dp);
+            paint.setColor(0xff000000); //black
+            tv.setTextPaint(paint);
+            update(tv);
+         }
+
+         @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+         @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+      });
 
       et.setAutocomplePopover(popover);
       et.setMaxBubbleCount(4);
@@ -124,7 +146,7 @@ public class MainActivity extends Activity {
       // now bubblify text edit
       SpannableStringBuilder ssb = new SpannableStringBuilder(flattenedText);
       for (Linkify.Entity e : entities) {
-         Utils.bubblify(ssb, e.text, e.start, e.end, 0, DefaultBubbles.get(0, this), null, e);
+         Utils.bubblify(ssb, e.text, e.start, e.end, 0, DefaultBubbles.get(0, this, tv.getTextSize()), null, e);
       }
       tv.setText(ssb);
    }

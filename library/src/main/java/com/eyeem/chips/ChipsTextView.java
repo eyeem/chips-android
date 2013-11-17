@@ -191,4 +191,8 @@ public class ChipsTextView extends View implements ILayoutCallback {
    public void setLineSpacing(float value) {
       lineSpacing = value;
    }
+
+   public int getTextSize() {
+      return (int)textPaint.getTextSize();
+   }
 }
