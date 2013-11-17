@@ -42,11 +42,12 @@ public class MainActivity extends Activity {
       popover = (AutocompletePopover)findViewById(R.id.popover);
       seekBar = (SeekBar)findViewById(R.id.seek_bar);
       seekBar.setMax(24 - 10);
+      seekBar.setProgress(24 - 16);
       seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
          @Override
          public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             int calculatedProgress = 10 + progress;
-            //Log.i("MainActivity", "progress = " + calculatedProgress);
+
             TextPaint paint = new TextPaint();
             Resources r = getResources();
             float _dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, calculatedProgress, r.getDisplayMetrics());

@@ -27,6 +27,14 @@ public class DefaultBubbles {
    public static int h_spacing;
    public static int long_bubble_workaround;
 
+   @Deprecated public static BubbleStyle get(int type, Context context) {
+      int textSize = context.getResources().getDimensionPixelSize(R.dimen.bubble_text_size);
+      if (defaults.get(textSize) == null) {
+         defaults.put(textSize, init(context, textSize));
+      }
+      return defaults.get(textSize)[type];
+   }
+
    public static BubbleStyle get(int type, Context context, int textSize) {
       if (defaults.get(textSize) == null) {
          defaults.put(textSize, init(context, textSize));
