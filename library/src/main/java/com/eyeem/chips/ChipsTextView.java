@@ -25,6 +25,7 @@ public class ChipsTextView extends View implements ILayoutCallback {
    StaticLayout layout;
    OnBubbleClickedListener listener;
    float lineSpacing = 1.25f;
+   int maxLines = 0;
 
    public ChipsTextView(Context context) {
       super(context);
@@ -139,6 +140,10 @@ public class ChipsTextView extends View implements ILayoutCallback {
       }
       try {
          layout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, 1, false);
+         if (maxLines > 0 && layout.getLineCount() > maxLines) {
+            int lineEnd = layout.getLineEnd(maxLines - 1);
+            layout = new StaticLayout(text.subSequence(0, lineEnd), textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, 1, false);
+         }
       } catch (java.lang.ArrayIndexOutOfBoundsException e) {
          // sometimes java.lang.ArrayIndexOutOfBoundsException happens here, seems to be jelly bean bug
          // workaround is too expensive to implement https://gist.github.com/pyricau/3424004
@@ -194,5 +199,9 @@ public class ChipsTextView extends View implements ILayoutCallback {
 
    public int getTextSize() {
       return (int)textPaint.getTextSize();
+   }
+
+   public void setMaxLines(int maxLines) {
+      this.maxLines = maxLines;
    }
 }

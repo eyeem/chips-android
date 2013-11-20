@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
 import android.widget.*;
@@ -25,7 +24,13 @@ public class MainActivity extends Activity {
    RelativeLayout root;
    AutocompletePopover popover;
    Button edit;
-   SeekBar seekBar;
+   SeekBar textSizeSeekBar;
+   SeekBar spacingSizeSeekBar;
+   TextView fontSize;
+   TextView spacingSize;
+
+   public static final int MIN_FONT_SIZE = 10;
+   public static final int MAX_FONT_SIZE = 24;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -35,32 +40,21 @@ public class MainActivity extends Activity {
 
 
       // setting up chips exit text
+      fontSize = (TextView) findViewById(R.id.text_size);
       et = (ChipsEditText) findViewById(R.id.chipsMultiAutoCompleteTextview1);
       tv = (ChipsTextView) findViewById(R.id.chipsTextView);
       root = (RelativeLayout) findViewById(R.id.root);
       edit = (Button) findViewById(R.id.edit);
       popover = (AutocompletePopover)findViewById(R.id.popover);
-      seekBar = (SeekBar)findViewById(R.id.seek_bar);
-      seekBar.setMax(24 - 10);
-      seekBar.setProgress(24 - 16);
-      seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-         @Override
-         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            int calculatedProgress = 10 + progress;
-
-            TextPaint paint = new TextPaint();
-            Resources r = getResources();
-            float _dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, calculatedProgress, r.getDisplayMetrics());
-            paint.setAntiAlias(true);
-            paint.setTextSize(_dp);
-            paint.setColor(0xff000000); //black
-            tv.setTextPaint(paint);
-            update(tv);
-         }
-
-         @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-         @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-      });
+      textSizeSeekBar = (SeekBar)findViewById(R.id.seek_bar);
+      textSizeSeekBar.setMax(MAX_FONT_SIZE - MIN_FONT_SIZE);
+      textSizeSeekBar.setProgress(MAX_FONT_SIZE - 16);
+      textSizeSeekBar.setOnSeekBarChangeListener(seekListener);
+      spacingSizeSeekBar = (SeekBar)findViewById(R.id.spacing_seek_bar);
+      spacingSizeSeekBar.setMax(10);
+      spacingSizeSeekBar.setProgress(1);
+      spacingSizeSeekBar.setOnSeekBarChangeListener(seekListener);
+      spacingSize = (TextView) findViewById(R.id.spacing_size);
 
       et.setAutocomplePopover(popover);
       et.setMaxBubbleCount(4);
@@ -104,10 +98,29 @@ public class MainActivity extends Activity {
       tv.setOnBubbleClickedListener(new ChipsTextView.OnBubbleClickedListener() {
          @Override
          public void onBubbleClicked(View view, BubbleSpan bubbleSpan) {
-            Toast.makeText(view.getContext(), ((Linkify.Entity)bubbleSpan.data()).text, Toast.LENGTH_LONG).show();
+            Toast.makeText(view.getContext(), ((Linkify.Entity) bubbleSpan.data()).text, Toast.LENGTH_LONG).show();
          }
       });
-      root.requestFocus();
+      tv.setMaxLines(3);
+      tv.requestFocus();
+      updateTextProperties();
+   }
+
+   public void updateTextProperties() {
+      int calculatedProgress = MIN_FONT_SIZE + textSizeSeekBar.getProgress();
+      float lineSpacing = 1.0f  + 0.25f * spacingSizeSeekBar.getProgress();
+
+      TextPaint paint = new TextPaint();
+      Resources r = getResources();
+      float _dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, calculatedProgress, r.getDisplayMetrics());
+      paint.setAntiAlias(true);
+      paint.setTextSize(_dp);
+      paint.setColor(0xff000000); //black
+      tv.setTextPaint(paint);
+      fontSize.setText(calculatedProgress + "dp");
+      spacingSize.setText(String.format("%.2f", lineSpacing));
+      tv.setLineSpacing(lineSpacing);
+      update(tv);
    }
 
    public void toggleEdit(View view) {
@@ -161,4 +174,19 @@ public class MainActivity extends Activity {
          return "[a:"+in+"]";
       }
    }
+
+   SeekBar.OnSeekBarChangeListener seekListener = new SeekBar.OnSeekBarChangeListener() {
+      @Override
+      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+         updateTextProperties();
+      }
+
+      @Override
+      public void onStartTrackingTouch(SeekBar seekBar) {
+      }
+
+      @Override
+      public void onStopTrackingTouch(SeekBar seekBar) {
+      }
+   };
 }
