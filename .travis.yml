@@ -31,5 +31,6 @@ before_install:
   > /dev/null
 - mkdir ~/.gradle
 - echo "sonatypeRepo=https://oss.sonatype.org/content/repositories/snapshots/" > ~/.gradle/gradle.properties
+- echo "sonatypeSnapshotRepo=https://oss.sonatype.org/content/repositories/snapshots/" >> ~/.gradle/gradle.properties
 - echo "sonatypeUsername=xxx" >> ~/.gradle/gradle.properties
 - echo "sonatypePassword=xxx" >> ~/.gradle/gradle.properties
