@@ -53,6 +53,13 @@
             android:onClick="tagSetup"
             />
 
+    <CheckBox
+        android:layout_below="@id/chipsMultiAutoCompleteTextview1"
+        android:layout_toLeftOf="@id/tag_setup"
+        android:id="@+id/debug_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <SeekBar
         android:layout_below="@id/edit"
         android:id="@+id/seek_bar"
@@ -87,6 +94,7 @@
             android:paddingRight="5dp"
             android:background="#ff777777"
             android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/chipsTextView"

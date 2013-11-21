@@ -28,6 +28,7 @@ public class MainActivity extends Activity {
    SeekBar spacingSizeSeekBar;
    TextView fontSize;
    TextView spacingSize;
+   CheckBox debugCheck;
 
    public static final int MIN_FONT_SIZE = 10;
    public static final int MAX_FONT_SIZE = 24;
@@ -38,6 +39,15 @@ public class MainActivity extends Activity {
       requestWindowFeature(Window.FEATURE_NO_TITLE);
       setContentView(R.layout.activity_main);
 
+      // chips debug
+      debugCheck = (CheckBox)findViewById(R.id.debug_check);
+      debugCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+         @Override
+         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            ChipsTextView.DEBUG = isChecked;
+            updateTextProperties();
+         }
+      });
 
       // setting up chips exit text
       fontSize = (TextView) findViewById(R.id.text_size);
@@ -117,7 +127,7 @@ public class MainActivity extends Activity {
       paint.setTextSize(_dp);
       paint.setColor(0xff000000); //black
       tv.setTextPaint(paint);
-      fontSize.setText(calculatedProgress + "dp");
+      fontSize.setText(String.format("%ddp %.2fpx", calculatedProgress, _dp));
       spacingSize.setText(String.format("%.2f", lineSpacing));
       tv.setLineSpacing(lineSpacing);
       update(tv);
