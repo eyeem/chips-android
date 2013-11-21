@@ -45,7 +45,8 @@ public class DefaultBubbles {
    public static BubbleStyle[] init(Context context, int textSize) {
       context = context.getApplicationContext();
       Resources r = context.getResources();
-      int padding = r.getDimensionPixelSize(R.dimen.bubble_padding);
+
+      int padding = Math.round((float)textSize * (0.05f));
       v_spacing = r.getDimensionPixelSize(R.dimen.bubble_v_spacing);
       h_spacing = r.getDimensionPixelSize(R.dimen.bubble_h_spacing);
 
