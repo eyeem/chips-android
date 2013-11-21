@@ -2,6 +2,8 @@ package com.eyeem.chips;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.text.*;
@@ -16,6 +18,10 @@ import java.util.HashMap;
  * ChipsTextView
  */
 public class ChipsTextView extends View implements ILayoutCallback {
+
+   // TODO some test http://alvinalexander.com/java/jwarehouse/android/core/tests/coretests/src/android/text/StaticLayoutTest.java.shtml
+
+   public static boolean DEBUG;
 
    BubbleSpan selectedSpan;
    ArrayList<BubbleSpan> spans = new ArrayList<BubbleSpan>();
@@ -110,10 +116,31 @@ public class ChipsTextView extends View implements ILayoutCallback {
 
    @Override
    protected void onDraw(Canvas canvas) {
-      if (layout != null) {
-         canvas.translate(getPaddingLeft(), getPaddingTop());
-         layout.draw(canvas);
+      if (layout == null)
+         return;
+      canvas.translate(getPaddingLeft(), getPaddingTop());
+      layout.draw(canvas);
+      if (DEBUG) {
+         int n = layout.getLineCount();
+         for (int i = 0; i < n; i++) {
+            Paint paint = new Paint();
+            paint.setColor(Color.RED); // red
+            paint.setStyle(Paint.Style.STROKE);
+            Rect bounds = new Rect();
+            layout.getLineBounds(i, bounds);
+            canvas.drawRect(bounds, paint);
+
+            //drawLine(canvas, bounds, paint, bounds.top + (int)layout.getPaint().getTextSize(), Color.BLUE);
+            int baseLine = layout.getLineBaseline(i);
+            drawLine(canvas, bounds, paint, baseLine, Color.GREEN);
+            drawLine(canvas, bounds, paint, baseLine + layout.getPaint().getFontMetricsInt().descent, Color.BLUE);
+         }
       }
+   }
+
+   private void drawLine(Canvas canvas, Rect line, Paint paint, int height, int color) {
+      paint.setColor(color);
+      canvas.drawLine(line.left, height, line.right, height, paint);
    }
 
    @Override
@@ -123,6 +150,11 @@ public class ChipsTextView extends View implements ILayoutCallback {
       int width = widthSize;
       build(width);
       int height = layout == null ? 0 : layout.getHeight() + getPaddingTop() + getPaddingBottom();
+
+      if (layout != null && layout.getLineCount() > 0) {
+         // subtract last line's spacing
+         height -= (layout.getLineBottom(0) - layout.getPaint().getFontMetricsInt().descent - layout.getLineBaseline(0));
+      }
 
       this.setMeasuredDimension(width, height);
    }
