@@ -105,21 +105,19 @@ public class MainActivity extends Activity {
       paint.setTextSize(_dp);
       paint.setColor(0xff000000); //black
       tv.setTextPaint(paint);
-      final SpannableStringBuilder moreText = new SpannableStringBuilder("... more");
-      Utils.tapify(moreText, 0, moreText.length(), 0x77000000, 0xff000000, new Truncation());
+
       tv.setOnBubbleClickedListener(new ChipsTextView.OnBubbleClickedListener() {
-         boolean on = true;
          @Override
          public void onBubbleClicked(View view, BubbleSpan bubbleSpan) {
             if (bubbleSpan.data() instanceof Truncation) {
-               // TODO expand & animate
-               tv.setMaxLines(-1, null);
-               tv.requestLayout();
+               tv.expand(true);
             } else {
                Toast.makeText(view.getContext(), ((Linkify.Entity) bubbleSpan.data()).text, Toast.LENGTH_LONG).show();
             }
          }
       });
+      SpannableStringBuilder moreText = new SpannableStringBuilder("... more");
+      Utils.tapify(moreText, 0, moreText.length(), 0x77000000, 0xff000000, new Truncation());
       tv.setMaxLines(3, moreText);
       tv.requestFocus();
       updateTextProperties();
@@ -179,7 +177,9 @@ public class MainActivity extends Activity {
       // now bubblify text edit
       SpannableStringBuilder ssb = new SpannableStringBuilder(flattenedText);
       for (Linkify.Entity e : entities) {
-         Utils.bubblify(ssb, e.text, e.start, e.end, 0, DefaultBubbles.get(0, this, tv.getTextSize()), null, e);
+         Utils.bubblify(ssb, e.text, e.start, e.end,
+            tv.getWidth() - tv.getPaddingLeft() - tv.getPaddingRight(),
+            DefaultBubbles.get(0, this, tv.getTextSize()), null, e);
       }
       tv.setText(ssb);
    }
@@ -195,8 +195,7 @@ public class MainActivity extends Activity {
    }
 
    SeekBar.OnSeekBarChangeListener seekListener = new SeekBar.OnSeekBarChangeListener() {
-      @Override
-      public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+      @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
          updateTextProperties();
       }
 
