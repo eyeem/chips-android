@@ -106,12 +106,15 @@ public class ChipsTextView extends View implements ILayoutCallback {
    public void setText(Spannable text) {
       this.text = text;
       // save bubbles to array
+      if (getWidth() > 0) {
+         requestLayout();
+      }
+   }
+
+   private void recomputeSpans(Spannable text) {
       spans.clear();
       for (BubbleSpan span : text.getSpans(0, text.length(), BubbleSpan.class)) {
          spans.add(span);
-      }
-      if (getWidth() > 0) {
-         requestLayout();
       }
    }
 
@@ -199,6 +202,7 @@ public class ChipsTextView extends View implements ILayoutCallback {
          return; // layout stays null, we show nothing (h == 0)
       }
       // add bubbles from the text and create positions for them
+      recomputeSpans((Spannable)layout.getText());
       for (BubbleSpan span : spans) {
          positions.put(span, span.rect(this));
       }

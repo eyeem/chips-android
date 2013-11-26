@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
       popover = (AutocompletePopover)findViewById(R.id.popover);
       textSizeSeekBar = (SeekBar)findViewById(R.id.seek_bar);
       textSizeSeekBar.setMax(MAX_FONT_SIZE - MIN_FONT_SIZE);
-      textSizeSeekBar.setProgress(MAX_FONT_SIZE - 16);
+      textSizeSeekBar.setProgress(MAX_FONT_SIZE - 18);
       textSizeSeekBar.setOnSeekBarChangeListener(seekListener);
       spacingSizeSeekBar = (SeekBar)findViewById(R.id.spacing_seek_bar);
       spacingSizeSeekBar.setMax(10);
@@ -105,14 +105,22 @@ public class MainActivity extends Activity {
       paint.setTextSize(_dp);
       paint.setColor(0xff000000); //black
       tv.setTextPaint(paint);
+      final SpannableStringBuilder moreText = new SpannableStringBuilder("... more");
+      Utils.tapify(moreText, 0, moreText.length(), 0x77000000, 0xff000000, new Truncation());
       tv.setOnBubbleClickedListener(new ChipsTextView.OnBubbleClickedListener() {
+         boolean on = true;
          @Override
          public void onBubbleClicked(View view, BubbleSpan bubbleSpan) {
-            Toast.makeText(view.getContext(), ((Linkify.Entity) bubbleSpan.data()).text, Toast.LENGTH_LONG).show();
+            if (bubbleSpan.data() instanceof Truncation) {
+               // TODO expand & animate
+               tv.setMaxLines(-1, null);
+               tv.requestLayout();
+            } else {
+               Toast.makeText(view.getContext(), ((Linkify.Entity) bubbleSpan.data()).text, Toast.LENGTH_LONG).show();
+            }
          }
       });
-      SpannableStringBuilder ssb = new SpannableStringBuilder("... more");
-      tv.setMaxLines(3, ssb);
+      tv.setMaxLines(3, moreText);
       tv.requestFocus();
       updateTextProperties();
    }
@@ -192,12 +200,10 @@ public class MainActivity extends Activity {
          updateTextProperties();
       }
 
-      @Override
-      public void onStartTrackingTouch(SeekBar seekBar) {
-      }
-
-      @Override
-      public void onStopTrackingTouch(SeekBar seekBar) {
-      }
+      @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+      @Override public void onStopTrackingTouch(SeekBar seekBar) {}
    };
+
+   // marker class
+   public static class Truncation {}
 }
