@@ -27,6 +27,7 @@ public class ChipsTextView extends View implements ILayoutCallback {
    ArrayList<BubbleSpan> spans = new ArrayList<BubbleSpan>();
    HashMap<BubbleSpan, ArrayList<Rect>> positions = new HashMap<BubbleSpan, ArrayList<Rect>>();
    Spannable text;
+   Spannable moreText;
    TextPaint textPaint;
    StaticLayout layout;
    OnBubbleClickedListener listener;
@@ -174,7 +175,23 @@ public class ChipsTextView extends View implements ILayoutCallback {
          layout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, 1, false);
          if (maxLines > 0 && layout.getLineCount() > maxLines) {
             int lineEnd = layout.getLineEnd(maxLines - 1);
-            layout = new StaticLayout(text.subSequence(0, lineEnd), textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, 1, false);
+
+            // ... more
+            int offset = -1;
+            StaticLayout sl = new StaticLayout(moreText, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, 1, false);
+            sl.getWidth();
+            while (layout.getLineCount() > maxLines && lineEnd > 0) {
+               if (offset == -1 && layout.getLineWidth(maxLines - 1) + sl.getLineWidth(0) > width) { // means we also need to truncate last line
+                  offset = layout.getOffsetForHorizontal(maxLines - 1, width - sl.getLineWidth(0));
+                  lineEnd = offset;
+               } else if (offset > 0) {
+                  lineEnd--;
+               }
+
+               SpannableStringBuilder textTruncated = new SpannableStringBuilder(text.subSequence(0, lineEnd));
+               textTruncated.append(moreText);
+               layout = new StaticLayout(textTruncated, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, 1, false);
+            }
          }
       } catch (java.lang.ArrayIndexOutOfBoundsException e) {
          // sometimes java.lang.ArrayIndexOutOfBoundsException happens here, seems to be jelly bean bug
@@ -233,7 +250,8 @@ public class ChipsTextView extends View implements ILayoutCallback {
       return (int)textPaint.getTextSize();
    }
 
-   public void setMaxLines(int maxLines) {
+   public void setMaxLines(int maxLines, Spannable moreText) {
+      this.moreText = moreText;
       this.maxLines = maxLines;
    }
 }

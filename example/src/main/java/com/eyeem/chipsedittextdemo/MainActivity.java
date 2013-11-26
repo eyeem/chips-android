@@ -111,7 +111,8 @@ public class MainActivity extends Activity {
             Toast.makeText(view.getContext(), ((Linkify.Entity) bubbleSpan.data()).text, Toast.LENGTH_LONG).show();
          }
       });
-      tv.setMaxLines(3);
+      SpannableStringBuilder ssb = new SpannableStringBuilder("... more");
+      tv.setMaxLines(3, ssb);
       tv.requestFocus();
       updateTextProperties();
    }
