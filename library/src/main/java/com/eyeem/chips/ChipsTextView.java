@@ -186,7 +186,6 @@ public class ChipsTextView extends View implements ILayoutCallback {
    }
 
    private void build(int width) {
-      Log.i("build()", "width: "+width);
       positions.clear();
       width = width - getPaddingLeft() - getPaddingRight();
       if (width <= 0 || TextUtils.isEmpty(text)) {
@@ -299,13 +298,16 @@ public class ChipsTextView extends View implements ILayoutCallback {
          getHeight() + expandedLayout.getHeight() - truncatedLayout.getHeight()
       );
       expandAnimation.setDuration(400);
-      expandAnimation.setFillAfter(true);
       expandAnimation.setAnimationListener(new Animation.AnimationListener() {
          @Override public void onAnimationStart(Animation animation) { animating = true; }
          @Override public void onAnimationEnd(Animation animation) { animating = false; }
          @Override public void onAnimationRepeat(Animation animation) {}
       });
       startAnimation(expandAnimation);
+   }
+
+   public void setTruncated(boolean truncated) {
+      this.truncated = truncated;
    }
 
    public class ResizeAnimation extends Animation {
