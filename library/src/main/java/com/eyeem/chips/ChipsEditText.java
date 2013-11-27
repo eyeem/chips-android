@@ -159,7 +159,8 @@ public class ChipsEditText extends MultilineEditText {
             // the text here in the meanwhile resulting in a crash
          }
       }
-      Utils.bubblify(getText(), finalText, start, end, maxWidth, DefaultBubbles.get(0, getContext()), this, null);
+      int textSize = (int)(getTextSize() - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getContext().getResources().getDisplayMetrics()));
+      Utils.bubblify(getText(), finalText, start, end, maxWidth, DefaultBubbles.get(0, getContext(), textSize), this, null);
       finalizing = false;
    }
 

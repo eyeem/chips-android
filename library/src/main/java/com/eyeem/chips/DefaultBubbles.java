@@ -8,6 +8,8 @@ import android.text.TextPaint;
 import android.util.Log;
 import android.util.TypedValue;
 
+import java.util.HashMap;
+
 /**
  * @author vishna
  */
@@ -19,28 +21,36 @@ public class DefaultBubbles {
    public static int GREEN = 4;
    public static int CITY_COUNTRY = 5;
 
-   private static BubbleStyle array[];
+   private static HashMap<Integer, BubbleStyle[]> defaults = new HashMap<Integer, BubbleStyle[]>();
 
    public static int v_spacing;
    public static int h_spacing;
    public static int long_bubble_workaround;
 
-   public static BubbleStyle get(int type, Context context) {
-      if (array == null) {
-         init(context);
+   @Deprecated public static BubbleStyle get(int type, Context context) {
+      int textSize = context.getResources().getDimensionPixelSize(R.dimen.bubble_text_size);
+      if (defaults.get(textSize) == null) {
+         defaults.put(textSize, init(context, textSize));
       }
-      return array[type];
+      return defaults.get(textSize)[type];
    }
 
-   public static void init(Context context) {
+   public static BubbleStyle get(int type, Context context, int textSize) {
+      if (defaults.get(textSize) == null) {
+         defaults.put(textSize, init(context, textSize));
+      }
+      return defaults.get(textSize)[type];
+   }
+
+   public static BubbleStyle[] init(Context context, int textSize) {
       context = context.getApplicationContext();
       Resources r = context.getResources();
-      int textSize = r.getDimensionPixelSize(R.dimen.bubble_text_size);
-      int padding = r.getDimensionPixelSize(R.dimen.bubble_padding);
+
+      int padding = Math.round((float)textSize * (0.05f));
       v_spacing = r.getDimensionPixelSize(R.dimen.bubble_v_spacing);
       h_spacing = r.getDimensionPixelSize(R.dimen.bubble_h_spacing);
 
-      array = new BubbleStyle[] {
+      BubbleStyle[] array = new BubbleStyle[] {
          new BubbleStyle(
             context.getResources().getDrawable(R.drawable.lilatext_background_active),
             context.getResources().getDrawable(R.drawable.lilatext_background_pressed),
@@ -75,5 +85,7 @@ public class DefaultBubbles {
       paint.setColor(Color.BLACK);
       long_bubble_workaround = (int)paint.measureText(" ");
       Log.i("CHIPS", "long_bubble_workaround = "+long_bubble_workaround);
+
+      return array;
    }
 }

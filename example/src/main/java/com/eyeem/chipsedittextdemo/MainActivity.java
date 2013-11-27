@@ -24,6 +24,14 @@ public class MainActivity extends Activity {
    RelativeLayout root;
    AutocompletePopover popover;
    Button edit;
+   SeekBar textSizeSeekBar;
+   SeekBar spacingSizeSeekBar;
+   TextView fontSize;
+   TextView spacingSize;
+   CheckBox debugCheck;
+
+   public static final int MIN_FONT_SIZE = 10;
+   public static final int MAX_FONT_SIZE = 24;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +39,32 @@ public class MainActivity extends Activity {
       requestWindowFeature(Window.FEATURE_NO_TITLE);
       setContentView(R.layout.activity_main);
 
+      // chips debug
+      debugCheck = (CheckBox)findViewById(R.id.debug_check);
+      debugCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+         @Override
+         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            ChipsTextView.DEBUG = isChecked;
+            updateTextProperties();
+         }
+      });
 
       // setting up chips exit text
+      fontSize = (TextView) findViewById(R.id.text_size);
       et = (ChipsEditText) findViewById(R.id.chipsMultiAutoCompleteTextview1);
       tv = (ChipsTextView) findViewById(R.id.chipsTextView);
       root = (RelativeLayout) findViewById(R.id.root);
       edit = (Button) findViewById(R.id.edit);
       popover = (AutocompletePopover)findViewById(R.id.popover);
+      textSizeSeekBar = (SeekBar)findViewById(R.id.seek_bar);
+      textSizeSeekBar.setMax(MAX_FONT_SIZE - MIN_FONT_SIZE);
+      textSizeSeekBar.setProgress(MAX_FONT_SIZE - 18);
+      textSizeSeekBar.setOnSeekBarChangeListener(seekListener);
+      spacingSizeSeekBar = (SeekBar)findViewById(R.id.spacing_seek_bar);
+      spacingSizeSeekBar.setMax(10);
+      spacingSizeSeekBar.setProgress(1);
+      spacingSizeSeekBar.setOnSeekBarChangeListener(seekListener);
+      spacingSize = (TextView) findViewById(R.id.spacing_size);
 
       et.setAutocomplePopover(popover);
       et.setMaxBubbleCount(4);
@@ -78,13 +105,39 @@ public class MainActivity extends Activity {
       paint.setTextSize(_dp);
       paint.setColor(0xff000000); //black
       tv.setTextPaint(paint);
+
       tv.setOnBubbleClickedListener(new ChipsTextView.OnBubbleClickedListener() {
          @Override
          public void onBubbleClicked(View view, BubbleSpan bubbleSpan) {
-            Toast.makeText(view.getContext(), ((Linkify.Entity)bubbleSpan.data()).text, Toast.LENGTH_LONG).show();
+            if (bubbleSpan.data() instanceof Truncation) {
+               tv.expand(true);
+            } else {
+               Toast.makeText(view.getContext(), ((Linkify.Entity) bubbleSpan.data()).text, Toast.LENGTH_LONG).show();
+            }
          }
       });
-      root.requestFocus();
+      SpannableStringBuilder moreText = new SpannableStringBuilder("... more");
+      Utils.tapify(moreText, 0, moreText.length(), 0x77000000, 0xff000000, new Truncation());
+      tv.setMaxLines(3, moreText);
+      tv.requestFocus();
+      updateTextProperties();
+   }
+
+   public void updateTextProperties() {
+      int calculatedProgress = MIN_FONT_SIZE + textSizeSeekBar.getProgress();
+      float lineSpacing = 1.0f  + 0.25f * spacingSizeSeekBar.getProgress();
+
+      TextPaint paint = new TextPaint();
+      Resources r = getResources();
+      float _dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, calculatedProgress, r.getDisplayMetrics());
+      paint.setAntiAlias(true);
+      paint.setTextSize(_dp);
+      paint.setColor(0xff000000); //black
+      tv.setTextPaint(paint);
+      fontSize.setText(String.format("%ddp %.2fpx", calculatedProgress, _dp));
+      spacingSize.setText(String.format("%.2f", lineSpacing));
+      tv.setLineSpacing(lineSpacing);
+      update(tv);
    }
 
    public void toggleEdit(View view) {
@@ -124,7 +177,9 @@ public class MainActivity extends Activity {
       // now bubblify text edit
       SpannableStringBuilder ssb = new SpannableStringBuilder(flattenedText);
       for (Linkify.Entity e : entities) {
-         Utils.bubblify(ssb, e.text, e.start, e.end, 0, DefaultBubbles.get(0, this), null, e);
+         Utils.bubblify(ssb, e.text, e.start, e.end,
+            tv.getWidth() - tv.getPaddingLeft() - tv.getPaddingRight(),
+            DefaultBubbles.get(0, this, tv.getTextSize()), null, e);
       }
       tv.setText(ssb);
    }
@@ -138,4 +193,16 @@ public class MainActivity extends Activity {
          return "[a:"+in+"]";
       }
    }
+
+   SeekBar.OnSeekBarChangeListener seekListener = new SeekBar.OnSeekBarChangeListener() {
+      @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+         updateTextProperties();
+      }
+
+      @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+      @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+   };
+
+   // marker class
+   public static class Truncation {}
 }
