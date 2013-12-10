@@ -41,7 +41,7 @@ public class AwesomeBubble {
       int maximum_w = containerWidth - 4*style.bubblePadding;
       int desired_w = (int)StaticLayout.getDesiredWidth(main, text_paint) + correction;
       int best_w = Math.max(Math.min(maximum_w, desired_w), 0);
-      textLayout = new StaticLayout(main, text_paint, best_w, Layout.Alignment.ALIGN_NORMAL, 1.0f, 1, false);
+      textLayout = new StaticLayout(main, text_paint, best_w, Layout.Alignment.ALIGN_CENTER, 1.0f, 1, false);
       text_shader = null;
       if (desired_w > maximum_w) {
          makeOneLiner(maximum_w);
