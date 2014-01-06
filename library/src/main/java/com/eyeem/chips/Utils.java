@@ -90,6 +90,8 @@ public class Utils {
          return TEXT_ONLY;
       String assumption = null;
       Editable e = edit.getText();
+      if (null == e)
+         return NONE;
       boolean firstiesEnded = false;
       for (int i = 1; i <= e.length(); i++) {
          char c[] = new char[1];
@@ -104,7 +106,7 @@ public class Utils {
                if (!firstiesEnded) {
                   firstiesEnded = true;
                }
-            } else if (isSpan && firstiesEnded) {
+            } else if (firstiesEnded) {
                return MIXED;
             }
          } else if (assumption.equals(TEXT_FIRST)) {
@@ -112,13 +114,17 @@ public class Utils {
                if (!firstiesEnded) {
                   firstiesEnded = true;
                }
-            } else if (!isSpan && firstiesEnded) {
+            } else if (firstiesEnded) {
                return MIXED;
             }
          }
       }
-      if (!firstiesEnded && assumption.equals(TAGS_FIRST))
+      if (null == assumption) {
+         return NONE;
+      }
+      if (!firstiesEnded && assumption.equals(TAGS_FIRST)) {
          return  TAGS_ONLY;
+      }
       return assumption;
    }
 }
