@@ -90,8 +90,10 @@ public class Utils {
          return TEXT_ONLY;
       String assumption = null;
       Editable e = edit.getText();
+      if (null == e)
+         return NONE;
       boolean firstiesEnded = false;
-      for (int i = 1; null != e && i <= e.length(); i++) {
+      for (int i = 1; i <= e.length(); i++) {
          char c[] = new char[1];
          e.getChars(i-1, i, c, 0);
          if (Character.isWhitespace(c[0]))
