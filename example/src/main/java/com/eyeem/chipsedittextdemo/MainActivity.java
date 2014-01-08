@@ -179,7 +179,7 @@ public class MainActivity extends Activity {
       for (Linkify.Entity e : entities) {
          Utils.bubblify(ssb, e.text, e.start, e.end,
             tv.getWidth() - tv.getPaddingLeft() - tv.getPaddingRight(),
-            DefaultBubbles.get(0, this, tv.getTextSize()), null, e);
+            DefaultBubbles.get(DefaultBubbles.GRAY_WHITE_TEXT, this, tv.getTextSize()), null, e);
       }
       tv.setText(ssb);
    }

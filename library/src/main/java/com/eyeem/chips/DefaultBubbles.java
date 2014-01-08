@@ -61,7 +61,7 @@ public class DefaultBubbles {
             textSize, 0xff404040, 0xff404040, padding), // GRAY
          new BubbleStyle(
             context.getResources().getDrawable(R.drawable.greybubble_background),
-            context.getResources().getDrawable(R.drawable.greybubble_background),
+            context.getResources().getDrawable(R.drawable.greybubble_background_pressed),
             textSize, Color.WHITE, Color.WHITE, padding), // GRAY_WHITE_TEXT
          new BubbleStyle(
             context.getResources().getDrawable(R.drawable.pinktext_background_active),
