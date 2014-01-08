@@ -160,7 +160,7 @@ public class ChipsEditText extends MultilineEditText {
          }
       }
       int textSize = (int)(getTextSize() - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getContext().getResources().getDisplayMetrics()));
-      Utils.bubblify(getText(), finalText, start, end, maxWidth, DefaultBubbles.get(0, getContext(), textSize), this, null);
+      Utils.bubblify(getText(), finalText, start, end, maxWidth, DefaultBubbles.get(DefaultBubbles.GRAY_WHITE_TEXT, getContext(), textSize), this, null);
       finalizing = false;
    }
 
