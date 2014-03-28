@@ -7,6 +7,7 @@ import android.graphics.Point;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.*;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.asolutions.widget.RowLayout;
 
@@ -20,6 +21,7 @@ public class AutocompletePopover extends RelativeLayout {
    Adapter adapter;
    ImageView tri;
    ScrollView scrollView;
+   InputMethodManager imm;
 
    public AutocompletePopover(Context context) {
       super(context);
@@ -61,6 +63,8 @@ public class AutocompletePopover extends RelativeLayout {
       };
       findViewById(R.id.x).setOnClickListener(x);
       findViewById(R.id.x_border).setOnClickListener(x);
+
+      imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
    }
 
    public void setChipsEditText(ChipsEditText et) {
@@ -202,6 +206,8 @@ public class AutocompletePopover extends RelativeLayout {
          et.addBubble(textToAdd, et.manualStart);
          if (et.getSelectionEnd() == et.length() || et.getSelectionEnd() + 1 == et.length()) {
             et.append(" ");
+
+            imm.restartInput(et); // reset suggestions
          }
          hide();
          et.muteHashWatcher(false);
