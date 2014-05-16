@@ -9,7 +9,6 @@ public class AwesomeBubble {
    private Rect rect;
    StaticLayout textLayout;
    boolean isPressed;
-   LinearGradient text_shader;
    BubbleStyle style;
    TextPaint text_paint;
    int containerWidth = 0;
@@ -26,9 +25,6 @@ public class AwesomeBubble {
       if (this.containerWidth == containerWidth)
          return this;
       this.containerWidth = containerWidth;
-      SpannableStringBuilder main = new SpannableStringBuilder();
-      main.append(text);
-      main.setSpan(new StyleSpan(Typeface.BOLD), 0, main.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
       text_paint.setTextSize(style.textSize);
 
       int correction = 0;
@@ -38,11 +34,10 @@ public class AwesomeBubble {
          correction = 1;
       }
 
-      int maximum_w = containerWidth - 4*style.bubblePadding;
-      int desired_w = (int)StaticLayout.getDesiredWidth(main, text_paint) + correction;
+      int maximum_w = containerWidth - 4 * style.bubblePadding;
+      int desired_w = (int)StaticLayout.getDesiredWidth(text, text_paint) + correction;
       int best_w = Math.max(Math.min(maximum_w, desired_w), 0);
-      textLayout = new StaticLayout(main, text_paint, best_w, Layout.Alignment.ALIGN_CENTER, 1.0f, 1, false);
-      text_shader = null;
+      textLayout = new StaticLayout(text, text_paint, best_w, Layout.Alignment.ALIGN_CENTER, 1.0f, 1, false);
       if (desired_w > maximum_w) {
          makeOneLiner(maximum_w);
       }
@@ -53,13 +48,11 @@ public class AwesomeBubble {
    public AwesomeBubble makeOneLiner(int width) {
       text_paint.setTextSize(style.textSize);
       int i = text_paint.breakText(textLayout.getText().toString(), true, (float)width, null);
-      while (i > 0 && textLayout.getLineCount() > 1) {
-         textLayout = new StaticLayout(textLayout.getText().subSequence(0, i), text_paint, width, Layout.Alignment.ALIGN_NORMAL, 1.0f, 1, false);
+      while (i > 1 && textLayout.getLineCount() > 1) {
+         textLayout = new StaticLayout(textLayout.getText().subSequence(0, i - 1) + "\u2026",
+            text_paint, width, Layout.Alignment.ALIGN_NORMAL, 1.0f, 1, false);
          i--;
       }
-      text_shader = new LinearGradient(width*0.85f, 0, width, 0,
-         new int[]{style.textColor, 0x00ffffff},
-         new float[]{0, 1}, Shader.TileMode.CLAMP);
       return this;
    }
 
@@ -88,7 +81,6 @@ public class AwesomeBubble {
       canvas.translate(rect.left+2*style.bubblePadding, rect.top+style.bubblePadding);
       text_paint.setTextSize(style.textSize);
       text_paint.setColor(isPressed ? style.textPressedColor : style.textColor);
-      text_paint.setShader(text_shader);
       text_paint.setAntiAlias(true);
       textLayout.draw(canvas);
       canvas.translate(-rect.left-2*style.bubblePadding, -rect.top-style.bubblePadding);
