@@ -526,4 +526,8 @@ public class ChipsEditText extends MultilineEditText {
       public void onBubbleSelected(int position);
       public void onXPressed();
    }
+
+   public CursorDrawable getCursorDrawable() {
+      return this.cursorDrawable;
+   }
 }

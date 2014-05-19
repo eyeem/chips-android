@@ -13,6 +13,7 @@ public class CursorDrawable {
    float textSize;
    float cursorWidth;
    AwesomeBubble bubble;
+   public int color = 0xffffffff;
 
    public CursorDrawable(ChipsEditText editText, float textSize, float cursorWidth, Context context) {
       this.editText = editText;
@@ -51,7 +52,7 @@ public class CursorDrawable {
             canvas.drawRect(0 - x_offset, y_offset, cursorWidth - x_offset, y_offset + y_h, paint);
          }
       } else if (blink) {
-         paint.setColor(0x88000000);
+         paint.setColor(color);
          canvas.drawRect(0, 0, cursorWidth, textSize, paint);
       }
       canvas.restore();
@@ -69,5 +70,9 @@ public class CursorDrawable {
          }
       }
       return new Point(x_offset, y_offset);
+   }
+
+   public void setColor(int color) {
+      this.color = color;
    }
 }

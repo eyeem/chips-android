@@ -121,6 +121,8 @@ public class MainActivity extends Activity {
       tv.setMaxLines(3, moreText);
       tv.requestFocus();
       updateTextProperties();
+
+      et.getCursorDrawable().setColor(0xff00ff00);
    }
 
    public void updateTextProperties() {
