@@ -1,8 +1,10 @@
 package com.eyeem.chips;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.text.Editable;
 import android.util.AttributeSet;
@@ -19,9 +21,11 @@ public class AutocompletePopover extends RelativeLayout {
    RelativeLayout root;
    ChipsEditText et;
    Adapter adapter;
-   ImageView tri;
    ScrollView scrollView;
    InputMethodManager imm;
+   int bgColor = 0xFF000000;
+   double triAngle = Math.PI / 2.0; // 90 degrees
+   Paint bgPaint;
 
    public AutocompletePopover(Context context) {
       super(context);
@@ -52,7 +56,6 @@ public class AutocompletePopover extends RelativeLayout {
       scrollView.addView(vg, -2, -2);
       adapter = new Adapter(vg);
       adapter.onItemClickListener = onItemClickListener;
-      tri = (ImageView)findViewById(R.id.triangle);
       setVisibility(View.GONE);
       OnClickListener x = new OnClickListener() {
          @Override
@@ -65,6 +68,10 @@ public class AutocompletePopover extends RelativeLayout {
       findViewById(R.id.x_border).setOnClickListener(x);
 
       imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+      bgPaint = new Paint();
+      bgPaint.setAntiAlias(true);
+      bgPaint.setColor(bgColor);
+      bgPaint.setStyle(Paint.Style.FILL_AND_STROKE);
    }
 
    public void setChipsEditText(ChipsEditText et) {
@@ -96,8 +103,8 @@ public class AutocompletePopover extends RelativeLayout {
       int h = root().getHeight() - et.getHeight() - verticaloffset;
       ((RelativeLayout.LayoutParams)getLayoutParams()).topMargin = et.getHeight() + verticaloffset;
       getLayoutParams().height = h;
-      ((LayoutParams)tri.getLayoutParams()).leftMargin = p.x - tri.getWidth()/2 + ((LayoutParams)et.getLayoutParams()).leftMargin;
-      tri.requestLayout();
+      xTriOffset = p.x;
+      invalidate();
    }
 
    public void show() {
@@ -225,5 +232,41 @@ public class AutocompletePopover extends RelativeLayout {
 
    public void scrollToTop() {
       scrollView.scrollTo(0, 0);
+   }
+
+   public void setBackgroundColor(int color) {
+      this.bgColor = color;
+   }
+
+   int xTriOffset;
+
+   @Override
+   protected void dispatchDraw(Canvas canvas) {
+      int x_start = 0;
+      int y_start = getPaddingTop();
+
+      int x_end = getWidth();
+      int y_end = getHeight();
+
+      int tri_h = getPaddingTop();
+
+      int tri_base = (int)(Math.tan(triAngle / 2) * tri_h);
+
+      Path path = new Path();
+      path.moveTo(x_start, y_start);
+
+      path.lineTo(xTriOffset - tri_base, y_start);
+      path.lineTo(xTriOffset, y_start - tri_h);
+      path.lineTo(xTriOffset + tri_base, y_start);
+
+      path.lineTo(x_end, y_start);
+      path.lineTo(x_end, y_end);
+      path.lineTo(x_start, y_end);
+
+      path.close();
+
+      canvas.drawPath(path, bgPaint);
+
+      super.dispatchDraw(canvas);
    }
 }

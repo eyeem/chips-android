@@ -5,31 +5,18 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         >
-    <ImageView
-        android:src="@drawable/suggesttri"
-        android:id="@+id/triangle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"/>
     <ScrollView
-        android:layout_below="@id/triangle"
+        android:paddingTop="16dp"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:paddingTop="16dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:background="#77000000"
         android:id="@+id/suggestions"
         />
     <LinearLayout
+            android:layout_marginTop="16dp"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/x_border"
             android:orientation="horizontal"
-            android:paddingTop="16dp"
-            android:paddingRight="16dp"
-            android:paddingLeft="20dp"
-            android:paddingBottom="20dp"
             android:layout_alignTop="@id/suggestions"
             android:layout_alignRight="@id/suggestions">
         <ImageView
