@@ -62,7 +62,7 @@ public class CursorDrawable {
       int x_offset = 0;
       int y_offset = 0;
       if (editText.manualModeOn) {
-         y_offset = bubble.style.bubblePadding;
+         y_offset = - bubble.getHeight();
          if (editText.manualStart == editText.getSelectionStart()) { // empty bubble case
             x_offset = -bubble.getWidth() / 2;
          } else {
