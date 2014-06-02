@@ -21,10 +21,14 @@ import java.util.ArrayList;
 public class TapableSpan extends StyleSpan implements BubbleSpan {
    private Object data;
    private ForegroundColorSpan activeSpan;
-   private ForegroundColorSpan inactiveSpan;;
+   private ForegroundColorSpan inactiveSpan;
 
    public TapableSpan(int activeColor, int inactiveColor) {
-      super(Typeface.BOLD);
+      this(activeColor, inactiveColor, Typeface.NORMAL);
+   }
+
+   public TapableSpan(int activeColor, int inactiveColor, int style) {
+      super(style);
       activeSpan = new ForegroundColorSpan(activeColor);
       inactiveSpan = new ForegroundColorSpan(inactiveColor);
    }
