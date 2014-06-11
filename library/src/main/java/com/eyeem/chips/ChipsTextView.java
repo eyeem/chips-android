@@ -8,7 +8,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.text.*;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -65,12 +64,17 @@ public class ChipsTextView extends View implements ILayoutCallback {
       x += getScrollX();
       y += getScrollY();
 
+      boolean retValue = false;
+
       switch (action) {
          case MotionEvent.ACTION_DOWN:
-            selectBubble(x, y);
+            retValue = selectBubble(x, y);
             break;
          case MotionEvent.ACTION_MOVE:
-            if (selectedSpan != null) selectedSpan.setPressed(spanContains(selectedSpan, x, y), (Spannable)layout().getText());
+            if (selectedSpan != null) {
+               selectedSpan.setPressed(spanContains(selectedSpan, x, y), (Spannable) layout().getText());
+               retValue = true;
+            }
             break;
          case MotionEvent.ACTION_UP:
             if (listener != null && selectedSpan != null && spanContains(selectedSpan, x, y)) {
@@ -79,6 +83,7 @@ public class ChipsTextView extends View implements ILayoutCallback {
             // fall through
          case MotionEvent.ACTION_CANCEL:
             if (selectedSpan != null) {
+               retValue = true;
                // we might be returning to a different layout
                if ( -1 != ((Spannable)truncatedLayout.getText()).getSpanEnd(selectedSpan)) {
                   selectedSpan.setPressed(false, (Spannable)truncatedLayout.getText());
@@ -94,7 +99,7 @@ public class ChipsTextView extends View implements ILayoutCallback {
             break;
       }
       invalidate();
-      return true;
+      return retValue;
    }
 
    boolean spanContains(BubbleSpan span, int x, int y) {
@@ -107,14 +112,15 @@ public class ChipsTextView extends View implements ILayoutCallback {
       return false;
    }
 
-   public void selectBubble(int x, int y) {
+   public boolean selectBubble(int x, int y) {
       for (BubbleSpan span : spans) {
          if (spanContains(span, x, y)) {
             span.setPressed(true, (Spannable)layout().getText());
             selectedSpan = span;
-            return;
+            return true;
          }
       }
+      return false;
    }
 
    public void setTextPaint(TextPaint textPaint) {
