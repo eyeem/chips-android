@@ -7,13 +7,13 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
-        classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.1-SNAPSHOT'
+        classpath 'com.android.tools.build:gradle:0.11.+'
+//        classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.1-SNAPSHOT'
     }
 }
 
 apply plugin: 'android-library'
-apply plugin: 'android-test'
+//apply plugin: 'android-test'
 
 dependencies {
     repositories {
@@ -24,14 +24,14 @@ dependencies {
         mavenLocal()
     }
 
-    testCompile 'junit:junit:4.10'
-    testCompile 'org.robolectric:robolectric:2.1.+'
-    testCompile 'com.squareup:fest-android:1.0.+'
+    //testCompile 'junit:junit:4.10'
+    //testCompile 'org.robolectric:robolectric:2.1.+'
+    //testCompile 'com.squareup:fest-android:1.0.+'
 }
 
 android {
     compileSdkVersion 18
-    buildToolsVersion '19.0.1'
+    buildToolsVersion '19.1.0'
 }
 
 // SONATYPE DEPLOYMENT

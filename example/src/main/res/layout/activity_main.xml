@@ -96,7 +96,7 @@
         android:layout_marginRight="10dp"
         android:background="@drawable/xml_pressed_state"
         android:padding="20dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.eyeem.chips.ChipsTextView
@@ -104,7 +104,7 @@
             android:paddingRight="5dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/chipsTextView"
             />
