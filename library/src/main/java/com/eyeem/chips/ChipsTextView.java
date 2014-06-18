@@ -185,6 +185,11 @@ public class ChipsTextView extends View implements ILayoutCallback {
          if (layout() != null && layout().getLineCount() > 0) {
             // subtract last line's spacing
             height -= (layout().getLineBottom(0) - layout().getPaint().getFontMetricsInt().descent - layout().getLineBaseline(0));
+
+            // support width wrap content
+            if (layout().getLineCount() == 1 && MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.AT_MOST) {
+               width = (int) (layout().getLineWidth(0) + getPaddingLeft() + getPaddingRight());
+            }
          }
       }
 
