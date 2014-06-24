@@ -15,6 +15,6 @@
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
             android:textColor="#ffffffff"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:layout_alignParentLeft="true"/>
 </RelativeLayout>
