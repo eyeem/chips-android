@@ -17,9 +17,22 @@ public class Utils {
       } catch (IndexOutOfBoundsException ioobe) {
          // known platform issue https://code.google.com/p/android/issues/detail?id=5164
          // workaround is to set seletion to the end
+      }
+
+      try {
          editor.setSelection(editor.getText().length(), editor.getText().length());
          return flatten(editor.getText(), factories);
+      } catch (IndexOutOfBoundsException ioobe) {
+         // oh well, we tried
       }
+
+      try {
+         return editor.getText().toString();
+      } catch (Throwable t) {
+         // we tried hard
+      }
+
+      return ""; // sorry
    }
 
    private static String flatten(CharSequence charSequence, HashMap<Class<?>, FlatteningFactory> factories) {
