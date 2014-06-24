@@ -64,7 +64,6 @@ public class AutocompletePopover extends RelativeLayout {
             et.cancelManualMode();
          }
       };
-      findViewById(R.id.x).setOnClickListener(x);
       findViewById(R.id.x_border).setOnClickListener(x);
 
       imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
