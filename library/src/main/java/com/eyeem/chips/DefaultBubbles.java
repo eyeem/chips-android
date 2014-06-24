@@ -17,7 +17,7 @@ public class DefaultBubbles {
    public static int LILA = 0;
    public static int GRAY = 1;
    public static int GRAY_WHITE_TEXT = 2;
-   public static int PINK = 3;
+   public static int GREY_EDIT = 3;
    public static int GREEN = 4;
    public static int CITY_COUNTRY = 5;
 
@@ -64,9 +64,9 @@ public class DefaultBubbles {
             context.getResources().getDrawable(R.drawable.greybubble_background_pressed),
             textSize, Color.WHITE, Color.WHITE, padding), // GRAY_WHITE_TEXT
          new BubbleStyle(
-            context.getResources().getDrawable(R.drawable.pinktext_background_active),
-            context.getResources().getDrawable(R.drawable.pinktext_background_pressed),
-            textSize, 0xffffedff, 0xff574f57, padding), // PINK
+            context.getResources().getDrawable(R.drawable.greybubble_edit),
+            context.getResources().getDrawable(R.drawable.greybubble_edit),
+            textSize, Color.WHITE, Color.WHITE, padding), // GREY_EDIT
          new BubbleStyle(
             context.getResources().getDrawable(R.drawable.greentext_background_active),
             context.getResources().getDrawable(R.drawable.greentext_background_pressed),

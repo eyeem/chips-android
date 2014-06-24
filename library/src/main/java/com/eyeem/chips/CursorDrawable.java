@@ -25,7 +25,7 @@ public class CursorDrawable {
       paint.setTextAlign(Paint.Align.LEFT);
       this.textSize = textSize;
       this.cursorWidth = cursorWidth;
-      bubble = new AwesomeBubble(" ", 100, DefaultBubbles.get(DefaultBubbles.GRAY, context, (int)editText.getTextSize()), new TextPaint());
+      bubble = new AwesomeBubble(" ", 100, DefaultBubbles.get(DefaultBubbles.GREY_EDIT, context, (int)editText.getTextSize()), new TextPaint());
    }
 
    public void draw(Canvas canvas, boolean blink) {

@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
+    android:background="#000"
     android:id="@+id/root"
     android:focusable="true"
     android:focusableInTouchMode="true">
