@@ -107,8 +107,6 @@ public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
          float multipler = -1.5f;
          if (et.getLayout() != null && et.getLayout().getLineForOffset(start) == 0) {
             // especially firstline has bigger next line space than others
-            if (span != null)
-               et.redrawStack.add(span);
             baselineDiff = ((float)bubble.style.bubblePadding) * multipler;
          } else {
             multipler += 1.0f;

@@ -3,7 +3,6 @@ package com.eyeem.chips;
 
 import android.content.Context;
 import android.graphics.*;
-import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 
 public class CursorDrawable {
@@ -25,7 +24,7 @@ public class CursorDrawable {
       paint.setTextAlign(Paint.Align.LEFT);
       this.textSize = textSize;
       this.cursorWidth = cursorWidth;
-      bubble = new AwesomeBubble(" ", 100, DefaultBubbles.get(DefaultBubbles.GREY_EDIT, context, (int)editText.getTextSize()), new TextPaint());
+      bubble = new AwesomeBubble(" ", 100, DefaultBubbles.get(DefaultBubbles.GRAY_WHITE_TEXT, context, (int)editText.getTextSize()), new TextPaint());
    }
 
    public void draw(Canvas canvas, boolean blink) {

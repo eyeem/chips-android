@@ -16,6 +16,7 @@ import android.util.TypedValue;
 import android.view.*;
 import android.widget.*;
 import com.eyeem.chips.*;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends Activity {
 
@@ -38,6 +39,11 @@ public class MainActivity extends Activity {
       super.onCreate(savedInstanceState);
       requestWindowFeature(Window.FEATURE_NO_TITLE);
       setContentView(R.layout.activity_main);
+
+      Picasso
+         .with(this)
+         .load("http://cdn.eyeem.com/thumb/h/800/6df34d42fa813b926f24cf9d32d49eea779cc014-1405682234")
+         .into((ImageView) findViewById(R.id.bg));
 
       // chips debug
       debugCheck = (CheckBox)findViewById(R.id.debug_check);

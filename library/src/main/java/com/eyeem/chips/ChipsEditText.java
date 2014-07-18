@@ -111,10 +111,6 @@ public class ChipsEditText extends MultilineEditText {
    @Override
    protected void onDraw(Canvas canvas) {
       super.onDraw(canvas);
-      while (!redrawStack.isEmpty()) {
-         BubbleSpan span = redrawStack.remove(0);
-         span.redraw(canvas);
-      }
       if (isFocused()) {
          cursorDrawable.draw(canvas, cursorBlink);
       }
@@ -160,7 +156,7 @@ public class ChipsEditText extends MultilineEditText {
          }
       }
       int textSize = (int)(getTextSize() - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getContext().getResources().getDisplayMetrics()));
-      Utils.bubblify(getText(), finalText, start, end, maxWidth, DefaultBubbles.get(DefaultBubbles.GREY_EDIT, getContext(), textSize), this, null);
+      Utils.bubblify(getText(), finalText, start, end, maxWidth, DefaultBubbles.get(DefaultBubbles.GRAY_WHITE_TEXT, getContext(), textSize), this, null);
       finalizing = false;
    }
 
@@ -425,8 +421,6 @@ public class ChipsEditText extends MultilineEditText {
       public ArrayList<String> getSuggestions(String query) throws Exception;
       public ArrayList<String> getDefaultSuggestions();
    }
-
-   public ArrayList<BubbleSpan> redrawStack = new ArrayList<BubbleSpan>();
 
    boolean muteHashWatcher;
    void muteHashWatcher(boolean value) {

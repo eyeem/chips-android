@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.+'
+        classpath 'com.android.tools.build:gradle:0.12.+'
     }
 }
 
@@ -21,14 +21,17 @@ dependencies {
 
     compile 'com.android.support:support-v4:18.0.+'
 
+    // for the background
+    compile 'com.eyeem.picasso:picasso:2.3.3-SNAPSHOT'
+
     compile project(':library')
 }
 
 android {
     buildToolsVersion '19.1.0'
-    compileSdkVersion 18
+    compileSdkVersion 19
 
     defaultConfig {
-        targetSdkVersion 18
+        targetSdkVersion 19
     }
 }
