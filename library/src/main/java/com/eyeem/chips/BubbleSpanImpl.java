@@ -104,7 +104,7 @@ public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
          // bubbles after onDraw passes
          // ...also edittext's layouting is erratic and baselineDiff is something
          // I have trouble calculating
-         float multipler = -1.5f;
+         float multipler = -1.8f;
          if (et.getLayout() != null && et.getLayout().getLineForOffset(start) == 0) {
             // especially firstline has bigger next line space than others
             baselineDiff = ((float)bubble.style.bubblePadding) * multipler;

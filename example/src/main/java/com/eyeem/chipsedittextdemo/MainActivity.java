@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import android.app.Activity;
 
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import android.text.SpannableStringBuilder;
@@ -43,6 +44,7 @@ public class MainActivity extends Activity {
       Picasso
          .with(this)
          .load("http://cdn.eyeem.com/thumb/h/800/6df34d42fa813b926f24cf9d32d49eea779cc014-1405682234")
+         .placeholder(new ColorDrawable(0xffaaaaaa))
          .into((ImageView) findViewById(R.id.bg));
 
       // chips debug
