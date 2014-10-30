@@ -105,6 +105,7 @@ public class MainActivity extends Activity {
             return availableItems;
          }
       });
+      et.addListener(chipsListener);
 
       TextPaint paint = new TextPaint();
       Resources r = getResources();
@@ -215,4 +216,31 @@ public class MainActivity extends Activity {
 
    // marker class
    public static class Truncation {}
+
+   ChipsEditText.Listener chipsListener = new ChipsEditText.Listener() {
+      @Override
+      public void onBubbleCountChanged() {
+
+      }
+
+      @Override
+      public void onActionDone() {
+
+      }
+
+      @Override
+      public void onBubbleSelected(int position) {
+
+      }
+
+      @Override
+      public void onXPressed() {
+
+      }
+
+      @Override
+      public void onHashTyped(boolean start) {
+         Toast.makeText(MainActivity.this, "onHashTyped, start = "+start, Toast.LENGTH_SHORT).show();
+      }
+   };
 }

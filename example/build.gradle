@@ -28,10 +28,10 @@ dependencies {
 }
 
 android {
-    buildToolsVersion '19.1.0'
-    compileSdkVersion 19
+    buildToolsVersion '21.0.2'
+    compileSdkVersion 21
 
     defaultConfig {
-        targetSdkVersion 19
+        targetSdkVersion 21
     }
 }

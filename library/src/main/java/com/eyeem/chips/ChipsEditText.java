@@ -453,14 +453,20 @@ public class ChipsEditText extends MultilineEditText {
                int lastIndex = after.lastIndexOf('#');
             if (manualModeOn || canAddMoreBubbles())
                s.delete(lastIndex, lastIndex + 1);
-            if (!manualModeOn) {
+
+            if (manualModeOn && manualStart < lastIndex) {
+               // here we end previous hashtag
+               endManualMode();
+            }
+
+            if (canAddMoreBubbles()) {
+               // we start adding a new hash tag
                startManualMode();
                popover.show();
-            } else if (manualModeOn && manualStart < lastIndex) {
-               endManualMode();
-               if (canAddMoreBubbles()) {
-                  startManualMode();
-               }
+               onHashTyped(true);
+            } else {
+               // no more hash tags allowed
+               onHashTyped(false);
             }
          }
       }
@@ -510,6 +516,11 @@ public class ChipsEditText extends MultilineEditText {
          listener.onXPressed();
    }
 
+   protected void onHashTyped(boolean start) {
+      for (Listener listener : listeners)
+         listener.onHashTyped(start);
+   }
+
    public void addListener(Listener listener) {
       listeners.add(listener);
    }
@@ -519,6 +530,7 @@ public class ChipsEditText extends MultilineEditText {
       public void onActionDone();
       public void onBubbleSelected(int position);
       public void onXPressed();
+      public void onHashTyped(boolean start);
    }
 
    public CursorDrawable getCursorDrawable() {
