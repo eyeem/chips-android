@@ -12,8 +12,7 @@ buildscript {
     }
 }
 
-apply plugin: 'android-library'
-//apply plugin: 'android-test'
+apply plugin: 'com.android.library'
 
 dependencies {
     repositories {
