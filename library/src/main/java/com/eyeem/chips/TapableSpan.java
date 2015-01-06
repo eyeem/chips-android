@@ -35,12 +35,16 @@ public class TapableSpan extends StyleSpan implements BubbleSpan {
 
    @Override
    public void setPressed(boolean value, Spannable s) {
-      if (value) {
-         s.removeSpan(inactiveSpan);
-         s.setSpan(activeSpan, s.getSpanStart(this), s.getSpanEnd(this), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-      } else {
-         s.removeSpan(activeSpan);
-         s.setSpan(inactiveSpan, s.getSpanStart(this), s.getSpanEnd(this), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+      try {
+         if (value) {
+            s.removeSpan(inactiveSpan);
+            s.setSpan(activeSpan, s.getSpanStart(this), s.getSpanEnd(this), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+         } else {
+            s.removeSpan(activeSpan);
+            s.setSpan(inactiveSpan, s.getSpanStart(this), s.getSpanEnd(this), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+         }
+      } catch (IndexOutOfBoundsException ioobe) {
+         // don't crash if something was set in an ugly manner
       }
    }
 
