@@ -208,6 +208,7 @@ public class ChipsEditText extends MultilineEditText {
       popover.hide();
       if (madeChip && getSelectionEnd() == getText().length()) {
          getText().append(" ");
+         restartInput();
          setSelection(getText().length());
       }
    }
@@ -372,6 +373,11 @@ public class ChipsEditText extends MultilineEditText {
    public void showKeyboard() {
       InputMethodManager inputMgr = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
       inputMgr.showSoftInput(this, InputMethodManager.SHOW_FORCED);
+   }
+
+   public void restartInput() {
+      InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+      imm.restartInput(this);
    }
 
    public Point getInnerCursorPosition() {
