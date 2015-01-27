@@ -12,6 +12,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.0.0'
-        //classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.1-SNAPSHOT'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
     }
 }

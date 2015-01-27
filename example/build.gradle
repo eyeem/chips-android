@@ -9,6 +9,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies {
     repositories {
@@ -20,9 +21,31 @@ dependencies {
     }
 
     compile 'com.android.support:support-v4:21.0.3'
+    compile "com.android.support:appcompat-v7:21.0.3"
+    compile 'com.android.support:recyclerview-v7:21.0.3'
 
-    // for the background
-    compile 'com.eyeem.picasso:picasso:2.3.3-SNAPSHOT'
+    compile 'com.squareup.picasso:picasso:2.4.0'
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
+    compile 'com.netflix.rxjava:rxjava-android:0.20.7'
+
+    compile('com.squareup.mortar:mortar:0.17-SNAPSHOT') {
+        exclude group: 'com.squareup.dagger'
+    }
+    compile ('com.squareup.mortar:dagger2support:0.17-SNAPSHOT') {
+        exclude group: 'com.google.dagger'
+    }
+    // https://github.com/google/dagger/issues/113
+    compile 'com.google.dagger:dagger:2.0-SNAPSHOT'
+    apt ('com.google.dagger:dagger-compiler:2.0-SNAPSHOT') {
+        exclude group: 'com.google.auto'
+    }
+    apt files('libs/auto-common-1.0-20150122.001631-7.jar')
+    compile 'org.glassfish:javax.annotation:10.0-b28'
+    compile 'com.squareup.flow:flow:0.9-SNAPSHOT'
+    compile 'com.jakewharton:butterknife:5.1.2'
+    compile 'com.google.code.gson:gson:2.2.4'
+
 
     compile project(':library')
 }

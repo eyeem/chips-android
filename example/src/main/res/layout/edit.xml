@@ -1,10 +1,9 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.eyeem.chipsedittextdemo.view.EditView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:background="#000"
-    android:id="@+id/root"
     android:focusable="true"
     android:focusableInTouchMode="true">
 
@@ -37,8 +36,7 @@
             android:id="@+id/check"
             android:text="Update"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="update"/>
+            android:layout_height="wrap_content"/>
 
     <Button
             android:layout_below="@id/chipsMultiAutoCompleteTextview1"
@@ -47,7 +45,6 @@
             android:text="Add bubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="toggleEdit"
             />
 
     <Button
@@ -57,7 +54,6 @@
             android:text="Tag setup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="tagSetup"
             />
 
     <CheckBox
@@ -123,4 +119,4 @@
             android:layout_height="wrap_content"
             />
 
-</RelativeLayout>
+</com.eyeem.chipsedittextdemo.view.EditView>
