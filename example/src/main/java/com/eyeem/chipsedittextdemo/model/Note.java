@@ -34,7 +34,7 @@ public class Note {
             textSize, 0xffebe0f5, 0xffebe0f5, padding);
       }
 
-      int width = 0;
+      int width = 0; // FIXME not so great
       if (entities == null)
          return ssb;
       for (Linkify.Entity entity : entities) {

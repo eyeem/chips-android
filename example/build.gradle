@@ -27,6 +27,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
+    compile 'com.squareup.okio:okio:1.0.0'
     compile 'com.netflix.rxjava:rxjava-android:0.20.7'
 
     compile('com.squareup.mortar:mortar:0.17-SNAPSHOT') {
@@ -37,10 +38,7 @@ dependencies {
     }
     // https://github.com/google/dagger/issues/113
     compile 'com.google.dagger:dagger:2.0-SNAPSHOT'
-    apt ('com.google.dagger:dagger-compiler:2.0-SNAPSHOT') {
-        exclude group: 'com.google.auto'
-    }
-    apt files('libs/auto-common-1.0-20150122.001631-7.jar')
+    apt 'com.google.dagger:dagger-compiler:2.0-SNAPSHOT'
     compile 'org.glassfish:javax.annotation:10.0-b28'
     compile 'com.squareup.flow:flow:0.9-SNAPSHOT'
     compile 'com.jakewharton:butterknife:5.1.2'
@@ -56,5 +54,10 @@ android {
 
     defaultConfig {
         targetSdkVersion 21
+    }
+
+    lintOptions {
+        // lint keeps complaining about okio not being included
+        disable 'InvalidPackage'
     }
 }

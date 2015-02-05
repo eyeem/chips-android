@@ -111,10 +111,10 @@ public class EditView extends RelativeLayout {
    }
 
    public void setup() {
-      picasso
-         .load("http://cdn.eyeem.com/thumb/h/800/6df34d42fa813b926f24cf9d32d49eea779cc014-1405682234")
-         .placeholder(new ColorDrawable(0xffaaaaaa))
-         .into((ImageView) findViewById(R.id.bg));
+//      picasso
+//         .load("http://cdn.eyeem.com/thumb/h/800/6df34d42fa813b926f24cf9d32d49eea779cc014-1405682234")
+//         .placeholder(new ColorDrawable(0xffaaaaaa))
+//         .into((ImageView) findViewById(R.id.bg));
 
       // chips debug
       debugCheck = (CheckBox)findViewById(R.id.debug_check);

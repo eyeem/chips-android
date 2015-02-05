@@ -17,7 +17,9 @@ public class AwesomeBubble {
       this.style = style;
       this.text_paint = text_paint;
       this.text = text;
-      resetWidth(containerWidth);
+      if (containerWidth > 0) {
+         resetWidth(containerWidth);
+      }
    }
 
    public AwesomeBubble resetWidth(int containerWidth) {
@@ -57,11 +59,11 @@ public class AwesomeBubble {
    }
 
    public int getWidth() {
-      return textLayout == null ? 0 : textLayout.getWidth() + 4*style.bubblePadding;
+      return textLayout == null ? 0 : textLayout.getWidth() + 4 * style.bubblePadding;
    }
 
    public int getHeight() {
-      return textLayout == null ? 0 : textLayout.getHeight() + 2*style.bubblePadding;
+      return textLayout == null ? 0 : textLayout.getHeight() + 2 * style.bubblePadding;
    }
 
    public void setPosition(int x, int y) {
