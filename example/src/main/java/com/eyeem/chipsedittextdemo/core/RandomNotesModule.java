@@ -42,7 +42,7 @@ public class RandomNotesModule {
    }
 
    public static Note generateNote(int id) {
-      Note note = new Note(LOREM_IPSUM, new Linkify.Entities());
+      Note note = new Note(String.valueOf(id), LOREM_IPSUM, new Linkify.Entities());
 
       for (int j = 0; j < LOREM_IPSUM.length(); j++) {
          int shouldAdd = (int) (ODDS * Math.random());

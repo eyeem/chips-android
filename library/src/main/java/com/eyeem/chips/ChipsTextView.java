@@ -8,6 +8,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.TextView;
+
+import java.lang.ref.WeakReference;
+
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * ChipsTextView
@@ -55,7 +63,7 @@ public class ChipsTextView extends View {
 
    public void setText(final Spannable text) {
       if (text == null) {
-         setLayoutBuild(null);
+         setLayoutBuild((LayoutBuild)null);
          return;
       }
 
@@ -202,6 +210,23 @@ public class ChipsTextView extends View {
       requestLayout();
    }
 
+   Subscription lastSubscription;
+
+   public void setLayoutBuild(Observable<LayoutBuild> layoutBuildObservable) {
+
+      if (lastSubscription != null) {
+         lastSubscription.unsubscribe();
+         lastSubscription = null;
+      }
+
+      if (layoutBuildObservable == null) {
+         return;
+      }
+
+      lastSubscription = layoutBuildObservable
+         .subscribe(new LayoutSubscription(this));
+   }
+
    // TODO configuration via xml params
    private LayoutBuild.Config defaultConfig() {
       if (_defaultConfig == null) {
@@ -231,5 +256,20 @@ public class ChipsTextView extends View {
       defaultConfig().truncated = true;
       defaultConfig().moreText = moreText;
       defaultConfig().maxLines = maxLines;
+   }
+
+   private static class LayoutSubscription implements Action1<LayoutBuild> {
+
+      final WeakReference<ChipsTextView> _tv;
+
+      LayoutSubscription(ChipsTextView textView) {
+         _tv = new WeakReference<ChipsTextView>(textView);
+      }
+
+      @Override public void call(LayoutBuild layoutBuild) {
+         ChipsTextView tv = _tv.get();
+         if (tv == null) return;
+         tv.setLayoutBuild(layoutBuild);
+      }
    }
 }

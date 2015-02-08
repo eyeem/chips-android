@@ -11,10 +11,12 @@ import com.eyeem.chips.Linkify;
  * Created by vishna on 03/02/15.
  */
 public class Note {
+   public String id;
    public String text;
    public Linkify.Entities entities;
 
-   public Note(String text, Linkify.Entities entities) {
+   public Note(String id, String text, Linkify.Entities entities) {
+      this.id = id;
       this.text = text;
       this.entities = entities;
    }
