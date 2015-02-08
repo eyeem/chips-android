@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.eyeem.chips.ChipsTextView;
 import com.eyeem.chips.LayoutBuild;
 import com.eyeem.chipsedittextdemo.R;
+import com.eyeem.chipsedittextdemo.experimental.CacheOnScroll;
 import com.eyeem.chipsedittextdemo.model.Note;
 
 import java.util.List;
@@ -37,12 +38,21 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
    TextPaint textPaint;
    LayoutBuild.Config layoutConfig;
    int width = 0;
+   CacheOnScroll cacheOnScroll;
+
+   public NotesAdapter(CacheOnScroll cacheOnScroll) {
+      this.cacheOnScroll = cacheOnScroll;
+   }
 
    @Override public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
       NoteHolder noteHolder =  new NoteHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.note_row, parent, false));
 
       if (textPaint == null) {
          textPaint = noteTextPaint(parent.getContext());
+      }
+
+      if (width <= 0) {
+         width = parent.getWidth() - noteHolder.textView.getPaddingLeft() - noteHolder.textView.getPaddingRight();
       }
 
       return noteHolder;
@@ -53,8 +63,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
 
       // lazy init config
       if (layoutConfig == null) {
-         // FIXME this is all 0 on first pass
-         width = holder.textView.getWidth() - holder.textView.getPaddingLeft() - holder.textView.getPaddingRight();
          if (width > 0) {
             layoutConfig = new LayoutBuild.Config();
             layoutConfig.lineSpacing = 1.25f;
@@ -83,7 +91,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
                }
             }
          })
-         .subscribeOn(Schedulers.io()) // TODO isInCache ? AndroidSchedulers.mainThread() : Schedulers.io();
+         .subscribeOn(cacheOnScroll.scheduler()) // TODO isInCache ? AndroidSchedulers.mainThread() : Schedulers.io();
          .observeOn(AndroidSchedulers.mainThread());
          holder.textView.setLayoutBuild(textObservable);
       }
@@ -130,4 +138,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
 
    private static class Truncation {
    } // marker class
+
+   public CacheOnScroll getCacheOnScroll() {
+      return cacheOnScroll;
+   }
 }

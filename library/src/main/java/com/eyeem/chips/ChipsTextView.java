@@ -216,7 +216,9 @@ public class ChipsTextView extends View {
 
       if (lastSubscription != null) {
          lastSubscription.unsubscribe();
+         _layoutBuild = null;
          lastSubscription = null;
+         requestLayout();
       }
 
       if (layoutBuildObservable == null) {

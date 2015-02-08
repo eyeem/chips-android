@@ -64,6 +64,7 @@ public class NotesView extends FrameLayout {
       llm = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
       rv.setLayoutManager(llm);
       rv.setAdapter(adapter);
+      rv.setOnScrollListener(adapter.getCacheOnScroll());
    }
 
    @Override protected void onAttachedToWindow() {
