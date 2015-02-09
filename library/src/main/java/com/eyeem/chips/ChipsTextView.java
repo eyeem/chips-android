@@ -119,7 +119,6 @@ public class ChipsTextView extends View {
       int width = widthSize;
       int height = heightSize;
 
-      width = width - getPaddingLeft() - getPaddingRight();
       maxAvailableWidth = width;
 
       if (!animating) {

@@ -60,7 +60,7 @@ public class CacheOnScroll extends RecyclerView.OnScrollListener  {
    }
 
    protected boolean isScrolling(int scrollState) {
-      return scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING || scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL;
+      return scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING;
    }
 
    // TODO extend schedulerForId... meaning based if it's in cache or not you get ui scheduler or other scheduler
