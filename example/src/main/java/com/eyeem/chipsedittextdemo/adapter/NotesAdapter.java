@@ -22,10 +22,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by vishna on 03/02/15.
@@ -42,7 +38,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
 
    public NotesAdapter(CacheOnScroll cacheOnScroll) {
       this.cacheOnScroll = cacheOnScroll;
+      this.cacheOnScroll.setAheadLoader(new LayoutAheadLoader());
    }
+
+   Context appContext;
 
    @Override public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
       NoteHolder noteHolder =  new NoteHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.note_row, parent, false));
@@ -55,11 +54,16 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
          width = parent.getWidth() - noteHolder.textView.getPaddingLeft() - noteHolder.textView.getPaddingRight();
       }
 
+      if (appContext == null) {
+         appContext = parent.getContext().getApplicationContext();
+      }
+
       return noteHolder;
    }
 
    @Override public void onBindViewHolder(NoteHolder holder, final int position) {
-      final Context context = holder.textView.getContext();
+
+      Note note = notes.get(position);
 
       // lazy init config
       if (layoutConfig == null) {
@@ -76,26 +80,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
       }
 
       if (layoutConfig != null) {
-         Observable textObservable = Observable.create(new Observable.OnSubscribe<LayoutBuild>() {
-            @Override
-            public void call(Subscriber<? super LayoutBuild> subscriber) {
-               // FIXME possible context leak? no?
-               Spannable spannable = new SpannableString(notes.get(position).textSpan((int) textPaint.getTextSize(), context));
-
-               // TODO layout build
-               LayoutBuild layoutBuild = new LayoutBuild(spannable, layoutConfig);
-               layoutBuild.build(width);
-
-               if (!subscriber.isUnsubscribed()) {
-                  subscriber.onNext(layoutBuild);
-               }
-            }
-         })
-         .subscribeOn(cacheOnScroll.scheduler()) // TODO isInCache ? AndroidSchedulers.mainThread() : Schedulers.io();
-         .observeOn(AndroidSchedulers.mainThread());
-         holder.textView.setLayoutBuild(textObservable);
+         holder.textView.setLayoutBuild(cacheOnScroll.get(note.id));
       }
-
 
       if (TRUNCATE)  holder.textView.setTruncated(true);
    }
@@ -141,5 +127,33 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
 
    public CacheOnScroll getCacheOnScroll() {
       return cacheOnScroll;
+   }
+
+   public class LayoutAheadLoader implements CacheOnScroll.AheadLoader<LayoutBuild> {
+      @Override public LayoutBuild buildFor(String id) {
+         Note found = null;
+
+         // TODO some smart lambda
+         for (Note note : notes) { // find note
+            if (note.id.equals(id)) {
+               found = note;
+               break;
+            }
+         }
+
+         if (found == null) return null;
+
+         Spannable spannable = new SpannableString(found.textSpan((int) textPaint.getTextSize(), appContext));
+
+         LayoutBuild layoutBuild = new LayoutBuild(spannable, layoutConfig);
+         layoutBuild.build(width);
+
+         return layoutBuild;
+      }
+
+      @Override public List<String> idsAround(String id, int radius) {
+         // TODO
+         return null;
+      }
    }
 }

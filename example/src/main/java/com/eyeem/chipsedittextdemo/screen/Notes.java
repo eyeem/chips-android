@@ -2,6 +2,7 @@ package com.eyeem.chipsedittextdemo.screen;
 
 import android.os.Bundle;
 
+import com.eyeem.chips.LayoutBuild;
 import com.eyeem.chips.Linkify;
 import com.eyeem.chipsedittextdemo.MainActivity;
 import com.eyeem.chipsedittextdemo.R;
@@ -47,12 +48,12 @@ public class Notes extends Path implements HasParent {
 
    @dagger.Module
    public static class Module {
-      @Provides NotesAdapter provideAdapter(CacheOnScroll cacheOnScroll) {
+      @Provides NotesAdapter provideAdapter(CacheOnScroll<LayoutBuild> cacheOnScroll) {
          return new NotesAdapter(cacheOnScroll);
       }
 
-      @Provides CacheOnScroll provideCacheOnScroll() {
-         return new CacheOnScroll(sPausableExecutor);
+      @Provides CacheOnScroll<LayoutBuild> provideCacheOnScroll() {
+         return new CacheOnScroll<>(sPausableExecutor, 100);
       }
    }
 
