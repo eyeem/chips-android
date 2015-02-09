@@ -8,13 +8,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 /**
@@ -111,6 +109,7 @@ public class ChipsTextView extends View {
    }
 
    int maxAvailableWidth = 0;
+   int lastLineSpacing = 0;
 
    @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
       int widthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -128,7 +127,8 @@ public class ChipsTextView extends View {
 
          if (layout != null && layout.getLineCount() > 0) {
             // subtract last line's spacing
-            height -= (layout.getLineBottom(0) - layout.getPaint().getFontMetricsInt().descent - layout.getLineBaseline(0));
+            lastLineSpacing = layout.getLineBottom(0) - layout.getPaint().getFontMetricsInt().descent - layout.getLineBaseline(0);
+            height -= (lastLineSpacing);
 
             // support width wrap content
             if (layout.getLineCount() == 1 && MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.AT_MOST) {
@@ -206,7 +206,16 @@ public class ChipsTextView extends View {
 
    public void setLayoutBuild(LayoutBuild layoutBuild) {
       this._layoutBuild = layoutBuild;
-      requestLayout();
+      StaticLayout sl = layoutBuild != null ? layoutBuild.layout() : null;
+
+      int currentW = getWidth() - getPaddingLeft() - getPaddingRight();
+      int currentH = getHeight() - getPaddingTop() - getPaddingBottom() + lastLineSpacing;
+
+      if (sl != null && sl.getWidth() == currentW && sl.getHeight() == currentH) { // if size hasn't changed just invalidate
+         invalidate();
+      } else {
+         requestLayout();
+      }
    }
 
    Subscription lastSubscription;
@@ -217,7 +226,7 @@ public class ChipsTextView extends View {
          lastSubscription.unsubscribe();
          _layoutBuild = null;
          lastSubscription = null;
-         requestLayout();
+         invalidate();
       }
 
       if (layoutBuildObservable == null) {
