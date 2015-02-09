@@ -5,11 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AbsListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -59,14 +61,17 @@ public class CacheOnScroll<Type> extends RecyclerView.OnScrollListener  {
       if (scrollingFirstTime) {
          executor.resume();
          scrollingFirstTime = false;
+         checkCacheDisplacement(middleVisibleItemPosition);
       }
 
       if (!isScrolling(newState) && isScrolling(previousScrollState)) {
          executor.resume();
+         checkCacheDisplacement(middleVisibleItemPosition);
       }
 
       if (isScrolling(newState) && !isScrolling(previousScrollState)) {
          executor.pause();
+         cancelCacheCheck();
       }
 
       previousScrollState = newState;
@@ -76,7 +81,6 @@ public class CacheOnScroll<Type> extends RecyclerView.OnScrollListener  {
       return scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING;
    }
 
-   // TODO extend schedulerForId... meaning based if it's in cache or not you get ui scheduler or other scheduler
    private Scheduler scheduler() {
       if (scheduler == null) {
          scheduler = Schedulers.from(executor);
@@ -94,11 +98,11 @@ public class CacheOnScroll<Type> extends RecyclerView.OnScrollListener  {
 
       /**
        * Provides ids of surrounding items
-       * @param id
+       * @param position
        * @param radius
        * @return
        */
-      List<String> idsAround(String id, int radius);
+      List<String> idsAround(int position, int radius);
    }
 
    public Observable<Type> get(final String id) {
@@ -125,9 +129,35 @@ public class CacheOnScroll<Type> extends RecyclerView.OnScrollListener  {
             }
          }
       })
-      .subscribeOn(cachedType == null ? scheduler() : AndroidSchedulers.mainThread())
-      .observeOn(AndroidSchedulers.mainThread());
+      .subscribeOn(cachedType == null ? scheduler() : AndroidSchedulers.mainThread());
 
       return typeObservable;
+   }
+
+   private Subscription checkCacheDisplacementSubscription;
+
+   private void cancelCacheCheck() {
+      if (checkCacheDisplacementSubscription != null) {
+         checkCacheDisplacementSubscription.unsubscribe();
+         checkCacheDisplacementSubscription = null;
+      }
+   }
+
+   private void checkCacheDisplacement(int middlePosition) {
+      if (aheadLoader == null) return;
+      cancelCacheCheck();
+
+      List<String> ids = aheadLoader.idsAround(middlePosition, aheadCount/2 - 1);
+
+      // check number of items already available in cache
+      int availableCount = 0;
+      List<Observable<Type>> observables = new ArrayList<>();
+      for (final String id : ids) {
+         if (cache.get(id) == null) {
+            observables.add(get(id).subscribeOn(scheduler()).observeOn(scheduler()));
+         }
+      }
+
+      checkCacheDisplacementSubscription = Observable.merge(observables).subscribeOn(scheduler()).observeOn(scheduler()).subscribe();
    }
 }

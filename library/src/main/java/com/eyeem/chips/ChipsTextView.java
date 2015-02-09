@@ -13,6 +13,7 @@ import java.lang.ref.WeakReference;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 /**
@@ -234,6 +235,7 @@ public class ChipsTextView extends View {
       }
 
       lastSubscription = layoutBuildObservable
+         .observeOn(AndroidSchedulers.mainThread())
          .subscribe(new LayoutSubscription(this));
    }
 

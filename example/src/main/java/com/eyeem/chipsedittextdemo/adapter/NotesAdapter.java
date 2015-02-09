@@ -18,6 +18,7 @@ import com.eyeem.chipsedittextdemo.R;
 import com.eyeem.chipsedittextdemo.experimental.CacheOnScroll;
 import com.eyeem.chipsedittextdemo.model.Note;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -151,9 +152,27 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
          return layoutBuild;
       }
 
-      @Override public List<String> idsAround(String id, int radius) {
-         // TODO
-         return null;
+      @Override public List<String> idsAround(int centerIndex, int radius) {
+
+         ArrayList<String> result = new ArrayList<>();
+
+         if (centerIndex < 0 || centerIndex >= notes.size()) return result;
+
+         for (int r = 1; r < radius; r++) {
+
+            int left = centerIndex - r;
+            int right = centerIndex + r;
+
+            if (left > 0) {
+               result.add(notes.get(left).id);
+            }
+
+            if (right < notes.size()) {
+               result.add(notes.get(right).id);
+            }
+         }
+
+         return result;
       }
    }
 }
