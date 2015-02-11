@@ -16,9 +16,7 @@
     <com.eyeem.chips.ChipsEditText
         android:hint="Input your text here and then press update!"
         android:inputType="textMultiLine|textNoSuggestions"
-        android:paddingTop="18dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
+        android:padding="16dp"
         android:id="@+id/chipsMultiAutoCompleteTextview1"
         android:layout_width="fill_parent"
         android:layout_height="120dp"
@@ -95,17 +93,11 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@id/spacing_seek_bar"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:padding="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.eyeem.chips.ChipsTextView
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:padding="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/chipsTextView"

@@ -73,32 +73,10 @@ public class ChipsTextView extends View {
       doBuild(text);
    }
 
-   public boolean buildInProgress;
-
    private void doBuild(final Spannable text) {
-      if (buildInProgress) return;
-      buildInProgress = true;
-
-      if (maxAvailableWidth > 0) {
-         LayoutBuild futureLayout = new LayoutBuild(text, defaultConfig());
-         futureLayout.build(maxAvailableWidth);
-         setLayoutBuild(futureLayout);
-         buildInProgress = false;
-      } else {
-         addOnLayoutChangeListener(new OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-               removeOnLayoutChangeListener(this);
-               // otherwise layouting gets discarded
-               post(new Runnable() {
-                  @Override public void run() {
-                     buildInProgress = false;
-                     doBuild(text);
-                  }
-               });
-            }
-         });
-      }
+      LayoutBuild futureLayout = new LayoutBuild(text, defaultConfig());
+      futureLayout.build(maxAvailableWidth, false);
+      setLayoutBuild(futureLayout);
    }
 
    @Override protected void onDraw(Canvas canvas) {
@@ -121,8 +99,13 @@ public class ChipsTextView extends View {
 
       maxAvailableWidth = width;
 
-      if (!animating) {
+      if (!animating && maxAvailableWidth > 0) {
          final LayoutBuild lb = getLayoutBuild();
+
+         if (lb != null && lb.buildWidth <= 0)  {
+            lb.build(maxAvailableWidth, false);
+         }
+
          StaticLayout layout = lb != null ? lb.layout() : null;
          height = layout == null ? 0 : layout.getHeight() + getPaddingTop() + getPaddingBottom();
 
@@ -142,9 +125,9 @@ public class ChipsTextView extends View {
    }
 
    public interface OnBubbleClickedListener {
-
       public void onBubbleClicked(View view, BubbleSpan bubbleSpan);
    }
+
    public void setOnBubbleClickedListener(OnBubbleClickedListener listener) {
       this.listener = listener;
    }

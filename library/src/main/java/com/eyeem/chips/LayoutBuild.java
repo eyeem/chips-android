@@ -35,6 +35,12 @@ public class LayoutBuild implements ILayoutCallback {
    float lineSpacing = 1.25f;
    int maxLines = 0;
    boolean debug;
+   boolean spansPositioned;
+
+   /**
+    * Represents the value request via build() method
+    */
+   int buildWidth;
 
    public LayoutBuild(Spannable text, Config config) {
       this.text = text;
@@ -43,6 +49,7 @@ public class LayoutBuild implements ILayoutCallback {
       textPaint = config.textPaint;
       moreText = config.moreText;
       truncated = config.truncated;
+      buildWidth = 0;
    }
 
    public StaticLayout layout() {
@@ -69,6 +76,11 @@ public class LayoutBuild implements ILayoutCallback {
 
    public boolean onTouchEvent(int action, int x, int y, ChipsTextView.OnBubbleClickedListener listener, View view) {
       boolean retValue = false;
+
+      if (!spansPositioned) {
+         positionSpans();
+      }
+
       switch (action) {
          case MotionEvent.ACTION_DOWN:
             retValue = selectBubble(x, y);
@@ -151,7 +163,12 @@ public class LayoutBuild implements ILayoutCallback {
    }
 
    public void build(int width) {
-      positions.clear();
+      build(width, true);
+   }
+
+   /* package */ void build(int width, boolean positionSpans) {
+      this.buildWidth = width;
+      this.spansPositioned = false;
       if (width <= 0 || TextUtils.isEmpty(text)) {
          truncatedLayout = expandedLayout = null;
          return;
@@ -191,15 +208,26 @@ public class LayoutBuild implements ILayoutCallback {
       } else {
          recomputeSpans((Spannable)expandedLayout.getText());
       }
-      for (BubbleSpan span : spans) {
-         positions.put(span, span.rect(this));
+
+      if (positionSpans) {
+         positionSpans();
       }
    }
 
+   private void positionSpans() {
+      positions.clear();
+      for (BubbleSpan span : spans) {
+         positions.put(span, span.rect(this)); // ANR
+      }
+      spansPositioned = true;
+   }
+
    @Override public Point getCursorPosition(int pos) {
+      if (pos < 0 || pos > layout().getText().length()) return null;
       int line = layout().getLineForOffset(pos);
       int baseline = layout().getLineBaseline(line);
       int ascent = layout().getLineAscent(line);
+      // Call position outside bounds and kill the thread yo!
       float x = layout().getPrimaryHorizontal(pos);
       float y = baseline + ascent;
       return new Point((int)x, (int)y);

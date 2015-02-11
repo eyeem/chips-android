@@ -81,6 +81,7 @@ public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
       Rect position = new Rect(bubble.rect());
       int spanStart = callback.getSpannable().getSpanStart(this);
       Point startPoint = callback.getCursorPosition(spanStart);
+      if (startPoint == null) return result;
       position.offset(startPoint.x, startPoint.y);
       result.add(position);
       return result;
