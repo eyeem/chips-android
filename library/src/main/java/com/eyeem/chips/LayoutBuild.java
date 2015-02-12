@@ -26,8 +26,10 @@ public class LayoutBuild implements ILayoutCallback {
    BubbleSpan selectedSpan;
    ArrayList<BubbleSpan> spans = new ArrayList<BubbleSpan>();
    HashMap<BubbleSpan, ArrayList<Rect>> positions = new HashMap<BubbleSpan, ArrayList<Rect>>();
-   Spannable text;
-   Spannable moreText;
+
+   final Spannable text;
+   final Spannable moreText;
+
    TextPaint textPaint;
    private StaticLayout truncatedLayout;
    private StaticLayout expandedLayout;
@@ -128,13 +130,14 @@ public class LayoutBuild implements ILayoutCallback {
    }
 
    private void resetSpans(int width) {
+      final Spannable text = getSpannable();
       if (text == null) return;
       for (BubbleSpan span : text.getSpans(0, text.length(), BubbleSpan.class)) {
          span.resetWidth(width);
       }
    }
 
-   private void recomputeSpans(Spannable text) {
+   private void recomputeSpans(final Spannable text) {
       spans.clear();
       for (BubbleSpan span : text.getSpans(0, text.length(), BubbleSpan.class)) {
          spans.add(span);
@@ -202,22 +205,18 @@ public class LayoutBuild implements ILayoutCallback {
          // workaround is too expensive to implement https://gist.github.com/pyricau/3424004
          return; // layout stays null, we show nothing (h == 0)
       }
-      // add bubbles from the text and create positions for them
-      if (truncated) {
-         recomputeSpans((Spannable)truncatedLayout.getText());
-      } else {
-         recomputeSpans((Spannable)expandedLayout.getText());
-      }
 
+      // add bubbles from the text and create positions for them
       if (positionSpans) {
          positionSpans();
       }
    }
 
    private void positionSpans() {
+      recomputeSpans(getSpannable());
       positions.clear();
       for (BubbleSpan span : spans) {
-         positions.put(span, span.rect(this)); // ANR
+         positions.put(span, span.rect(this));
       }
       spansPositioned = true;
    }
@@ -238,7 +237,7 @@ public class LayoutBuild implements ILayoutCallback {
    }
 
    @Override public Spannable getSpannable() {
-      return text;
+      return (truncatedLayout != null && truncated) ? (Spannable) truncatedLayout.getText() : text;
    }
 
    @Override public int getLineEnd(int line) {
@@ -255,7 +254,9 @@ public class LayoutBuild implements ILayoutCallback {
    }
 
    public void setTruncated(boolean truncated) {
+      if (this.truncated == truncated) return;
       this.truncated = truncated;
+      positionSpans();
    }
 
    public boolean isTruncated() {
