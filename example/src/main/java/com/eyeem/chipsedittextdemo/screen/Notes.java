@@ -1,10 +1,8 @@
 package com.eyeem.chipsedittextdemo.screen;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import com.eyeem.chips.LayoutBuild;
-import com.eyeem.chips.Linkify;
 import com.eyeem.chipsedittextdemo.MainActivity;
 import com.eyeem.chipsedittextdemo.R;
 import com.eyeem.chipsedittextdemo.adapter.NotesAdapter;
@@ -13,12 +11,12 @@ import com.eyeem.chipsedittextdemo.core.RandomNotesModule;
 import com.eyeem.chipsedittextdemo.experimental.CacheOnScroll;
 import com.eyeem.chipsedittextdemo.experimental.PausableThreadPoolExecutor;
 import com.eyeem.chipsedittextdemo.model.Note;
-import com.eyeem.chipsedittextdemo.mortarflow.ComponentFactory;
+import com.eyeem.chipsedittextdemo.mortarflow.DynamicModules;
 import com.eyeem.chipsedittextdemo.mortarflow.ScopeSingleton;
 import com.eyeem.chipsedittextdemo.mortarflow.WithComponent;
 import com.eyeem.chipsedittextdemo.view.NotesView;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -31,16 +29,13 @@ import flow.Layout;
 import flow.Path;
 import mortar.ViewPresenter;
 import rx.Observable;
-import rx.functions.Action1;
-
-import static mortar.dagger2support.DaggerService.createComponent;
 
 /**
  * Created by vishna on 03/02/15.
  */
 // TODO WithComponentFactory
 @Layout(R.layout.notes) @WithComponent(Notes.Component.class)
-public class Notes extends Path implements HasParent, ComponentFactory {
+public class Notes extends Path implements HasParent, DynamicModules {
 
    NoteStorage.List list;
 
@@ -52,9 +47,8 @@ public class Notes extends Path implements HasParent, ComponentFactory {
       return new Start();
    }
 
-   @Override public Object createDaggerComponent(Context context, Object parentScope) {
-      Module module = new Module(list);
-      return createComponent(Component.class, parentScope, module);
+   @Override public List<Object> dependencies() {
+      return Arrays.<Object>asList(new Module(list));
    }
 
    @dagger.Component(modules = {Module.class, RandomNotesModule.class}, dependencies = MainActivity.Component.class)
