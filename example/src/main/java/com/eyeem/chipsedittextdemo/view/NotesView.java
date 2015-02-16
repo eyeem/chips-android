@@ -79,7 +79,7 @@ public class NotesView extends FrameLayout {
       presenter.dropView(this);
    }
 
-   public void setNotes(List<Note> notes) {
-      adapter.setNotes(notes);
-   }
+   //public void setNotes(List<Note> notes) {
+      // adapter.setNotes(notes);
+   //}
 }

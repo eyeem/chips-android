@@ -71,7 +71,7 @@ public class StartView extends LinearLayout {
       Flow.get(this).goTo(new Edit());
    }
 
-   @OnClick(R.id.notes) void onNotesClick(View view) {
-      Flow.get(this).goTo(new Notes());
-   }
+//   @OnClick(R.id.notes) void onNotesClick(View view) {
+//      Flow.get(this).goTo(new Notes());
+//   }
 }

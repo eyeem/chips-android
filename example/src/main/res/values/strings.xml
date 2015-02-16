@@ -6,4 +6,7 @@
     <string name="action_mortar_hierarchy">Log Mortar Hierarchy</string>
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
+
+    <string name="edit">EDIT</string>
+    <string name="preview">PREVIEW</string>
 </resources>

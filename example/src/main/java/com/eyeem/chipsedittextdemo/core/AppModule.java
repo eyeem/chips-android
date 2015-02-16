@@ -6,7 +6,7 @@ import com.eyeem.chipsedittextdemo.App;
 import com.eyeem.chipsedittextdemo.mortarflow.FlowBundler;
 import com.eyeem.chipsedittextdemo.mortarflow.GsonParceler;
 import com.eyeem.chipsedittextdemo.mortarflow.ScopeSingleton;
-import com.eyeem.chipsedittextdemo.screen.Start;
+import com.eyeem.chipsedittextdemo.screen.Notes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
@@ -33,10 +33,14 @@ public class AppModule {
       return Picasso.with(app);
    }
 
-   @Provides @ScopeSingleton(App.Component.class) FlowBundler provideFlowBundler(Parceler parceler) {
+   @Provides @ScopeSingleton(App.Component.class) NoteStorage provideNoteStorage(App app) {
+      return new NoteStorage(app);
+   }
+
+   @Provides @ScopeSingleton(App.Component.class) FlowBundler provideFlowBundler(Parceler parceler, final NoteStorage storage) {
       return new FlowBundler(parceler) {
          @Override protected Backstack getColdStartBackstack(Backstack restoredBackstack) {
-            return restoredBackstack == null ? Backstack.single(new Start()) : restoredBackstack;
+            return restoredBackstack == null ? Backstack.single(new Notes(storage.all())) : restoredBackstack;
          }
       };
    }

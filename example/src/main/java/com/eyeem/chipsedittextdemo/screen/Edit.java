@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.eyeem.chipsedittextdemo.MainActivity;
 import com.eyeem.chipsedittextdemo.R;
+import com.eyeem.chipsedittextdemo.core.AppModule;
 import com.eyeem.chipsedittextdemo.mortarflow.ScopeSingleton;
 import com.eyeem.chipsedittextdemo.mortarflow.WithComponent;
 import com.eyeem.chipsedittextdemo.view.EditView;
@@ -31,7 +32,7 @@ public class Edit extends Path implements HasParent {
       return new Start();
    }
 
-   @dagger.Component(modules = Module.class, dependencies = MainActivity.Component.class)
+   @dagger.Component(modules = Module.class, dependencies = Note.Component.class)
    @ScopeSingleton(Component.class)
    public interface Component {
       void inject(EditView t);

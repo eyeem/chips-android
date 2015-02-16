@@ -1,5 +1,6 @@
 package com.eyeem.chipsedittextdemo.screen;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.eyeem.chips.LayoutBuild;
@@ -7,10 +8,12 @@ import com.eyeem.chips.Linkify;
 import com.eyeem.chipsedittextdemo.MainActivity;
 import com.eyeem.chipsedittextdemo.R;
 import com.eyeem.chipsedittextdemo.adapter.NotesAdapter;
+import com.eyeem.chipsedittextdemo.core.NoteStorage;
 import com.eyeem.chipsedittextdemo.core.RandomNotesModule;
 import com.eyeem.chipsedittextdemo.experimental.CacheOnScroll;
 import com.eyeem.chipsedittextdemo.experimental.PausableThreadPoolExecutor;
 import com.eyeem.chipsedittextdemo.model.Note;
+import com.eyeem.chipsedittextdemo.mortarflow.ComponentFactory;
 import com.eyeem.chipsedittextdemo.mortarflow.ScopeSingleton;
 import com.eyeem.chipsedittextdemo.mortarflow.WithComponent;
 import com.eyeem.chipsedittextdemo.view.NotesView;
@@ -30,14 +33,28 @@ import mortar.ViewPresenter;
 import rx.Observable;
 import rx.functions.Action1;
 
+import static mortar.dagger2support.DaggerService.createComponent;
+
 /**
  * Created by vishna on 03/02/15.
  */
+// TODO WithComponentFactory
 @Layout(R.layout.notes) @WithComponent(Notes.Component.class)
-public class Notes extends Path implements HasParent {
+public class Notes extends Path implements HasParent, ComponentFactory {
+
+   NoteStorage.List list;
+
+   public Notes(NoteStorage.List list) {
+      this.list = list;
+   }
 
    @Override public Path getParent() {
       return new Start();
+   }
+
+   @Override public Object createDaggerComponent(Context context, Object parentScope) {
+      Module module = new Module(list);
+      return createComponent(Component.class, parentScope, module);
    }
 
    @dagger.Component(modules = {Module.class, RandomNotesModule.class}, dependencies = MainActivity.Component.class)
@@ -48,8 +65,15 @@ public class Notes extends Path implements HasParent {
 
    @dagger.Module
    public static class Module {
+
+      NoteStorage.List list;
+
+      public Module(NoteStorage.List list) {
+         this.list = list;
+      }
+
       @Provides NotesAdapter provideAdapter(CacheOnScroll<LayoutBuild> cacheOnScroll) {
-         return new NotesAdapter(cacheOnScroll);
+         return new NotesAdapter(list, cacheOnScroll);
       }
 
       @Provides CacheOnScroll<LayoutBuild> provideCacheOnScroll() {
@@ -71,13 +95,13 @@ public class Notes extends Path implements HasParent {
          super.onLoad(savedInstanceState);
          if (!hasView()) return;
 
-         noteSource.subscribe(new Action1<List<Note>>() {
-            @Override public void call(List<Note> notes) {
-               if (!hasView()) return;
-               Presenter.this.notes = notes;
-               getView().setNotes(notes);
-            }
-         });
+//         noteSource.subscribe(new Action1<List<Note>>() {
+//            @Override public void call(List<Note> notes) {
+//               if (!hasView()) return;
+//               Presenter.this.notes = notes;
+//               getView().setNotes(notes);
+//            }
+//         });
       }
 
       @Override protected void onSave(Bundle outState) {

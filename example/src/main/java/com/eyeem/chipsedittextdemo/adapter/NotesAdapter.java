@@ -17,6 +17,7 @@ import com.eyeem.chips.LayoutBuild;
 import com.eyeem.chipsedittextdemo.R;
 import com.eyeem.chipsedittextdemo.experimental.CacheOnScroll;
 import com.eyeem.chipsedittextdemo.model.Note;
+import com.eyeem.storage.Storage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +28,17 @@ import butterknife.InjectView;
 /**
  * Created by vishna on 03/02/15.
  */
-public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> {
+public class NotesAdapter extends RecyclerAdapter<Note, NotesAdapter.NoteHolder> {
 
    private final static boolean TRUNCATE = true;
 
-   List<Note> notes;
    TextPaint textPaint;
    LayoutBuild.Config layoutConfig;
    int width = 0;
    CacheOnScroll cacheOnScroll;
 
-   public NotesAdapter(CacheOnScroll cacheOnScroll) {
+   public NotesAdapter(Storage<Note>.List list, CacheOnScroll cacheOnScroll) {
+      super(list);
       this.cacheOnScroll = cacheOnScroll;
       this.cacheOnScroll.setAheadLoader(new LayoutAheadLoader());
    }
@@ -64,7 +65,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
 
    @Override public void onBindViewHolder(NoteHolder holder, final int position) {
 
-      Note note = notes.get(position);
+      Note note = getItem(position);
 
       // lazy init config
       if (layoutConfig == null) {
@@ -87,10 +88,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
       if (TRUNCATE)  holder.textView.setTruncated(true);
    }
 
-   @Override public int getItemCount() {
-      return notes == null ? 0 : notes.size();
-   }
-
    static class NoteHolder extends RecyclerView.ViewHolder {
 
       @InjectView(R.id.note_text_view) ChipsTextView textView;
@@ -100,13 +97,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
          ButterKnife.inject(this, itemView);
       }
    }
-
-   public NotesAdapter setNotes(List<Note> notes) {
-      this.notes = notes;
-      notifyDataSetChanged();
-      return this;
-   }
-
 
    private static TextPaint _noteTextPaint;
 
@@ -135,7 +125,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
          Note found = null;
 
          // TODO some smart lambda
-         for (Note note : notes) { // find note
+         for (Note note : items) { // find note
             if (note.id.equals(id)) {
                found = note;
                break;
@@ -156,7 +146,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
 
          ArrayList<String> result = new ArrayList<>();
 
-         if (centerIndex < 0 || centerIndex >= notes.size()) return result;
+         if (centerIndex < 0 || centerIndex >= items.size()) return result;
 
          for (int r = 1; r < radius; r++) {
 
@@ -164,11 +154,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteHolder> 
             int right = centerIndex + r;
 
             if (left > 0) {
-               result.add(notes.get(left).id);
+               result.add(items.get(left).id);
             }
 
-            if (right < notes.size()) {
-               result.add(notes.get(right).id);
+            if (right < items.size()) {
+               result.add(items.get(right).id);
             }
          }
 

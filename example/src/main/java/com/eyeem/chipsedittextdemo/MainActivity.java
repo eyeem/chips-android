@@ -1,16 +1,14 @@
 package com.eyeem.chipsedittextdemo;
 
-import android.animation.LayoutTransition;
 import android.os.Bundle;
 
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
 
-import com.eyeem.chipsedittextdemo.core.AppModule;
+import com.eyeem.chipsedittextdemo.adapter.StorageDep;
 import com.eyeem.chipsedittextdemo.mortarflow.FlowBundler;
 import com.eyeem.chipsedittextdemo.mortarflow.FlowDep;
 import com.eyeem.chipsedittextdemo.mortarflow.FramePathContainerView;
@@ -33,14 +31,13 @@ import mortar.dagger2support.DaggerService;
 import static mortar.MortarScope.buildChild;
 import static mortar.MortarScope.findChild;
 import static mortar.MortarScope.getScope;
-import static mortar.dagger2support.DaggerService.SERVICE_NAME;
 import static mortar.dagger2support.DaggerService.createComponent;
 
 public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
 
    @ScopeSingleton(Component.class)
    @dagger.Component(dependencies = App.Component.class)
-   public interface Component extends FlowDep {
+   public interface Component extends FlowDep, StorageDep {
       void inject(MainActivity mainActivity);
    }
 
@@ -134,7 +131,6 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
 
       //toolbar.setTitle(path.getClass().getSimpleName());
       getSupportActionBar().setTitle(path.getClass().getSimpleName());
-
 
       boolean hasUp = path instanceof HasParent;
       getSupportActionBar().setDisplayHomeAsUpEnabled(hasUp);
