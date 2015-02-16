@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
 
+import com.eyeem.chipsedittextdemo.core.AppModule;
 import com.eyeem.chipsedittextdemo.mortarflow.FlowBundler;
 import com.eyeem.chipsedittextdemo.mortarflow.FlowDep;
 import com.eyeem.chipsedittextdemo.mortarflow.FramePathContainerView;
@@ -24,12 +25,16 @@ import butterknife.InjectView;
 import flow.Flow;
 import flow.HasParent;
 import flow.Path;
-import flow.PathContainerView;
-import mortar.Mortar;
-import mortar.MortarActivityScope;
 import mortar.MortarScope;
 import mortar.MortarScopeDevHelper;
-import mortar.dagger2support.Dagger2;
+import mortar.bundler.BundleServiceRunner;
+import mortar.dagger2support.DaggerService;
+
+import static mortar.MortarScope.buildChild;
+import static mortar.MortarScope.findChild;
+import static mortar.MortarScope.getScope;
+import static mortar.dagger2support.DaggerService.SERVICE_NAME;
+import static mortar.dagger2support.DaggerService.createComponent;
 
 public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
 
@@ -48,43 +53,42 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
    @InjectView(R.id.drawer) DrawerLayout drawer;
 
    private Flow flow;
-   private MortarActivityScope activityScope;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      MortarScope parentScope = Mortar.getScope(getApplication());
+      BundleServiceRunner.getBundleServiceRunner(this).onCreate(savedInstanceState);
 
-      String scopeName = MainActivity.class.getName();
-      activityScope = (MortarActivityScope) parentScope.findChild(scopeName);
-      if (activityScope == null) {
-         Component activityGraph = Dagger2.buildComponent(Component.class, parentScope.getObjectGraph());
-         activityScope = Mortar.createActivityScope(parentScope, scopeName, activityGraph);
-      }
-      Dagger2.<Component>get(this).inject(this);
+      DaggerService.<Component>getDaggerComponent(this).inject(this);
       flow = flowBundler.onCreate(savedInstanceState);
 
-      activityScope.onCreate(savedInstanceState);
       setContentView(R.layout.root_layout);
       ButterKnife.inject(this);
       containerAsHandlesBack = container;
       containerAsHandlesUp = container;
 
       setSupportActionBar(toolbar);
+   }
 
-//      // handle ActionBarDrawerToggle
-//      ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
-//      actionBarDrawerToggle.syncState();
-//
-//      // handle different Drawer States
-//      drawer.setDrawerListener(actionBarDrawerToggle);
+   private String getScopeName() {
+      return getClass().getName();
    }
 
    @Override public Object getSystemService(String name) {
-      if (Mortar.isScopeSystemService(name)) {
-         return activityScope;
+      MortarScope activityScope = findChild(getApplicationContext(), getScopeName());
+
+      App.Component appComponent = getScope(getApplicationContext()).getService(DaggerService.SERVICE_NAME);
+
+      if (activityScope == null) {
+         activityScope = buildChild(getApplicationContext(), getScopeName())
+            .withService(BundleServiceRunner.SERVICE_NAME, new BundleServiceRunner())
+            .withService(DaggerService.SERVICE_NAME, createComponent(Component.class, appComponent))
+            .build();
       }
+
+      if (activityScope.hasService(name)) return activityScope.getService(name);
+
       if (Flow.isFlowSystemService(name)) {
          return flow;
       }
@@ -93,7 +97,7 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
 
    @Override protected void onSaveInstanceState(Bundle outState) {
       super.onSaveInstanceState(outState);
-      activityScope.onSaveInstanceState(outState);
+      BundleServiceRunner.getBundleServiceRunner(this).onSaveInstanceState(outState);
    }
 
    @Override public void onBackPressed() {
@@ -107,10 +111,9 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
       super.onDestroy();
 
       // activityScope may be null in case isWrongInstance() returned true in onCreate()
-      if (isFinishing() && activityScope != null) {
-         MortarScope parentScope = Mortar.getScope(getApplication());
-         parentScope.destroyChild(activityScope);
-         activityScope = null;
+      if (isFinishing()) {
+         MortarScope activityScope = findChild(getApplicationContext(), getScopeName());
+         if (activityScope != null) activityScope.destroy();
       }
    }
 
@@ -136,7 +139,6 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
       boolean hasUp = path instanceof HasParent;
       getSupportActionBar().setDisplayHomeAsUpEnabled(hasUp);
       getSupportActionBar().setHomeButtonEnabled(hasUp);
-      // Log.d("MainActivity", MortarScopeDevHelper.scopeHierarchyToString(activityScope));
    }
 
    /** Inform the view about up events. */
@@ -149,6 +151,7 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
       menu.add(R.string.action_mortar_hierarchy)
          .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override public boolean onMenuItemClick(MenuItem item) {
+               MortarScope activityScope = findChild(getApplicationContext(), getScopeName());
                Log.d(MainActivity.class.getSimpleName(), MortarScopeDevHelper.scopeHierarchyToString(activityScope));
                return true;
             }

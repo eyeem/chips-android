@@ -45,7 +45,10 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import mortar.Mortar;
+import mortar.dagger2support.DaggerService;
+
+import static mortar.MortarScope.findChild;
+import static mortar.MortarScope.getScope;
 
 /**
  * Created by vishna on 27/01/15.
@@ -90,7 +93,7 @@ public class EditView extends RelativeLayout {
    }
 
    private void init() {
-      Mortar.getScope(getContext()).<Edit.Component>getObjectGraph().inject(this);
+      getScope(getContext()).<Edit.Component>getService(DaggerService.SERVICE_NAME).inject(this);
       setSaveEnabled(true);
    }
 

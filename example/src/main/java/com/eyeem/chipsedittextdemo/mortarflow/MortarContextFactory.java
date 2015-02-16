@@ -7,8 +7,9 @@ import android.view.LayoutInflater;
 
 import flow.Path;
 import flow.PathContextFactory;
-import mortar.Mortar;
 import mortar.MortarScope;
+
+import static mortar.MortarScope.getScope;
 
 public final class MortarContextFactory implements PathContextFactory {
    private final ScreenScoper screenScoper = new ScreenScoper();
@@ -32,14 +33,13 @@ public final class MortarContextFactory implements PathContextFactory {
       private LayoutInflater inflater;
 
       static void destroyScope(Context context) {
-         MortarScope child = Mortar.getScope(context);
-         MortarScope parent = (MortarScope) context.getSystemService(SERVICE);
-         parent.destroyChild(child);
+         MortarScope child = getScope(context);
+         child.destroy();
       }
 
       public TearDownContext(Context context, MortarScope scope) {
          super(scope.createContext(context));
-         this.parentScope = Mortar.getScope(context);
+         this.parentScope = getScope(context);
       }
 
       @Override public Object getSystemService(String name) {

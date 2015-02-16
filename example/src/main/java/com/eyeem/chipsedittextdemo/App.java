@@ -6,9 +6,10 @@ import com.eyeem.chipsedittextdemo.core.AppModule;
 import com.eyeem.chipsedittextdemo.mortarflow.FlowDep;
 import com.eyeem.chipsedittextdemo.mortarflow.ScopeSingleton;
 
-import mortar.Mortar;
 import mortar.MortarScope;
-import mortar.dagger2support.Dagger2;
+import mortar.dagger2support.DaggerService;
+
+import static mortar.dagger2support.DaggerService.createComponent;
 
 /**
  * Created by vishna on 27/01/15.
@@ -22,15 +23,15 @@ public class App extends Application {
 
    @Override public void onCreate() {
       super.onCreate();
-
-      Component appComponent = Dagger2.buildComponent(Component.class, new AppModule(this));
-      rootScope = Mortar.createRootScope(appComponent);
    }
 
    @Override public Object getSystemService(String name) {
-      if (Mortar.isScopeSystemService(name)) {
-         return rootScope;
+      if (rootScope == null) {
+         rootScope = MortarScope.buildRootScope()
+            .withService(DaggerService.SERVICE_NAME, createComponent(Component.class, new AppModule(this)))
+            .build();
       }
-      return super.getSystemService(name);
+
+      return rootScope.hasService(name) ? rootScope.getService(name) : super.getSystemService(name);
    }
 }

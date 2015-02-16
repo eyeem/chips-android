@@ -19,7 +19,9 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import mortar.Mortar;
+import mortar.dagger2support.DaggerService;
+
+import static mortar.MortarScope.getScope;
 
 /**
  * Created by vishna on 03/02/15.
@@ -54,7 +56,7 @@ public class NotesView extends FrameLayout {
    }
 
    private void init() {
-      Mortar.getScope(getContext()).<Notes.Component>getObjectGraph().inject(this);
+      getScope(getContext()).<Notes.Component>getService(DaggerService.SERVICE_NAME).inject(this);
       setSaveEnabled(true);
    }
 

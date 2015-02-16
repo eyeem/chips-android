@@ -30,12 +30,8 @@ dependencies {
     compile 'com.squareup.okio:okio:1.0.0'
     compile 'com.netflix.rxjava:rxjava-android:0.20.7'
 
-    compile('com.squareup.mortar:mortar:0.17-SNAPSHOT') {
-        exclude group: 'com.squareup.dagger'
-    }
-    compile ('com.squareup.mortar:dagger2support:0.17-SNAPSHOT') {
-        exclude group: 'com.google.dagger'
-    }
+    compile 'com.squareup.mortar:mortar:0.17-SNAPSHOT'
+    compile 'com.squareup.mortar:dagger2support:0.17-SNAPSHOT'
     // https://github.com/google/dagger/issues/113
     compile 'com.google.dagger:dagger:2.0-SNAPSHOT'
     apt 'com.google.dagger:dagger-compiler:2.0-SNAPSHOT'

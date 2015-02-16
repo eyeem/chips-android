@@ -4,11 +4,12 @@ package com.eyeem.chipsedittextdemo.mortarflow;
 import android.content.Context;
 import android.content.res.Resources;
 
-import mortar.Mortar;
 import mortar.MortarScope;
-import mortar.dagger2support.Dagger2;
+import mortar.dagger2support.DaggerService;
 
-import static java.lang.String.format;
+import static mortar.MortarScope.findChild;
+import static mortar.MortarScope.getScope;
+import static mortar.dagger2support.DaggerService.createComponent;
 
 /**
  * Creates {@link MortarScope}s for screens that may be annotated with {@link WithComponent},
@@ -19,8 +20,8 @@ public class ScreenScoper {
    // TODO private final Map<Class, ComponentFactory> moduleFactoryCache = new LinkedHashMap<>();
 
    public MortarScope getScreenScope(Context context, String name, Object screen) {
-      MortarScope parentScope = Mortar.getScope(context);
-      return getScreenScope(context.getResources(), parentScope, name, screen);
+      MortarScope parentScope = getScope(context);
+      return getScreenScope(context, parentScope, name, screen);
    }
 
    /**
@@ -28,7 +29,7 @@ public class ScreenScoper {
     * WithComponentFactory} or {@link WithComponent} annotation. Note that scopes are also created
     * for unannotated screens.
     */
-   public MortarScope getScreenScope(Resources resources, MortarScope parentScope, final String name,
+   public MortarScope getScreenScope(Context context, MortarScope parentScope, final String name,
                                      final Object screen) {
       WithComponent withComponent = screen.getClass().getAnnotation(WithComponent.class);
 //      Object childComponent;
@@ -40,10 +41,13 @@ public class ScreenScoper {
 //         // objects that are annotated even if they don't appear in a module.
 //         childComponent = null;
 //      }
-      Object parentGraph = parentScope.getObjectGraph();
-      MortarScope childScope = parentScope.findChild(name);
+      MortarScope childScope = findChild(context, name);
+      Object parentComponent = parentScope.getService(DaggerService.SERVICE_NAME);
+
       if (childScope == null) {
-         childScope = parentScope.createChild(name, Dagger2.buildComponent(withComponent.value(), parentGraph));
+         childScope = parentScope.buildChild(context, name)
+            .withService(DaggerService.SERVICE_NAME, createComponent(withComponent.value(), parentComponent))
+            .build();
       }
       return childScope;
    }
