@@ -2,6 +2,7 @@ package com.eyeem.chipsedittextdemo.screen;
 
 import com.eyeem.chipsedittextdemo.MainActivity;
 import com.eyeem.chipsedittextdemo.R;
+import com.eyeem.chipsedittextdemo.core.AppDep;
 import com.eyeem.chipsedittextdemo.core.NoteStorage;
 import com.eyeem.chipsedittextdemo.mortarflow.DynamicModules;
 import com.eyeem.chipsedittextdemo.mortarflow.FlowDep;
@@ -43,7 +44,7 @@ public class Note extends Path implements HasParent, DynamicModules {
 
    @dagger.Component(dependencies = MainActivity.Component.class)
    @ScopeSingleton(Component.class)
-   public interface Component extends FlowDep {
+   public interface Component extends FlowDep, AppDep {
       void inject(NoteView t);
    }
 

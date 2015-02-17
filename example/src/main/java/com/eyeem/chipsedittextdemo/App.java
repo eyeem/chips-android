@@ -2,8 +2,10 @@ package com.eyeem.chipsedittextdemo;
 
 import android.app.Application;
 
-import com.eyeem.chipsedittextdemo.adapter.StorageDep;
+import com.eyeem.chipsedittextdemo.core.StorageDep;
+import com.eyeem.chipsedittextdemo.core.AppDep;
 import com.eyeem.chipsedittextdemo.core.AppModule;
+import com.eyeem.chipsedittextdemo.core.PausableExecutorModule;
 import com.eyeem.chipsedittextdemo.mortarflow.FlowDep;
 import com.eyeem.chipsedittextdemo.mortarflow.ScopeSingleton;
 
@@ -18,9 +20,9 @@ import static mortar.dagger2support.DaggerService.createComponent;
 public class App extends Application {
    private MortarScope rootScope;
 
-   @dagger.Component(modules = AppModule.class)
+   @dagger.Component(modules = {AppModule.class, PausableExecutorModule.class})
    @ScopeSingleton(Component.class)
-   public interface Component extends FlowDep, StorageDep {}
+   public interface Component extends FlowDep, AppDep, StorageDep {}
 
    @Override public void onCreate() {
       super.onCreate();

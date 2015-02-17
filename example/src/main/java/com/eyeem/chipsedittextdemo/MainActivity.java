@@ -10,7 +10,8 @@ import android.util.Log;
 import android.view.*;
 import android.widget.ImageButton;
 
-import com.eyeem.chipsedittextdemo.adapter.StorageDep;
+import com.eyeem.chipsedittextdemo.core.StorageDep;
+import com.eyeem.chipsedittextdemo.core.AppDep;
 import com.eyeem.chipsedittextdemo.core.NoteStorage;
 import com.eyeem.chipsedittextdemo.mortarflow.FlowBundler;
 import com.eyeem.chipsedittextdemo.mortarflow.FlowDep;
@@ -44,7 +45,7 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
 
    @ScopeSingleton(Component.class)
    @dagger.Component(dependencies = App.Component.class)
-   public interface Component extends FlowDep, StorageDep {
+   public interface Component extends FlowDep, AppDep, StorageDep {
       void inject(MainActivity mainActivity);
    }
 

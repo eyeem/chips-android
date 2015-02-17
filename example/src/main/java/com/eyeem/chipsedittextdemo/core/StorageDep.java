@@ -1,6 +1,4 @@
-package com.eyeem.chipsedittextdemo.adapter;
-
-import com.eyeem.chipsedittextdemo.core.NoteStorage;
+package com.eyeem.chipsedittextdemo.core;
 
 /**
  * Created by vishna on 16/02/15.

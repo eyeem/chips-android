@@ -66,8 +66,8 @@ public class Notes extends Path implements DynamicModules {
          return new NotesAdapter(list, cacheOnScroll);
       }
 
-      @Provides CacheOnScroll<LayoutBuild> provideCacheOnScroll() {
-         return new CacheOnScroll<>(sPausableExecutor, 100);
+      @Provides CacheOnScroll<LayoutBuild> provideCacheOnScroll(PausableThreadPoolExecutor pausableThreadPoolExecutor) {
+         return new CacheOnScroll<>(pausableThreadPoolExecutor, 100);
       }
 
       @Provides NoteStorage.List provideNoteStorageList() {
@@ -104,22 +104,5 @@ public class Notes extends Path implements DynamicModules {
          super.onSave(outState);
 
       }
-   }
-
-   private final static PausableThreadPoolExecutor sPausableExecutor;
-   // Sets the amount of time an idle thread waits before terminating
-   private static final int NUMBER_OF_CORES = 2;
-   // Sets the amount of time an idle thread waits before terminating
-   private static final int KEEP_ALIVE_TIME = 5;
-   // Sets the Time Unit to seconds
-   private static final TimeUnit KEEP_ALIVE_TIME_UNIT = TimeUnit.SECONDS;
-
-   static {
-      sPausableExecutor = new PausableThreadPoolExecutor(
-         NUMBER_OF_CORES,       // Initial pool size
-         NUMBER_OF_CORES,       // Max pool size
-         KEEP_ALIVE_TIME,
-         KEEP_ALIVE_TIME_UNIT,
-         new LinkedBlockingQueue<Runnable>());
    }
 }
