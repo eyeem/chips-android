@@ -52,9 +52,6 @@ public class Note {
          switch (entity.type) {
             case Linkify.Entity.ALBUM:
             case Linkify.Entity.VENUE:
-               com.eyeem.chips.Utils.bubblify(ssb, entity.text, entity.start, entity.end,
-                  width, noteBubbleStyle, null, entity);
-               break;
             case Linkify.Entity.CITY:
             case Linkify.Entity.COUNTRY:
             case Linkify.Entity.PERSON:

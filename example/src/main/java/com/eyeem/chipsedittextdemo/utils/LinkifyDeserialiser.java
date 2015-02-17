@@ -1,5 +1,7 @@
 package com.eyeem.chipsedittextdemo.utils;
 
+import android.util.Log;
+
 import com.eyeem.chips.Linkify;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -33,6 +35,7 @@ public class LinkifyDeserialiser implements JsonDeserializer<Linkify.Entities> {
             entity.type = sMap.get(o.get("type").getAsString());
             entities.add(entity);
          } catch (Exception e) {
+            Log.w(LinkifyDeserialiser.class.getSimpleName(), "deserialize", e);
             continue;
          }
       }
