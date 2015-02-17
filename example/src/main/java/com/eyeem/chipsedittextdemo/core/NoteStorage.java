@@ -2,8 +2,12 @@ package com.eyeem.chipsedittextdemo.core;
 
 import android.content.Context;
 
+import com.eyeem.chips.Linkify;
 import com.eyeem.chipsedittextdemo.model.Note;
 import com.eyeem.storage.Storage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by vishna on 16/02/15.

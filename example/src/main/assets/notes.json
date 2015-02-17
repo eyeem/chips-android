@@ -1,0 +1,15 @@
+[
+  {
+    "id": "1",
+    "text": "This is a sample app demonstrating possibilities of the chips library",
+    "entities": [
+      {
+        "start": 56,
+        "end": 61,
+        "type": "url",
+        "data": "https://github.com/eyeem/chips-android",
+        "displayText": "chips"
+      }
+    ]
+  }
+]

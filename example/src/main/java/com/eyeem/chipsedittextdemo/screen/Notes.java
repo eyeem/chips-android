@@ -6,8 +6,8 @@ import com.eyeem.chips.LayoutBuild;
 import com.eyeem.chipsedittextdemo.MainActivity;
 import com.eyeem.chipsedittextdemo.R;
 import com.eyeem.chipsedittextdemo.adapter.NotesAdapter;
+import com.eyeem.chipsedittextdemo.core.BootstrapNotesModule;
 import com.eyeem.chipsedittextdemo.core.NoteStorage;
-import com.eyeem.chipsedittextdemo.core.RandomNotesModule;
 import com.eyeem.chipsedittextdemo.experimental.CacheOnScroll;
 import com.eyeem.chipsedittextdemo.experimental.PausableThreadPoolExecutor;
 import com.eyeem.chipsedittextdemo.model.Note;
@@ -24,18 +24,18 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import dagger.Provides;
-import flow.HasParent;
 import flow.Layout;
 import flow.Path;
 import mortar.ViewPresenter;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * Created by vishna on 03/02/15.
  */
-// TODO WithComponentFactory
 @Layout(R.layout.notes) @WithComponent(Notes.Component.class)
-public class Notes extends Path implements HasParent, DynamicModules {
+public class Notes extends Path implements DynamicModules {
 
    NoteStorage.List list;
 
@@ -43,15 +43,11 @@ public class Notes extends Path implements HasParent, DynamicModules {
       this.list = list;
    }
 
-   @Override public Path getParent() {
-      return new Start();
-   }
-
    @Override public List<Object> dependencies() {
       return Arrays.<Object>asList(new Module(list));
    }
 
-   @dagger.Component(modules = {Module.class, RandomNotesModule.class}, dependencies = MainActivity.Component.class)
+   @dagger.Component(modules = {Module.class, BootstrapNotesModule.class}, dependencies = MainActivity.Component.class)
    @ScopeSingleton(Component.class)
    public interface Component {
       void inject(NotesView t);
@@ -73,15 +69,20 @@ public class Notes extends Path implements HasParent, DynamicModules {
       @Provides CacheOnScroll<LayoutBuild> provideCacheOnScroll() {
          return new CacheOnScroll<>(sPausableExecutor, 100);
       }
+
+      @Provides NoteStorage.List provideNoteStorageList() {
+         return list;
+      }
    }
 
    @ScopeSingleton(Component.class)
    public static class Presenter extends ViewPresenter<NotesView> {
 
       private final Observable<List<Note>> noteSource;
-      private List<Note> notes;
+      private final NoteStorage.List noteStorage;
 
-      @Inject Presenter(Observable<List<Note>> noteSource) {
+      @Inject Presenter(NoteStorage.List noteStorage, Observable<List<Note>> noteSource) {
+         this.noteStorage = noteStorage;
          this.noteSource = noteSource;
       }
 
@@ -89,13 +90,14 @@ public class Notes extends Path implements HasParent, DynamicModules {
          super.onLoad(savedInstanceState);
          if (!hasView()) return;
 
-//         noteSource.subscribe(new Action1<List<Note>>() {
-//            @Override public void call(List<Note> notes) {
-//               if (!hasView()) return;
-//               Presenter.this.notes = notes;
-//               getView().setNotes(notes);
-//            }
-//         });
+         noteSource
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Action1<List<Note>>() {
+               @Override public void call(List<Note> notes) {
+                  if (!hasView() || noteStorage.size() > 0) return;
+                  noteStorage.addAll(notes);
+               }
+            });
       }
 
       @Override protected void onSave(Bundle outState) {

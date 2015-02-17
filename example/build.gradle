@@ -41,6 +41,8 @@ dependencies {
 
     compile 'com.eyeem.potato:library:0.9.2.5-SNAPSHOT@aar'
 
+    compile 'com.mikepenz.iconics:library:0.7.0@aar'
+
     compile project(':library')
 }
 

@@ -1,5 +1,6 @@
 package com.eyeem.chipsedittextdemo;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import android.support.v4.widget.DrawerLayout;
@@ -7,19 +8,25 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
+import android.widget.ImageButton;
 
 import com.eyeem.chipsedittextdemo.adapter.StorageDep;
+import com.eyeem.chipsedittextdemo.core.NoteStorage;
 import com.eyeem.chipsedittextdemo.mortarflow.FlowBundler;
 import com.eyeem.chipsedittextdemo.mortarflow.FlowDep;
 import com.eyeem.chipsedittextdemo.mortarflow.FramePathContainerView;
 import com.eyeem.chipsedittextdemo.mortarflow.HandlesBack;
 import com.eyeem.chipsedittextdemo.mortarflow.HandlesUp;
 import com.eyeem.chipsedittextdemo.mortarflow.ScopeSingleton;
+import com.eyeem.chipsedittextdemo.screen.Note;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.FontAwesome;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import flow.Flow;
 import flow.HasParent;
 import flow.Path;
@@ -42,12 +49,14 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
    }
 
    @Inject FlowBundler flowBundler;
+   @Inject NoteStorage noteStorage;
 
    @InjectView(R.id.container) FramePathContainerView container;
    /* package */ HandlesBack containerAsHandlesBack;
    /* package */ HandlesUp containerAsHandlesUp;
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.drawer) DrawerLayout drawer;
+   @InjectView(R.id.fab_button) ImageButton fabButton;
 
    private Flow flow;
 
@@ -66,6 +75,8 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
       containerAsHandlesUp = container;
 
       setSupportActionBar(toolbar);
+
+      fabButton.setImageDrawable(new IconicsDrawable(this, FontAwesome.Icon.faw_pencil).color(Color.WHITE).actionBarSize());
    }
 
    private String getScopeName() {
@@ -153,5 +164,9 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
             }
          });
       return true;
+   }
+
+   @OnClick(R.id.fab_button) void onFabButton(View view) {
+      Flow.get(this).goTo(new Note(noteStorage.all(), null));
    }
 }
