@@ -9,7 +9,7 @@ import com.eyeem.notes.mortarflow.ScopeSingleton;
 import com.eyeem.notes.screen.Notes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.picasso.Picasso;
+import com.squareup.otto.Bus;
 
 import dagger.Module;
 import dagger.Provides;
@@ -29,10 +29,6 @@ public class AppModule {
 
    @Provides App app() { return app; }
 
-   @Provides @ScopeSingleton(App.Component.class) Picasso providePicasso() {
-      return Picasso.with(app);
-   }
-
    @Provides @ScopeSingleton(App.Component.class) NoteStorage provideNoteStorage(App app) {
       return new NoteStorage(app);
    }
@@ -51,5 +47,9 @@ public class AppModule {
 
    @Provides @ScopeSingleton(App.Component.class) Parceler provideParcer(Gson gson) {
       return new GsonParceler(gson);
+   }
+
+   @Provides @ScopeSingleton(App.Component.class) Bus provideBus() {
+      return new Bus();
    }
 }

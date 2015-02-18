@@ -8,6 +8,7 @@ import com.eyeem.notes.R;
 import com.eyeem.notes.adapter.NotesAdapter;
 import com.eyeem.notes.core.BootstrapNotesModule;
 import com.eyeem.notes.core.NoteStorage;
+import com.eyeem.notes.event.NoteClickedEvent;
 import com.eyeem.notes.experimental.CacheOnScroll;
 import com.eyeem.notes.experimental.PausableThreadPoolExecutor;
 import com.eyeem.notes.model.Note;
@@ -15,6 +16,8 @@ import com.eyeem.notes.mortarflow.DynamicModules;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
 import com.eyeem.notes.mortarflow.WithComponent;
 import com.eyeem.notes.view.NotesView;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,8 +25,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.Provides;
+import flow.Flow;
 import flow.Layout;
 import flow.Path;
+import mortar.MortarScope;
 import mortar.ViewPresenter;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -60,8 +65,8 @@ public class Notes extends Path implements DynamicModules {
          this.list = list;
       }
 
-      @Provides NotesAdapter provideAdapter(CacheOnScroll<LayoutBuild> cacheOnScroll) {
-         return new NotesAdapter(list, cacheOnScroll);
+      @Provides NotesAdapter provideAdapter(CacheOnScroll<LayoutBuild> cacheOnScroll, Bus bus) {
+         return new NotesAdapter(list, cacheOnScroll, bus);
       }
 
       @Provides CacheOnScroll<LayoutBuild> provideCacheOnScroll(PausableThreadPoolExecutor pausableThreadPoolExecutor) {
@@ -76,13 +81,11 @@ public class Notes extends Path implements DynamicModules {
    @ScopeSingleton(Component.class)
    public static class Presenter extends ViewPresenter<NotesView> {
 
-      private final Observable<List<Note>> noteSource;
-      private final NoteStorage.List noteStorage;
+      @Inject Observable<List<Note>> noteSource;
+      @Inject NoteStorage.List noteList;
+      @Inject Bus bus;
 
-      @Inject Presenter(NoteStorage.List noteStorage, Observable<List<Note>> noteSource) {
-         this.noteStorage = noteStorage;
-         this.noteSource = noteSource;
-      }
+      @Inject Presenter() {}
 
       @Override protected void onLoad(Bundle savedInstanceState) {
          super.onLoad(savedInstanceState);
@@ -92,15 +95,25 @@ public class Notes extends Path implements DynamicModules {
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe(new Action1<List<Note>>() {
                @Override public void call(List<Note> notes) {
-                  if (!hasView() || noteStorage.size() > 0) return;
-                  noteStorage.addAll(notes);
+                  if (!hasView() || noteList.size() > 0) return;
+                  noteList.addAll(notes);
                }
             });
       }
 
-      @Override protected void onSave(Bundle outState) {
-         super.onSave(outState);
+      @Override protected void onEnterScope(MortarScope scope) {
+         super.onEnterScope(scope);
+         bus.register(this);
+      }
 
+      @Override protected void onExitScope() {
+         super.onExitScope();
+         bus.unregister(this);
+      }
+
+      @Subscribe public void noteClicked(NoteClickedEvent noteClickedEvent) {
+         Note note = noteClickedEvent.note;
+         if (hasView()) Flow.get(getView()).goTo(new com.eyeem.notes.screen.Note(noteList, note.id));
       }
    }
 }

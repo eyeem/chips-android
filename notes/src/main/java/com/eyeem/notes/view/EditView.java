@@ -31,7 +31,6 @@ import com.eyeem.chips.Regex;
 import com.eyeem.chips.Utils;
 import com.eyeem.notes.R;
 import com.eyeem.notes.screen.Edit;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +55,6 @@ public class EditView extends RelativeLayout {
    public static final int MAX_FONT_SIZE = 24;
 
    @Inject Edit.Presenter presenter;
-   @Inject Picasso picasso;
    @Inject List<String> suggestions;
 
    @InjectView(R.id.chipsMultiAutoCompleteTextview1) ChipsEditText et;

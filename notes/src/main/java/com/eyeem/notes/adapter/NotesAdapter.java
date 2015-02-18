@@ -15,15 +15,18 @@ import android.view.ViewGroup;
 import com.eyeem.chips.ChipsTextView;
 import com.eyeem.chips.LayoutBuild;
 import com.eyeem.notes.R;
+import com.eyeem.notes.event.NoteClickedEvent;
 import com.eyeem.notes.experimental.CacheOnScroll;
 import com.eyeem.notes.model.Note;
 import com.eyeem.storage.Storage;
+import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * Created by vishna on 03/02/15.
@@ -36,17 +39,19 @@ public class NotesAdapter extends RecyclerAdapter<Note, NotesAdapter.NoteHolder>
    LayoutBuild.Config layoutConfig;
    int width = 0;
    CacheOnScroll cacheOnScroll;
+   Bus bus;
 
-   public NotesAdapter(Storage<Note>.List list, CacheOnScroll cacheOnScroll) {
+   public NotesAdapter(Storage<Note>.List list, CacheOnScroll cacheOnScroll, Bus bus) {
       super(list);
       this.cacheOnScroll = cacheOnScroll;
       this.cacheOnScroll.setAheadLoader(new LayoutAheadLoader());
+      this.bus = bus;
    }
 
    Context appContext;
 
    @Override public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-      NoteHolder noteHolder =  new NoteHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.note_row, parent, false));
+      NoteHolder noteHolder =  new NoteHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.note_row, parent, false), bus);
 
       if (textPaint == null) {
          textPaint = noteTextPaint(parent.getContext());
@@ -82,7 +87,7 @@ public class NotesAdapter extends RecyclerAdapter<Note, NotesAdapter.NoteHolder>
       }
 
       if (layoutConfig != null) {
-         holder.textView.setLayoutBuild(cacheOnScroll.get(note.id));
+         holder.setNote(note).textView.setLayoutBuild(cacheOnScroll.get(note.id));
       }
 
       if (TRUNCATE)  holder.textView.setTruncated(true);
@@ -91,10 +96,22 @@ public class NotesAdapter extends RecyclerAdapter<Note, NotesAdapter.NoteHolder>
    static class NoteHolder extends RecyclerView.ViewHolder {
 
       @InjectView(R.id.note_text_view) ChipsTextView textView;
+      final Bus bus;
+      Note note;
 
-      public NoteHolder(View itemView) {
+      public NoteHolder(View itemView, Bus bus) {
          super(itemView);
          ButterKnife.inject(this, itemView);
+         this.bus = bus;
+      }
+
+      public NoteHolder setNote(Note note) {
+         this.note = note;
+         return this;
+      }
+
+      @OnClick(R.id.note_container) void onClick(View view) {
+         if (note != null) bus.post(new NoteClickedEvent(note));
       }
    }
 
