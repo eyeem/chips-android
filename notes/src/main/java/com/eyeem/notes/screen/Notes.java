@@ -1,13 +1,16 @@
 package com.eyeem.notes.screen;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
+import com.eyeem.chips.BubbleSpan;
 import com.eyeem.chips.LayoutBuild;
 import com.eyeem.notes.MainActivity;
 import com.eyeem.notes.R;
 import com.eyeem.notes.adapter.NotesAdapter;
 import com.eyeem.notes.core.BootstrapNotesModule;
 import com.eyeem.notes.core.NoteStorage;
+import com.eyeem.notes.event.BubbleClickedEvent;
 import com.eyeem.notes.event.NoteClickedEvent;
 import com.eyeem.notes.experimental.CacheOnScroll;
 import com.eyeem.notes.experimental.PausableThreadPoolExecutor;
@@ -114,6 +117,12 @@ public class Notes extends Path implements DynamicModules {
       @Subscribe public void noteClicked(NoteClickedEvent noteClickedEvent) {
          Note note = noteClickedEvent.note;
          if (hasView()) Flow.get(getView()).goTo(new com.eyeem.notes.screen.Note(noteList, note.id));
+      }
+
+      @Subscribe public void bubbleClicked(BubbleClickedEvent bubbleClickedEvent) {
+         BubbleSpan span = bubbleClickedEvent.bubbleSpan;
+         // TODO some event handling links, emails and such
+         Toast.makeText(getView().getContext(), span.data().toString(), Toast.LENGTH_SHORT).show();
       }
    }
 }

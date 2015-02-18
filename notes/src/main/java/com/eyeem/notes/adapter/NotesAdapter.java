@@ -31,7 +31,7 @@ import butterknife.OnClick;
 /**
  * Created by vishna on 03/02/15.
  */
-public class NotesAdapter extends RecyclerAdapter<Note, NotesAdapter.NoteHolder> {
+public class NotesAdapter extends RecyclerAdapter<Note, NoteHolder> {
 
    private final static boolean TRUNCATE = true;
 
@@ -80,7 +80,7 @@ public class NotesAdapter extends RecyclerAdapter<Note, NotesAdapter.NoteHolder>
             layoutConfig.textPaint = textPaint;
             layoutConfig.truncated = true;
             if (TRUNCATE)  layoutConfig.maxLines = 2;
-            SpannableStringBuilder moreText = new SpannableStringBuilder("...");
+            SpannableStringBuilder moreText = new SpannableStringBuilder("...more");
             com.eyeem.chips.Utils.tapify(moreText, 0, moreText.length(), 0xff000000, 0xff000000, new Truncation());
             layoutConfig.moreText = moreText;
          }
@@ -91,28 +91,6 @@ public class NotesAdapter extends RecyclerAdapter<Note, NotesAdapter.NoteHolder>
       }
 
       if (TRUNCATE)  holder.textView.setTruncated(true);
-   }
-
-   static class NoteHolder extends RecyclerView.ViewHolder {
-
-      @InjectView(R.id.note_text_view) ChipsTextView textView;
-      final Bus bus;
-      Note note;
-
-      public NoteHolder(View itemView, Bus bus) {
-         super(itemView);
-         ButterKnife.inject(this, itemView);
-         this.bus = bus;
-      }
-
-      public NoteHolder setNote(Note note) {
-         this.note = note;
-         return this;
-      }
-
-      @OnClick(R.id.note_container) void onClick(View view) {
-         if (note != null) bus.post(new NoteClickedEvent(note));
-      }
    }
 
    private static TextPaint _noteTextPaint;
@@ -130,7 +108,7 @@ public class NotesAdapter extends RecyclerAdapter<Note, NotesAdapter.NoteHolder>
       return _noteTextPaint;
    }
 
-   private static class Truncation {
+   public static class Truncation {
    } // marker class
 
    public CacheOnScroll getCacheOnScroll() {
