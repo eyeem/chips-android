@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.eyeem.notes.R;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
 import com.eyeem.notes.mortarflow.WithComponent;
+import com.eyeem.notes.utils.RxBus;
 import com.eyeem.notes.view.EditView;
 
 import java.util.ArrayList;
@@ -59,6 +60,8 @@ public class Edit extends Path implements HasParent {
 
    @ScopeSingleton(Component.class)
    public static class Presenter extends ViewPresenter<EditView> {
+
+      @Inject RxBus bus;
 
       @Inject Presenter() {}
 

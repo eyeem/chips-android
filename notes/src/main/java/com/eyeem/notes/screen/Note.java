@@ -1,5 +1,7 @@
 package com.eyeem.notes.screen;
 
+import android.text.TextUtils;
+
 import com.eyeem.notes.MainActivity;
 import com.eyeem.notes.R;
 import com.eyeem.notes.core.AppDep;
@@ -8,6 +10,7 @@ import com.eyeem.notes.mortarflow.DynamicModules;
 import com.eyeem.notes.mortarflow.FlowDep;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
 import com.eyeem.notes.mortarflow.WithComponent;
+import com.eyeem.notes.utils.RxBus;
 import com.eyeem.notes.view.NoteView;
 
 import java.util.Arrays;
@@ -41,27 +44,47 @@ public class Note extends Path implements HasParent, DynamicModules {
       return Arrays.<Object>asList(module);
    }
 
-   @dagger.Component(dependencies = MainActivity.Component.class)
+   @dagger.Component(modules = Module.class, dependencies = MainActivity.Component.class)
    @ScopeSingleton(Component.class)
    public interface Component extends FlowDep, AppDep {
       void inject(NoteView t);
+      RxBus provideRxBus();
+      com.eyeem.notes.model.Note provideNote();
    }
 
    @dagger.Module public static class Module {
 
       NoteStorage.List list;
       String noteId;
+      com.eyeem.notes.model.Note localNote;
+      RxBus rxBus;
+      NoteStorage storage;
 
       public Module(NoteStorage.List list, String noteId) {
          this.list = list;
          this.noteId = noteId;
+         this.rxBus = new RxBus();
       }
 
       @Provides NoteStorage.List provideNoteList() {
          return list;
       }
-      // TODO provideList
-      // TODO provideNote
+
+      @Provides com.eyeem.notes.model.Note provideNote(NoteStorage storage) {
+         if (localNote == null) {
+            if (!TextUtils.isEmpty(noteId)) {
+               localNote = storage.get(noteId);
+            } else {
+               localNote = new com.eyeem.notes.model.Note();
+               localNote.id = String.valueOf(System.currentTimeMillis());
+            }
+         }
+         return localNote;
+      }
+
+      @Provides RxBus provideRxBus() {
+         return rxBus;
+      }
    }
 
    @ScopeSingleton(Component.class) public static class Presenter extends ViewPresenter<NoteView> {

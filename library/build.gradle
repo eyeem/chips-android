@@ -23,7 +23,7 @@ dependencies {
         mavenLocal()
     }
 
-    compile 'com.netflix.rxjava:rxjava-android:0.20.7'
+    compile 'io.reactivex:rxandroid:0.24.0'
     //testCompile 'junit:junit:4.10'
     //testCompile 'org.robolectric:robolectric:2.1.+'
     //testCompile 'com.squareup:fest-android:1.0.+'

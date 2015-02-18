@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="#7000"
     android:focusable="true"
     android:focusableInTouchMode="true">
 
@@ -19,90 +18,24 @@
         android:padding="16dp"
         android:id="@+id/chipsMultiAutoCompleteTextview1"
         android:layout_width="fill_parent"
-        android:layout_height="120dp"
+        android:layout_height="200dp"
         android:layout_alignParentTop="true"
         android:gravity="top"
         android:textSize="16sp"
+        android:textColor="@color/primary_text_color"
+        android:textColorHint="@color/primary_hint_text_color"
         android:ems="10"
         android:text="" >
     </com.eyeem.chips.ChipsEditText>
 
-
-    <Button
-        android:layout_below="@id/chipsMultiAutoCompleteTextview1"
-        android:layout_alignRight="@id/chipsMultiAutoCompleteTextview1"
-            android:id="@+id/check"
-            android:text="Update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
     <Button
             android:layout_below="@id/chipsMultiAutoCompleteTextview1"
-            android:layout_toLeftOf="@id/check"
+            android:layout_alignParentRight="true"
             android:id="@+id/edit"
             android:text="Add bubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
-
-    <Button
-            android:layout_below="@id/chipsMultiAutoCompleteTextview1"
-            android:layout_toLeftOf="@id/edit"
-            android:id="@+id/tag_setup"
-            android:text="Tag setup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-
-    <CheckBox
-        android:layout_below="@id/chipsMultiAutoCompleteTextview1"
-        android:layout_toLeftOf="@id/tag_setup"
-        android:id="@+id/debug_check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <SeekBar
-        android:layout_below="@id/edit"
-        android:id="@+id/seek_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:id="@+id/text_size"
-        android:layout_alignTop="@id/seek_bar"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <SeekBar
-        android:layout_below="@id/seek_bar"
-        android:id="@+id/spacing_seek_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:id="@+id/spacing_size"
-        android:layout_alignTop="@id/spacing_seek_bar"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <FrameLayout
-        android:clickable="true"
-        android:id="@+id/chipsTextViewContainer"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/spacing_seek_bar"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.eyeem.chips.ChipsTextView
-            android:padding="16dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/chipsTextView"
-            />
-    </FrameLayout>
 
     <com.eyeem.chips.AutocompletePopover
             android:paddingTop="12dp"

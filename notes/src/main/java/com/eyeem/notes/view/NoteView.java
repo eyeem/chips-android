@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import com.eyeem.notes.R;
 import com.eyeem.notes.screen.Edit;
 import com.eyeem.notes.screen.Note;
+import com.eyeem.notes.screen.Preview;
 import com.eyeem.notes.widget.ScreenPagerAdapter;
 
 import butterknife.ButterKnife;
@@ -55,7 +56,7 @@ public class NoteView extends LinearLayout {
       ButterKnife.inject(this, this);
 
       pagerAdapter = new ScreenPagerAdapter(getContext());
-      pagerAdapter.addScreen(new Edit() /*TODO , new Preview()*/);
+      pagerAdapter.addScreen(new Edit(), new Preview());
       pager.setAdapter(pagerAdapter);
    }
 }

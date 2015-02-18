@@ -5,6 +5,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 
 import com.eyeem.chips.BubbleStyle;
+import com.eyeem.chips.ChipsEditText;
 import com.eyeem.chips.Linkify;
 import com.google.gson.annotations.SerializedName;
 
@@ -30,20 +31,11 @@ public class Note {
       this.entities = entities;
    }
 
-   public SpannableStringBuilder textSpan(int textSize, Context context) {
+   public SpannableStringBuilder textSpan(BubbleStyle style, ChipsEditText et) {
       boolean isEmpty = TextUtils.isEmpty(text);
       SpannableStringBuilder ssb = new SpannableStringBuilder(
          isEmpty ? "" : text
       );
-
-      if (noteBubbleStyle == null) {
-         int padding = Math.round((float)textSize * (0.05f));
-
-         noteBubbleStyle = new BubbleStyle(
-            context.getResources().getDrawable(com.eyeem.chips.R.drawable.greentext_background_active),
-            context.getResources().getDrawable(com.eyeem.chips.R.drawable.greentext_background_pressed),
-            textSize, 0xffebe0f5, 0xffebe0f5, padding);
-      }
 
       int width = 0; // FIXME not so great
       if (entities == null)
@@ -59,7 +51,7 @@ public class Note {
             case Linkify.Entity.MENTION:
             case Linkify.Entity.URL:
                com.eyeem.chips.Utils.bubblify(ssb, entity.text, entity.start, entity.end,
-                  width, noteBubbleStyle, null, entity);
+                  width, style, et, entity);
                break;
             default:
                // NOOP
@@ -68,5 +60,12 @@ public class Note {
       return ssb;
    }
 
-   static BubbleStyle noteBubbleStyle;
+   public static BubbleStyle defaultBubbleStyle(Context context, int textSize) {
+      int padding = Math.round((float)textSize * (0.05f));
+
+      return new BubbleStyle(
+            context.getResources().getDrawable(com.eyeem.chips.R.drawable.greentext_background_active),
+            context.getResources().getDrawable(com.eyeem.chips.R.drawable.greentext_background_pressed),
+            textSize, 0xffebe0f5, 0xffebe0f5, padding);
+   }
 }

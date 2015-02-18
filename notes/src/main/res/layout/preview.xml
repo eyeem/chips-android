@@ -1,0 +1,68 @@
+<com.eyeem.notes.view.PreviewView xmlns:android="http://schemas.android.com/apk/res/android"
+                                  xmlns:tools="http://schemas.android.com/tools"
+                                  android:layout_width="match_parent"
+                                  android:layout_height="match_parent"
+                                  android:background="#7000"
+                                  android:focusable="true"
+                                  android:focusableInTouchMode="true"
+                                  tools:context=".MainActivity">
+
+    <!-- TODO move to ... menu -->
+    <Button
+        android:id="@+id/tag_setup"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tag setup"
+        />
+
+    <SeekBar
+        android:id="@+id/seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tag_setup"/>
+
+    <TextView
+        android:id="@+id/text_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/seek_bar"
+        android:layout_centerHorizontal="true"/>
+
+    <SeekBar
+        android:id="@+id/spacing_seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/seek_bar"/>
+
+    <TextView
+        android:id="@+id/spacing_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/spacing_seek_bar"
+        android:layout_centerHorizontal="true"/>
+
+    <FrameLayout
+        android:id="@+id/chipsTextViewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/spacing_seek_bar"
+        android:layout_marginTop="10dp"
+        android:clickable="true">
+
+        <com.eyeem.chips.ChipsTextView
+            android:id="@+id/chipsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            />
+
+        <CheckBox
+            android:id="@+id/debug_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right|bottom"/>
+    </FrameLayout>
+
+</com.eyeem.notes.view.PreviewView>

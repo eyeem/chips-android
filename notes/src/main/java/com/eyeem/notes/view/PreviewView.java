@@ -2,27 +2,38 @@ package com.eyeem.notes.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.eyeem.chips.AutocompletePopover;
-import com.eyeem.chips.BubbleStyle;
+import com.eyeem.chips.BubbleSpan;
 import com.eyeem.chips.ChipsEditText;
+import com.eyeem.chips.ChipsTextView;
+import com.eyeem.chips.DefaultBubbles;
+import com.eyeem.chips.Linkify;
+import com.eyeem.chips.Regex;
 import com.eyeem.chips.Utils;
 import com.eyeem.notes.R;
-import com.eyeem.notes.model.Note;
-import com.eyeem.notes.screen.Edit;
+import com.eyeem.notes.screen.Preview;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.regex.Matcher;
 
 import javax.inject.Inject;
 
@@ -34,40 +45,44 @@ import mortar.dagger2support.DaggerService;
 import static mortar.MortarScope.getScope;
 
 /**
- * Created by vishna on 27/01/15.
+ * Created by vishna on 18/02/15.
  */
-public class EditView extends RelativeLayout {
+public class PreviewView extends RelativeLayout {
+   public static final int MIN_FONT_SIZE = 10;
+   public static final int MAX_FONT_SIZE = 24;
 
-   @Inject Edit.Presenter presenter;
-   @Inject List<String> suggestions;
-   @Inject Note note;
+   @Inject Preview.Presenter presenter;
+   // @Inject List<String> suggestions;
 
-   @InjectView(R.id.chipsMultiAutoCompleteTextview1) ChipsEditText et;
-   @InjectView(R.id.popover) AutocompletePopover popover;
-   @InjectView(R.id.edit) Button edit;
+   @InjectView(R.id.chipsTextView) ChipsTextView tv;
+   @InjectView(R.id.seek_bar) SeekBar textSizeSeekBar;
+   @InjectView(R.id.spacing_seek_bar) SeekBar spacingSizeSeekBar;
+   @InjectView(R.id.text_size) TextView fontSize;
+   @InjectView(R.id.spacing_size) TextView spacingSize;
+   @InjectView(R.id.debug_check) CheckBox debugCheck;
 
-   public EditView(Context context) {
+   public PreviewView(Context context) {
       super(context);
       init();
    }
 
-   public EditView(Context context, AttributeSet attrs) {
+   public PreviewView(Context context, AttributeSet attrs) {
       super(context, attrs);
       init();
    }
 
-   public EditView(Context context, AttributeSet attrs, int defStyleAttr) {
+   public PreviewView(Context context, AttributeSet attrs, int defStyleAttr) {
       super(context, attrs, defStyleAttr);
       init();
    }
 
-   @TargetApi(Build.VERSION_CODES.LOLLIPOP) public EditView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+   @TargetApi(Build.VERSION_CODES.LOLLIPOP) public PreviewView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
       super(context, attrs, defStyleAttr, defStyleRes);
       init();
    }
 
    private void init() {
-      getScope(getContext()).<Edit.Component>getService(DaggerService.SERVICE_NAME).inject(this);
+      getScope(getContext()).<Preview.Component>getService(DaggerService.SERVICE_NAME).inject(this);
       setSaveEnabled(true);
    }
 
@@ -88,84 +103,72 @@ public class EditView extends RelativeLayout {
    }
 
    public void setup() {
-      et.setAutocomplePopover(popover);
-      et.setMaxBubbleCount(4);
-      et.setLineSpacing(1.0f, 1.25f);
-      popover.setChipsEditText(et);
 
-      final ArrayList<String> availableItems = new ArrayList<String>(suggestions);
-      et.setAutocompleteResolver(new ChipsEditText.AutocompleteResolver() {
+      // chips debug
+      debugCheck = (CheckBox)findViewById(R.id.debug_check);
+      debugCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
          @Override
-         public ArrayList<String> getSuggestions(String query) throws Exception {
-            return new ArrayList<String>();
-         }
-
-         @Override
-         public ArrayList<String> getDefaultSuggestions() {
-            return availableItems;
+         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            ChipsTextView.DEBUG = isChecked;
+            updateTextProperties();
          }
       });
-      et.addListener(chipsListener);
 
-      BubbleStyle bubbleStyle = Note.defaultBubbleStyle(et.getContext(), (int) et.getTextSize());
-      et.setText(note.textSpan(bubbleStyle, et));
-      et.setCurrentBubbleStyle(bubbleStyle);
+      // setting up chips exit text
+      textSizeSeekBar.setMax(MAX_FONT_SIZE - MIN_FONT_SIZE);
+      textSizeSeekBar.setProgress(MAX_FONT_SIZE - 18);
+      textSizeSeekBar.setOnSeekBarChangeListener(seekListener);
+      spacingSizeSeekBar.setMax(10);
+      spacingSizeSeekBar.setProgress(1);
+      spacingSizeSeekBar.setOnSeekBarChangeListener(seekListener);
 
-//      TextPaint paint = new TextPaint();
-//      Resources r = getResources();
-//      float _dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
-//      paint.setAntiAlias(true);
-//      paint.setTextSize(_dp);
-//      paint.setColor(0xff000000); //black
-//      tv.setTextPaint(paint);
 
-//      tv.setOnBubbleClickedListener(new ChipsTextView.OnBubbleClickedListener() {
-//         @Override
-//         public void onBubbleClicked(View view, BubbleSpan bubbleSpan) {
-//            if (bubbleSpan.data() instanceof Truncation) {
-//               tv.expand(true);
-//            } else {
-//               Toast.makeText(view.getContext(), ((Linkify.Entity) bubbleSpan.data()).text, Toast.LENGTH_LONG).show();
-//            }
-//         }
-//      });
-//      SpannableStringBuilder moreText = new SpannableStringBuilder("... more");
-//      Utils.tapify(moreText, 0, moreText.length(), 0x77000000, 0xff000000, new Truncation());
-//      tv.setMaxLines(3, moreText);
-//      tv.requestFocus();
-//      updateTextProperties();
-//
-//      et.getCursorDrawable().setColor(0xff00ff00);
+      TextPaint paint = new TextPaint();
+      Resources r = getResources();
+      float _dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
+      paint.setAntiAlias(true);
+      paint.setTextSize(_dp);
+      paint.setColor(0xff000000); //black
+      tv.setTextPaint(paint);
+
+      tv.setOnBubbleClickedListener(new ChipsTextView.OnBubbleClickedListener() {
+         @Override
+         public void onBubbleClicked(View view, BubbleSpan bubbleSpan) {
+            if (bubbleSpan.data() instanceof Truncation) {
+               tv.expand(true);
+            } else {
+               Toast.makeText(view.getContext(), ((Linkify.Entity) bubbleSpan.data()).text, Toast.LENGTH_LONG).show();
+            }
+         }
+      });
+      SpannableStringBuilder moreText = new SpannableStringBuilder("... more");
+      Utils.tapify(moreText, 0, moreText.length(), 0x77000000, 0xff000000, new Truncation());
+      tv.setMaxLines(3, moreText);
+      tv.requestFocus();
+      updateTextProperties();
    }
 
 
    public void updateTextProperties() {
-//      int calculatedProgress = MIN_FONT_SIZE + textSizeSeekBar.getProgress();
-//      float lineSpacing = 1.0f  + 0.25f * spacingSizeSeekBar.getProgress();
-//
-//      TextPaint paint = new TextPaint();
-//      Resources r = getResources();
-//      float _dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, calculatedProgress, r.getDisplayMetrics());
-//      paint.setAntiAlias(true);
-//      paint.setTextSize(_dp);
-//      paint.setColor(0xff000000); //black
-//      tv.setTextPaint(paint);
-//      fontSize.setText(String.format("%ddp %.2fpx", calculatedProgress, _dp));
-//      spacingSize.setText(String.format("%.2f", lineSpacing));
-//      tv.setLineSpacing(lineSpacing);
+      int calculatedProgress = MIN_FONT_SIZE + textSizeSeekBar.getProgress();
+      float lineSpacing = 1.0f  + 0.25f * spacingSizeSeekBar.getProgress();
+
+      TextPaint paint = new TextPaint();
+      Resources r = getResources();
+      float _dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, calculatedProgress, r.getDisplayMetrics());
+      paint.setAntiAlias(true);
+      paint.setTextSize(_dp);
+      paint.setColor(0xff000000); //black
+      tv.setTextPaint(paint);
+      fontSize.setText(String.format("%ddp %.2fpx", calculatedProgress, _dp));
+      spacingSize.setText(String.format("%.2f", lineSpacing));
+      tv.setLineSpacing(lineSpacing);
 //      update(tv);
    }
 
-   @OnClick(R.id.edit) public void toggleEdit(View view) {
-      et.resetAutocompleList();
-      et.startManualMode();
-      popover.show();
-      et.postDelayed(new Runnable() {
-         @Override
-         public void run() {
-            et.showKeyboard();
-         }
-      }, 100);
+   @OnClick(R.id.tag_setup) public void tagSetup(View view) {
+      //Toast.makeText(getContext(), Utils.tag_setup(et), Toast.LENGTH_LONG).show();
+      Toast.makeText(getContext(), "TODO", Toast.LENGTH_LONG).show();
    }
 
 //   @OnClick(R.id.check) public void update(View view) {
@@ -245,7 +248,7 @@ public class EditView extends RelativeLayout {
       }
    };
 
-///// boiler plate code that makes saving state work http://trickyandroid.com/saving-android-view-state-correctly/
+   ///// boiler plate code that makes saving state work http://trickyandroid.com/saving-android-view-state-correctly/
    @Override
    public Parcelable onSaveInstanceState() {
       Parcelable superState = super.onSaveInstanceState();

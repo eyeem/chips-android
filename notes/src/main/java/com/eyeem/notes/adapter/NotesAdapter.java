@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.eyeem.chips.BubbleStyle;
 import com.eyeem.chips.ChipsTextView;
 import com.eyeem.chips.LayoutBuild;
 import com.eyeem.notes.R;
@@ -36,6 +37,7 @@ public class NotesAdapter extends RecyclerAdapter<Note, NoteHolder> {
    private final static boolean TRUNCATE = true;
 
    TextPaint textPaint;
+   BubbleStyle bubbleStyle;
    LayoutBuild.Config layoutConfig;
    int width = 0;
    CacheOnScroll cacheOnScroll;
@@ -63,6 +65,10 @@ public class NotesAdapter extends RecyclerAdapter<Note, NoteHolder> {
 
       if (appContext == null) {
          appContext = parent.getContext().getApplicationContext();
+      }
+
+      if (bubbleStyle == null) {
+         bubbleStyle = Note.defaultBubbleStyle(appContext, (int) textPaint.getTextSize());
       }
 
       return noteHolder;
@@ -129,7 +135,7 @@ public class NotesAdapter extends RecyclerAdapter<Note, NoteHolder> {
 
          if (found == null) return null;
 
-         Spannable spannable = new SpannableString(found.textSpan((int) textPaint.getTextSize(), appContext));
+         Spannable spannable = new SpannableString(found.textSpan(bubbleStyle, null));
 
          LayoutBuild layoutBuild = new LayoutBuild(spannable, layoutConfig);
          layoutBuild.build(width);
