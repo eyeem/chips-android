@@ -92,7 +92,7 @@ public class Notes extends Path implements DynamicModules {
          if (!hasView()) return;
 
          noteSource
-            .subscribeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(new Action1<List<Note>>() {
                @Override public void call(List<Note> notes) {
                   if (!hasView() || noteList.size() > 0) return;

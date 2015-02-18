@@ -44,5 +44,5 @@
     "id": "6",
     "text": "Navigation in this app is implemented using the flow library. Mortar manages scopes of each screen and then dependencies are injected using Dagger2.",
     "entities": []
-  },
+  }
 ]

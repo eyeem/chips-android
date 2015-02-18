@@ -37,7 +37,7 @@ import rx.schedulers.Schedulers;
             }
          }
       })
-         .subscribeOn(Schedulers.io());
+      .subscribeOn(Schedulers.io());
    }
 
    private static List<Note> fromJSONString(String jsonString) {
