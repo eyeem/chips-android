@@ -57,7 +57,6 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
    /* package */ HandlesUp containerAsHandlesUp;
    @InjectView(R.id.toolbar) Toolbar toolbar;
    @InjectView(R.id.drawer) DrawerLayout drawer;
-   @InjectView(R.id.fab_button) ImageButton fabButton;
 
    private Flow flow;
 
@@ -76,8 +75,6 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
       containerAsHandlesUp = container;
 
       setSupportActionBar(toolbar);
-
-      fabButton.setImageDrawable(new IconicsDrawable(this, FontAwesome.Icon.faw_pencil).color(Color.WHITE).actionBarSize());
    }
 
    private String getScopeName() {
@@ -165,9 +162,5 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher {
             }
          });
       return true;
-   }
-
-   @OnClick(R.id.fab_button) void onFabButton(View view) {
-      Flow.get(this).goTo(new Note(noteStorage.all(), null));
    }
 }

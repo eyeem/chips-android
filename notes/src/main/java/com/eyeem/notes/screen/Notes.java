@@ -11,6 +11,7 @@ import com.eyeem.notes.adapter.NotesAdapter;
 import com.eyeem.notes.core.BootstrapNotesModule;
 import com.eyeem.notes.core.NoteStorage;
 import com.eyeem.notes.event.BubbleClickedEvent;
+import com.eyeem.notes.event.NewNoteEvent;
 import com.eyeem.notes.event.NoteClickedEvent;
 import com.eyeem.notes.experimental.CacheOnScroll;
 import com.eyeem.notes.experimental.PausableThreadPoolExecutor;
@@ -123,6 +124,10 @@ public class Notes extends Path implements DynamicModules {
          BubbleSpan span = bubbleClickedEvent.bubbleSpan;
          // TODO some event handling links, emails and such
          Toast.makeText(getView().getContext(), span.data().toString(), Toast.LENGTH_SHORT).show();
+      }
+
+      @Subscribe public void newNoteClicked(NewNoteEvent newNoteEvent) {
+         Flow.get(getView().getContext()).goTo(new com.eyeem.notes.screen.Note(noteList, null));
       }
    }
 }

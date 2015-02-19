@@ -2,20 +2,30 @@ package com.eyeem.notes.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import com.eyeem.notes.R;
 import com.eyeem.notes.adapter.NotesAdapter;
+import com.eyeem.notes.event.NewNoteEvent;
+import com.eyeem.notes.screen.Note;
 import com.eyeem.notes.screen.Notes;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.typeface.FontAwesome;
+import com.squareup.otto.Bus;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
+import flow.Flow;
 import mortar.dagger2support.DaggerService;
 
 import static mortar.MortarScope.getScope;
@@ -25,10 +35,12 @@ import static mortar.MortarScope.getScope;
  */
 public class NotesView extends FrameLayout {
 
+   @InjectView(R.id.fab_button) ImageButton fabButton;
    @InjectView(R.id.recycler_view) RecyclerView rv;
 
    @Inject Notes.Presenter presenter;
    @Inject NotesAdapter adapter;
+   @Inject Bus bus;
 
    LinearLayoutManager llm;
 
@@ -64,6 +76,8 @@ public class NotesView extends FrameLayout {
       rv.setLayoutManager(llm);
       rv.setAdapter(adapter);
       rv.setOnScrollListener(adapter.getCacheOnScroll());
+
+      fabButton.setImageDrawable(new IconicsDrawable(getContext(), FontAwesome.Icon.faw_pencil).color(Color.WHITE).actionBarSize());
    }
 
    @Override protected void onAttachedToWindow() {
@@ -76,7 +90,7 @@ public class NotesView extends FrameLayout {
       presenter.dropView(this);
    }
 
-   //public void setNotes(List<Note> notes) {
-      // adapter.setNotes(notes);
-   //}
+   @OnClick(R.id.fab_button) void onFabButton(View view) {
+      bus.post(new NewNoteEvent());
+   }
 }
