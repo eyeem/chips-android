@@ -51,6 +51,7 @@ public class LayoutBuild implements ILayoutCallback {
       textPaint = config.textPaint;
       moreText = config.moreText;
       truncated = config.truncated;
+      debug = config.debug;
       buildWidth = 0;
    }
 
@@ -269,5 +270,6 @@ public class LayoutBuild implements ILayoutCallback {
       public Spannable moreText;
       public int maxLines = 0;
       public boolean truncated;
+      public boolean debug;
    }
 }

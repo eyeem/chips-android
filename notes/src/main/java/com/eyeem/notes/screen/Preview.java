@@ -2,18 +2,26 @@ package com.eyeem.notes.screen;
 
 import android.os.Bundle;
 
+import com.eyeem.chips.BubbleStyle;
 import com.eyeem.notes.R;
+import com.eyeem.notes.event.TextSnapshotCaptured;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
 import com.eyeem.notes.mortarflow.WithComponent;
-import com.eyeem.notes.utils.RxBus;
 import com.eyeem.notes.view.PreviewView;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import flow.HasParent;
 import flow.Layout;
 import flow.Path;
+import lombok.Getter;
+import mortar.MortarScope;
 import mortar.ViewPresenter;
+
+import static com.eyeem.notes.model.Note.from;
 
 /**
  * Created by vishna on 18/02/15.
@@ -40,7 +48,9 @@ public class Preview extends Path implements HasParent {
    @ScopeSingleton(Component.class)
    public static class Presenter extends ViewPresenter<PreviewView> {
 
-      @Inject RxBus bus;
+      @Inject @Named("noteBus") Bus noteBus;
+      @Inject com.eyeem.notes.model.Note sourceNote;
+      @Getter com.eyeem.notes.model.Note previewNote;
 
       @Inject Presenter() {}
 
@@ -52,6 +62,32 @@ public class Preview extends Path implements HasParent {
       @Override protected void onSave(Bundle outState) {
          super.onSave(outState);
          outState.putParcelable(KEY_INSTANCE_STATE, getView().onSaveInstanceState());
+      }
+
+      @Override protected void onEnterScope(MortarScope scope) {
+         super.onEnterScope(scope);
+         noteBus.register(this);
+      }
+
+      @Override protected void onExitScope() {
+         super.onExitScope();
+         noteBus.unregister(this);
+      }
+
+      @Subscribe public void textSnapshotCaptured(TextSnapshotCaptured textSnapshotCaptured) {
+         previewNote = from(sourceNote.id, textSnapshotCaptured.getSnapshot());
+         populateNote();
+      }
+
+      public void populateNote() {
+         if (!hasView()) return;
+         com.eyeem.notes.model.Note note = getPreviewNote();
+         if (note == null) {
+            note = sourceNote;
+         }
+         if (note == null) return;
+         BubbleStyle style = com.eyeem.notes.model.Note.defaultBubbleStyle(getView().getContext(), (int) getView().getTv().getTextSize());
+         getView().getTv().setText(note.textSpan(style, null));
       }
    }
 }

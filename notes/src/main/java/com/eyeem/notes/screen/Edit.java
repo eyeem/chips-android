@@ -1,22 +1,28 @@
 package com.eyeem.notes.screen;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.eyeem.notes.R;
+import com.eyeem.notes.event.PreviewSelected;
+import com.eyeem.notes.event.TextSnapshotCaptured;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
 import com.eyeem.notes.mortarflow.WithComponent;
-import com.eyeem.notes.utils.RxBus;
 import com.eyeem.notes.view.EditView;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import dagger.Provides;
 import flow.HasParent;
 import flow.Layout;
 import flow.Path;
+import mortar.MortarScope;
 import mortar.ViewPresenter;
 
 /**
@@ -61,7 +67,7 @@ public class Edit extends Path implements HasParent {
    @ScopeSingleton(Component.class)
    public static class Presenter extends ViewPresenter<EditView> {
 
-      @Inject RxBus bus;
+      @Inject @Named("noteBus") Bus noteBus;
 
       @Inject Presenter() {}
 
@@ -73,6 +79,22 @@ public class Edit extends Path implements HasParent {
       @Override protected void onSave(Bundle outState) {
          super.onSave(outState);
          outState.putParcelable(KEY_INSTANCE_STATE, getView().onSaveInstanceState());
+      }
+
+      @Override protected void onEnterScope(MortarScope scope) {
+         super.onEnterScope(scope);
+         noteBus.register(this);
+      }
+
+      @Override protected void onExitScope() {
+         super.onExitScope();
+         noteBus.unregister(this);
+      }
+
+      @Subscribe public void onPreviewSelected(PreviewSelected previewSelected) {
+         if (!hasView()) return;
+         getView().getEt().hideKeyboard();
+         noteBus.post(new TextSnapshotCaptured(getView().getEt().snapshot()));
       }
    }
 }

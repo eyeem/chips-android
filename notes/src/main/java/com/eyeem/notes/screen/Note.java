@@ -10,13 +10,14 @@ import com.eyeem.notes.mortarflow.DynamicModules;
 import com.eyeem.notes.mortarflow.FlowDep;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
 import com.eyeem.notes.mortarflow.WithComponent;
-import com.eyeem.notes.utils.RxBus;
 import com.eyeem.notes.view.NoteView;
+import com.squareup.otto.Bus;
 
 import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import dagger.Provides;
 import flow.HasParent;
@@ -48,8 +49,8 @@ public class Note extends Path implements HasParent, DynamicModules {
    @ScopeSingleton(Component.class)
    public interface Component extends FlowDep, AppDep {
       void inject(NoteView t);
-      RxBus provideRxBus();
       com.eyeem.notes.model.Note provideNote();
+      @Named("noteBus") Bus provideNoteBus();
    }
 
    @dagger.Module public static class Module {
@@ -57,13 +58,13 @@ public class Note extends Path implements HasParent, DynamicModules {
       NoteStorage.List list;
       String noteId;
       com.eyeem.notes.model.Note localNote;
-      RxBus rxBus;
+      Bus noteBus;
       NoteStorage storage;
 
       public Module(NoteStorage.List list, String noteId) {
          this.list = list;
          this.noteId = noteId;
-         this.rxBus = new RxBus();
+         this.noteBus = new Bus();
       }
 
       @Provides NoteStorage.List provideNoteList() {
@@ -82,15 +83,13 @@ public class Note extends Path implements HasParent, DynamicModules {
          return localNote;
       }
 
-      @Provides RxBus provideRxBus() {
-         return rxBus;
+      @Provides @Named("noteBus") Bus provideNoteBus() {
+         return noteBus;
       }
    }
 
    @ScopeSingleton(Component.class) public static class Presenter extends ViewPresenter<NoteView> {
-
       @Inject Presenter() {
       }
-
    }
 }

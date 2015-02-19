@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -40,6 +41,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import lombok.Getter;
 import mortar.dagger2support.DaggerService;
 
 import static mortar.MortarScope.getScope;
@@ -52,9 +54,8 @@ public class PreviewView extends RelativeLayout {
    public static final int MAX_FONT_SIZE = 24;
 
    @Inject Preview.Presenter presenter;
-   // @Inject List<String> suggestions;
 
-   @InjectView(R.id.chipsTextView) ChipsTextView tv;
+   @InjectView(R.id.chipsTextView) @Getter ChipsTextView tv;
    @InjectView(R.id.seek_bar) SeekBar textSizeSeekBar;
    @InjectView(R.id.spacing_seek_bar) SeekBar spacingSizeSeekBar;
    @InjectView(R.id.text_size) TextView fontSize;
@@ -109,7 +110,7 @@ public class PreviewView extends RelativeLayout {
       debugCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
          @Override
          public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            ChipsTextView.DEBUG = isChecked;
+            tv.setDebug(isChecked);
             updateTextProperties();
          }
       });
@@ -134,20 +135,12 @@ public class PreviewView extends RelativeLayout {
       tv.setOnBubbleClickedListener(new ChipsTextView.OnBubbleClickedListener() {
          @Override
          public void onBubbleClicked(View view, BubbleSpan bubbleSpan) {
-            if (bubbleSpan.data() instanceof Truncation) {
-               tv.expand(true);
-            } else {
-               Toast.makeText(view.getContext(), ((Linkify.Entity) bubbleSpan.data()).text, Toast.LENGTH_LONG).show();
-            }
+            Toast.makeText(view.getContext(), ((Linkify.Entity) bubbleSpan.data()).id, Toast.LENGTH_LONG).show();
          }
       });
-      SpannableStringBuilder moreText = new SpannableStringBuilder("... more");
-      Utils.tapify(moreText, 0, moreText.length(), 0x77000000, 0xff000000, new Truncation());
-      tv.setMaxLines(3, moreText);
       tv.requestFocus();
       updateTextProperties();
    }
-
 
    public void updateTextProperties() {
       int calculatedProgress = MIN_FONT_SIZE + textSizeSeekBar.getProgress();
@@ -160,53 +153,14 @@ public class PreviewView extends RelativeLayout {
       paint.setTextSize(_dp);
       paint.setColor(0xff000000); //black
       tv.setTextPaint(paint);
-      fontSize.setText(String.format("%ddp %.2fpx", calculatedProgress, _dp));
-      spacingSize.setText(String.format("%.2f", lineSpacing));
+      fontSize.setText(String.format("font size: %ddp %.2fpx", calculatedProgress, _dp));
+      spacingSize.setText(String.format("line spacing: %.2f", lineSpacing));
       tv.setLineSpacing(lineSpacing);
-//      update(tv);
+      presenter.populateNote();
    }
 
    @OnClick(R.id.tag_setup) public void tagSetup(View view) {
-      //Toast.makeText(getContext(), Utils.tag_setup(et), Toast.LENGTH_LONG).show();
-      Toast.makeText(getContext(), "TODO", Toast.LENGTH_LONG).show();
-   }
-
-//   @OnClick(R.id.check) public void update(View view) {
-//      // first flatten the text
-//      HashMap<Class<?>, Utils.FlatteningFactory> factories = new HashMap<Class<?>, Utils.FlatteningFactory>();
-//      factories.put(BubbleSpan.class, new AlbumFlatten());
-//      String flattenedText = Utils.flatten(et, factories);
-//
-//      // scan to find bubble matches and populate text view accordingly
-//      Linkify.Entities entities = new Linkify.Entities();
-//      if (!TextUtils.isEmpty(flattenedText)) {
-//         Matcher matcher = Regex.VALID_BUBBLE.matcher(flattenedText);
-//         while (matcher.find()) {
-//            String bubbleText = matcher.group(1);
-//            Linkify.Entity entity = new Linkify.Entity(matcher.start(), matcher.end(),
-//               bubbleText, bubbleText, Linkify.Entity.ALBUM);
-//            entities.add(entity);
-//         }
-//      }
-//
-//      // now bubblify text edit
-//      SpannableStringBuilder ssb = new SpannableStringBuilder(flattenedText);
-//      for (Linkify.Entity e : entities) {
-//         Utils.bubblify(ssb, e.text, e.start, e.end,
-//            tv.getWidth() - tv.getPaddingLeft() - tv.getPaddingRight(),
-//            DefaultBubbles.get(DefaultBubbles.GRAY_WHITE_TEXT, getContext(), tv.getTextSize()), null, e);
-//      }
-//      tv.setText(ssb);
-//   }
-
-   public static class AlbumFlatten implements Utils.FlatteningFactory {
-      @Override
-      public String out(String in) {
-         if (in != null && in.startsWith("#")) {
-            in = in.substring(1, in.length());
-         }
-         return "[a:"+in+"]";
-      }
+      Toast.makeText(getContext(), Utils.tag_setup(new SpannableString(tv.getLayoutBuild().getSpannable())), Toast.LENGTH_LONG).show();
    }
 
    SeekBar.OnSeekBarChangeListener seekListener = new SeekBar.OnSeekBarChangeListener() {
@@ -216,36 +170,6 @@ public class PreviewView extends RelativeLayout {
 
       @Override public void onStartTrackingTouch(SeekBar seekBar) {}
       @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-   };
-
-   // marker class
-   public static class Truncation {}
-
-   ChipsEditText.Listener chipsListener = new ChipsEditText.Listener() {
-      @Override
-      public void onBubbleCountChanged() {
-
-      }
-
-      @Override
-      public void onActionDone() {
-
-      }
-
-      @Override
-      public void onBubbleSelected(int position) {
-
-      }
-
-      @Override
-      public void onXPressed() {
-
-      }
-
-      @Override
-      public void onHashTyped(boolean start) {
-         Toast.makeText(getContext(), "onHashTyped, start = "+start, Toast.LENGTH_SHORT).show();
-      }
    };
 
    ///// boiler plate code that makes saving state work http://trickyandroid.com/saving-android-view-state-correctly/

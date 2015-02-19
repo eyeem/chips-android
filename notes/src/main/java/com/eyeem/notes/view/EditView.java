@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import lombok.Getter;
 import mortar.dagger2support.DaggerService;
 
 import static mortar.MortarScope.getScope;
@@ -42,7 +43,7 @@ public class EditView extends RelativeLayout {
    @Inject List<String> suggestions;
    @Inject Note note;
 
-   @InjectView(R.id.chipsMultiAutoCompleteTextview1) ChipsEditText et;
+   @InjectView(R.id.chipsMultiAutoCompleteTextview1) @Getter ChipsEditText et;
    @InjectView(R.id.popover) AutocompletePopover popover;
    @InjectView(R.id.edit) Button edit;
 
@@ -110,50 +111,6 @@ public class EditView extends RelativeLayout {
       BubbleStyle bubbleStyle = Note.defaultBubbleStyle(et.getContext(), (int) et.getTextSize());
       et.setText(note.textSpan(bubbleStyle, et));
       et.setCurrentBubbleStyle(bubbleStyle);
-
-//      TextPaint paint = new TextPaint();
-//      Resources r = getResources();
-//      float _dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
-//      paint.setAntiAlias(true);
-//      paint.setTextSize(_dp);
-//      paint.setColor(0xff000000); //black
-//      tv.setTextPaint(paint);
-
-//      tv.setOnBubbleClickedListener(new ChipsTextView.OnBubbleClickedListener() {
-//         @Override
-//         public void onBubbleClicked(View view, BubbleSpan bubbleSpan) {
-//            if (bubbleSpan.data() instanceof Truncation) {
-//               tv.expand(true);
-//            } else {
-//               Toast.makeText(view.getContext(), ((Linkify.Entity) bubbleSpan.data()).text, Toast.LENGTH_LONG).show();
-//            }
-//         }
-//      });
-//      SpannableStringBuilder moreText = new SpannableStringBuilder("... more");
-//      Utils.tapify(moreText, 0, moreText.length(), 0x77000000, 0xff000000, new Truncation());
-//      tv.setMaxLines(3, moreText);
-//      tv.requestFocus();
-//      updateTextProperties();
-//
-//      et.getCursorDrawable().setColor(0xff00ff00);
-   }
-
-
-   public void updateTextProperties() {
-//      int calculatedProgress = MIN_FONT_SIZE + textSizeSeekBar.getProgress();
-//      float lineSpacing = 1.0f  + 0.25f * spacingSizeSeekBar.getProgress();
-//
-//      TextPaint paint = new TextPaint();
-//      Resources r = getResources();
-//      float _dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, calculatedProgress, r.getDisplayMetrics());
-//      paint.setAntiAlias(true);
-//      paint.setTextSize(_dp);
-//      paint.setColor(0xff000000); //black
-//      tv.setTextPaint(paint);
-//      fontSize.setText(String.format("%ddp %.2fpx", calculatedProgress, _dp));
-//      spacingSize.setText(String.format("%.2f", lineSpacing));
-//      tv.setLineSpacing(lineSpacing);
-//      update(tv);
    }
 
    @OnClick(R.id.edit) public void toggleEdit(View view) {
@@ -167,56 +124,6 @@ public class EditView extends RelativeLayout {
          }
       }, 100);
    }
-
-//   @OnClick(R.id.check) public void update(View view) {
-//      // first flatten the text
-//      HashMap<Class<?>, Utils.FlatteningFactory> factories = new HashMap<Class<?>, Utils.FlatteningFactory>();
-//      factories.put(BubbleSpan.class, new AlbumFlatten());
-//      String flattenedText = Utils.flatten(et, factories);
-//
-//      // scan to find bubble matches and populate text view accordingly
-//      Linkify.Entities entities = new Linkify.Entities();
-//      if (!TextUtils.isEmpty(flattenedText)) {
-//         Matcher matcher = Regex.VALID_BUBBLE.matcher(flattenedText);
-//         while (matcher.find()) {
-//            String bubbleText = matcher.group(1);
-//            Linkify.Entity entity = new Linkify.Entity(matcher.start(), matcher.end(),
-//               bubbleText, bubbleText, Linkify.Entity.ALBUM);
-//            entities.add(entity);
-//         }
-//      }
-//
-//      // now bubblify text edit
-//      SpannableStringBuilder ssb = new SpannableStringBuilder(flattenedText);
-//      for (Linkify.Entity e : entities) {
-//         Utils.bubblify(ssb, e.text, e.start, e.end,
-//            tv.getWidth() - tv.getPaddingLeft() - tv.getPaddingRight(),
-//            DefaultBubbles.get(DefaultBubbles.GRAY_WHITE_TEXT, getContext(), tv.getTextSize()), null, e);
-//      }
-//      tv.setText(ssb);
-//   }
-
-   public static class AlbumFlatten implements Utils.FlatteningFactory {
-      @Override
-      public String out(String in) {
-         if (in != null && in.startsWith("#")) {
-            in = in.substring(1, in.length());
-         }
-         return "[a:"+in+"]";
-      }
-   }
-
-   SeekBar.OnSeekBarChangeListener seekListener = new SeekBar.OnSeekBarChangeListener() {
-      @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-         updateTextProperties();
-      }
-
-      @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-      @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-   };
-
-   // marker class
-   public static class Truncation {}
 
    ChipsEditText.Listener chipsListener = new ChipsEditText.Listener() {
       @Override

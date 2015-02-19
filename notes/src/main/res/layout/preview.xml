@@ -2,7 +2,6 @@
                                   xmlns:tools="http://schemas.android.com/tools"
                                   android:layout_width="match_parent"
                                   android:layout_height="match_parent"
-                                  android:background="#7000"
                                   android:focusable="true"
                                   android:focusableInTouchMode="true"
                                   tools:context=".MainActivity">
@@ -24,10 +23,12 @@
 
     <TextView
         android:id="@+id/text_size"
+        android:textColor="@color/primary_text_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/seek_bar"
-        android:layout_centerHorizontal="true"/>
+        android:paddingLeft="32dp"
+        android:layout_alignParentLeft="true"/>
 
     <SeekBar
         android:id="@+id/spacing_seek_bar"
@@ -37,10 +38,12 @@
 
     <TextView
         android:id="@+id/spacing_size"
+        android:textColor="@color/primary_text_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/spacing_seek_bar"
-        android:layout_centerHorizontal="true"/>
+        android:paddingLeft="32dp"
+        android:layout_alignParentLeft="true"/>
 
     <FrameLayout
         android:id="@+id/chipsTextViewContainer"
@@ -56,13 +59,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
+            android:layout_marginBottom="16dp"
             />
 
         <CheckBox
             android:id="@+id/debug_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="right|bottom"/>
+            android:layout_gravity="bottom|right"/>
     </FrameLayout>
 
 </com.eyeem.notes.view.PreviewView>

@@ -21,8 +21,6 @@ import rx.functions.Action1;
  */
 public class ChipsTextView extends View {
 
-   public static boolean DEBUG;
-
    OnBubbleClickedListener listener;
 
    // default config
@@ -236,6 +234,11 @@ public class ChipsTextView extends View {
 
    @Deprecated public ChipsTextView setTextPaint(TextPaint textPaint) {
       defaultConfig().textPaint = textPaint;
+      return this;
+   }
+
+   @Deprecated public ChipsTextView setDebug(boolean value) {
+      defaultConfig().debug = value;
       return this;
    }
 

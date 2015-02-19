@@ -554,4 +554,8 @@ public class ChipsEditText extends MultilineEditText {
       float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1.5f, getContext().getResources().getDisplayMetrics());
       this.cursorDrawable = new CursorDrawable(this, getTextSize()*1.5f, width, getContext());
    }
+
+   public SpannableString snapshot() {
+      return new SpannableString(getText());
+   }
 }
