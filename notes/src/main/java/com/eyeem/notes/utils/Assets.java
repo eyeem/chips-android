@@ -7,12 +7,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import rx.Observable;
+import rx.functions.Func0;
+
 /**
  * Created by vishna on 17/02/15.
  */
 public class Assets {
 
-   public static String from(Context context, String filename) {
+   public static Observable<String> from(final Context context, final String filename) {
+      return Observable.defer(new Func0<Observable<String>>(){
+         @Override public Observable<String> call() {
+            return Observable.just(_from(context, filename));
+         }
+      });
+   }
+
+   private static String _from(Context context, String filename) {
 
       BufferedReader in = null;
 
