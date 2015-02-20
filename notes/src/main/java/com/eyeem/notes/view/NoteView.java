@@ -9,18 +9,16 @@ import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.eyeem.notes.R;
-import com.eyeem.notes.event.PreviewSelected;
 import com.eyeem.notes.screen.Edit;
 import com.eyeem.notes.screen.Note;
 import com.eyeem.notes.screen.Preview;
 import com.eyeem.notes.widget.ScreenPagerAdapter;
-import com.squareup.otto.Bus;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import lombok.Getter;
 import mortar.dagger2support.DaggerService;
 
 import static mortar.MortarScope.getScope;
@@ -30,10 +28,10 @@ import static mortar.MortarScope.getScope;
  */
 public class NoteView extends LinearLayout implements ViewPager.OnPageChangeListener {
 
-   @InjectView(R.id.screens_pager) ViewPager pager;
+   @InjectView(R.id.screens_pager) @Getter ViewPager pager;
    ScreenPagerAdapter pagerAdapter;
 
-   @Inject @Named("noteBus") Bus noteBus;
+   @Inject Note.Presenter presenter;
 
    public NoteView(Context context) {
       super(context);
@@ -75,7 +73,7 @@ public class NoteView extends LinearLayout implements ViewPager.OnPageChangeList
 
    @Override public void onPageSelected(int position) {
       Log.d(NoteView.class.getSimpleName(), "onPageSelected = " + position);
-      if (position == 1) noteBus.post(new PreviewSelected());
+      presenter.onPageSelected(position);
    }
 
    @Override public void onPageScrollStateChanged(int state) {
@@ -94,5 +92,15 @@ public class NoteView extends LinearLayout implements ViewPager.OnPageChangeList
       }
 
       Log.d(NoteView.class.getSimpleName(), description);
+   }
+
+   @Override protected void onAttachedToWindow() {
+      super.onAttachedToWindow();
+      presenter.takeView(this);
+   }
+
+   @Override protected void onDetachedFromWindow() {
+      super.onDetachedFromWindow();
+      presenter.dropView(this);
    }
 }

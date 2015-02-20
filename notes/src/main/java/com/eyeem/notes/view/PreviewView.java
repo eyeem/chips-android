@@ -159,10 +159,6 @@ public class PreviewView extends RelativeLayout {
       presenter.populateNote();
    }
 
-   @OnClick(R.id.tag_setup) public void tagSetup(View view) {
-      Toast.makeText(getContext(), Utils.tag_setup(new SpannableString(tv.getLayoutBuild().getSpannable())), Toast.LENGTH_LONG).show();
-   }
-
    SeekBar.OnSeekBarChangeListener seekListener = new SeekBar.OnSeekBarChangeListener() {
       @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
          updateTextProperties();

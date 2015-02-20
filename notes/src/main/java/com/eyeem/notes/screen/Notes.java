@@ -1,6 +1,7 @@
 package com.eyeem.notes.screen;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.eyeem.chips.BubbleSpan;
@@ -42,7 +43,7 @@ import rx.functions.Action1;
  * Created by vishna on 03/02/15.
  */
 @Layout(R.layout.notes) @WithComponent(Notes.Component.class)
-public class Notes extends Path implements DynamicModules {
+public class Notes extends Path implements DynamicModules, ActionBarOwner.MenuActions {
 
    NoteStorage.List list;
 
@@ -52,6 +53,12 @@ public class Notes extends Path implements DynamicModules {
 
    @Override public List<Object> dependencies() {
       return Arrays.<Object>asList(new Module(list));
+   }
+
+   @Override public List<ActionBarOwner.MenuAction> menuActions() {
+      return Arrays.asList(
+         new ActionBarOwner.MenuAction(R.string.clear_all_notes)
+      );
    }
 
    @dagger.Component(modules = {Module.class, BootstrapNotesModule.class}, dependencies = MainActivity.Component.class)
@@ -128,6 +135,12 @@ public class Notes extends Path implements DynamicModules {
 
       @Subscribe public void newNoteClicked(NewNoteEvent newNoteEvent) {
          Flow.get(getView().getContext()).goTo(new com.eyeem.notes.screen.Note(noteList, null));
+      }
+
+      @Subscribe public void  menuAction(ActionBarOwner.MenuAction action) {
+         if (action.stringId == R.string.clear_all_notes) {
+            noteList.clear();
+         }
       }
    }
 }

@@ -6,12 +6,14 @@ import com.eyeem.notes.MainActivity;
 import com.eyeem.notes.R;
 import com.eyeem.notes.core.AppDep;
 import com.eyeem.notes.core.NoteStorage;
+import com.eyeem.notes.event.PreviewRefresh;
 import com.eyeem.notes.mortarflow.DynamicModules;
 import com.eyeem.notes.mortarflow.FlowDep;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
 import com.eyeem.notes.mortarflow.WithComponent;
 import com.eyeem.notes.view.NoteView;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,13 +25,14 @@ import dagger.Provides;
 import flow.HasParent;
 import flow.Layout;
 import flow.Path;
+import mortar.MortarScope;
 import mortar.ViewPresenter;
 
 /**
  * Created by vishna on 16/02/15.
  */
 @Layout(R.layout.note) @WithComponent(Note.Component.class)
-public class Note extends Path implements HasParent, DynamicModules {
+public class Note extends Path implements HasParent, DynamicModules, ActionBarOwner.MenuActions {
 
    Module module;
 
@@ -43,6 +46,14 @@ public class Note extends Path implements HasParent, DynamicModules {
 
    @Override public List<Object> dependencies() {
       return Arrays.<Object>asList(module);
+   }
+
+   @Override public List<ActionBarOwner.MenuAction> menuActions() {
+      return Arrays.asList(
+         new ActionBarOwner.MenuAction(R.string.clear_note),
+         new ActionBarOwner.MenuAction(R.string.save_note),
+         new ActionBarOwner.MenuAction(R.string.tag_setup)
+      );
    }
 
    @dagger.Component(modules = Module.class, dependencies = MainActivity.Component.class)
@@ -64,7 +75,7 @@ public class Note extends Path implements HasParent, DynamicModules {
       public Module(NoteStorage.List list, String noteId) {
          this.list = list;
          this.noteId = noteId;
-         this.noteBus = new Bus();
+         this.noteBus = new Bus("noteBus");
       }
 
       @Provides NoteStorage.List provideNoteList() {
@@ -89,7 +100,34 @@ public class Note extends Path implements HasParent, DynamicModules {
    }
 
    @ScopeSingleton(Component.class) public static class Presenter extends ViewPresenter<NoteView> {
-      @Inject Presenter() {
+
+      @Inject Bus bus;
+      @Inject @Named("noteBus") Bus noteBus;
+      @Inject Presenter() {}
+
+      @Override protected void onEnterScope(MortarScope scope) {
+         super.onEnterScope(scope);
+         bus.register(this);
+      }
+
+      @Override protected void onExitScope() {
+         super.onExitScope();
+         bus.unregister(this);
+      }
+
+      @Subscribe public void menuAction(ActionBarOwner.MenuAction menuAction) {
+         if (!hasView()) return;
+
+         if (menuAction.stringId == R.string.tag_setup && getView().getPager().getCurrentItem() != 1) {
+            // force generate the preview if we are on a wrong page
+            noteBus.post(new PreviewRefresh());
+         }
+
+         noteBus.post(menuAction);
+      }
+
+      public void onPageSelected(int page) {
+         if (page == 1) noteBus.post(new PreviewRefresh());
       }
    }
 }

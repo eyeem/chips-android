@@ -1,10 +1,9 @@
 package com.eyeem.notes.screen;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.eyeem.notes.R;
-import com.eyeem.notes.event.PreviewSelected;
+import com.eyeem.notes.event.PreviewRefresh;
 import com.eyeem.notes.event.TextSnapshotCaptured;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
 import com.eyeem.notes.mortarflow.WithComponent;
@@ -91,10 +90,17 @@ public class Edit extends Path implements HasParent {
          noteBus.unregister(this);
       }
 
-      @Subscribe public void onPreviewSelected(PreviewSelected previewSelected) {
+      @Subscribe public void onPreviewSelected(PreviewRefresh previewSelected) {
          if (!hasView()) return;
          getView().getEt().hideKeyboard();
          noteBus.post(new TextSnapshotCaptured(getView().getEt().snapshot()));
+      }
+
+      @Subscribe public void menuAction(ActionBarOwner.MenuAction menuAction) {
+         if (menuAction.stringId == R.string.clear_note) {
+            getView().getEt().getText().clear();
+            noteBus.post(new PreviewRefresh());
+         }
       }
    }
 }

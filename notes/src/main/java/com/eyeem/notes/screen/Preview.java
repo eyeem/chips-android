@@ -1,8 +1,11 @@
 package com.eyeem.notes.screen;
 
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.widget.Toast;
 
 import com.eyeem.chips.BubbleStyle;
+import com.eyeem.chips.Utils;
 import com.eyeem.notes.R;
 import com.eyeem.notes.event.TextSnapshotCaptured;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
@@ -77,6 +80,12 @@ public class Preview extends Path implements HasParent {
       @Subscribe public void textSnapshotCaptured(TextSnapshotCaptured textSnapshotCaptured) {
          previewNote = from(sourceNote.id, textSnapshotCaptured.getSnapshot());
          populateNote();
+      }
+
+      @Subscribe public void menuAction(ActionBarOwner.MenuAction menuAction) {
+         if (menuAction.stringId == R.string.tag_setup && hasView()) {
+            Toast.makeText(getView().getContext(), Utils.tag_setup(new SpannableString(getView().getTv().getLayoutBuild().getSpannable())), Toast.LENGTH_LONG).show();
+         }
       }
 
       public void populateNote() {

@@ -6,20 +6,11 @@
                                   android:focusableInTouchMode="true"
                                   tools:context=".MainActivity">
 
-    <!-- TODO move to ... menu -->
-    <Button
-        android:id="@+id/tag_setup"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tag setup"
-        />
-
     <SeekBar
         android:id="@+id/seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tag_setup"/>
+        android:layout_alignParentTop="true"/>
 
     <TextView
         android:id="@+id/text_size"
