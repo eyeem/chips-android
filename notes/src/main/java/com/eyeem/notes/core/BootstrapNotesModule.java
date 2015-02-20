@@ -16,7 +16,6 @@ import java.util.List;
 import dagger.Module;
 import dagger.Provides;
 import rx.Observable;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -25,14 +24,9 @@ import rx.schedulers.Schedulers;
 @Module public class BootstrapNotesModule {
 
    @Provides public Observable<List<Note>> bootstrapNotes(final App app) {
-
       return
-      Assets.from(app, "notes.json")
-         .map(new Func1<String, List<Note>>() {
-         @Override public List<Note> call(String jsonString) {
-            return fromJSONString(jsonString);
-         }
-      }).subscribeOn(Schedulers.io());
+         Assets.from(app, "notes.json")
+            .map((String jsonString) -> fromJSONString(jsonString)).subscribeOn(Schedulers.io());
    }
 
    private static List<Note> fromJSONString(String jsonString) {
