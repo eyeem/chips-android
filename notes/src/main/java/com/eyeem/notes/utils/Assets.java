@@ -16,11 +16,7 @@ import rx.functions.Func0;
 public class Assets {
 
    public static Observable<String> from(final Context context, final String filename) {
-      return Observable.defer(new Func0<Observable<String>>(){
-         @Override public Observable<String> call() {
-            return Observable.just(_from(context, filename));
-         }
-      });
+      return Observable.defer(() -> Observable.just(_from(context, filename)));
    }
 
    private static String _from(Context context, String filename) {

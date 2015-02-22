@@ -161,23 +161,19 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher, 
       if (menuActions != null) {
          for (final ActionBarOwner.MenuAction menuAction : menuActions) {
             menu.add(menuAction.stringId)
-               //.setShowAsActionFlags(SHOW_AS_ACTION_ALWAYS)
-               .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                  @Override public boolean onMenuItemClick(MenuItem menuItem) {
-                     bus.post(menuAction);
-                     return true;
-                  }
-               });
+               .setOnMenuItemClickListener(
+                  (MenuItem menuItem) -> { bus.post(menuAction); return true; }
+               );
          }
       }
       menu.add(R.string.action_mortar_hierarchy)
-         .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override public boolean onMenuItemClick(MenuItem item) {
+         .setOnMenuItemClickListener(
+            (MenuItem menuItem) -> {
                MortarScope activityScope = findChild(getApplicationContext(), getScopeName());
                Log.d(MainActivity.class.getSimpleName(), MortarScopeDevHelper.scopeHierarchyToString(activityScope));
                return true;
             }
-         });
+         );
       return true;
    }
 

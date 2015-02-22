@@ -14,7 +14,6 @@ import android.widget.ImageButton;
 import com.eyeem.notes.R;
 import com.eyeem.notes.adapter.NotesAdapter;
 import com.eyeem.notes.event.NewNoteEvent;
-import com.eyeem.notes.screen.Note;
 import com.eyeem.notes.screen.Notes;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.typeface.FontAwesome;
@@ -25,7 +24,6 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import flow.Flow;
 import mortar.dagger2support.DaggerService;
 
 import static mortar.MortarScope.getScope;

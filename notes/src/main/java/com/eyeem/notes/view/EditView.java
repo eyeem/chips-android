@@ -117,12 +117,7 @@ public class EditView extends RelativeLayout {
       et.resetAutocompleList();
       et.startManualMode();
       popover.show();
-      et.postDelayed(new Runnable() {
-         @Override
-         public void run() {
-            et.showKeyboard();
-         }
-      }, 100);
+      et.postDelayed(() -> et.showKeyboard(), 100);
    }
 
    ChipsEditText.Listener chipsListener = new ChipsEditText.Listener() {

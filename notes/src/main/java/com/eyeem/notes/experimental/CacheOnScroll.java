@@ -109,9 +109,7 @@ public class CacheOnScroll<Type> extends RecyclerView.OnScrollListener  {
       final Type cachedType = cache.get(id);
 
       // TODO weakreference this clojure
-      Observable<Type> typeObservable = Observable.create(new Observable.OnSubscribe<Type>() {
-         @Override
-         public void call(Subscriber<? super Type> subscriber) {
+      Observable<Type> typeObservable = Observable.create((Subscriber<? super Type> subscriber) -> {
 
             if (!subscriber.isUnsubscribed() && cachedType != null) {
                subscriber.onNext(cachedType);
@@ -127,7 +125,6 @@ public class CacheOnScroll<Type> extends RecyclerView.OnScrollListener  {
             if (!subscriber.isUnsubscribed()) {
                subscriber.onNext(uncachedType);
             }
-         }
       })
       .subscribeOn(cachedType == null ? scheduler() : AndroidSchedulers.mainThread());
 
@@ -150,7 +147,6 @@ public class CacheOnScroll<Type> extends RecyclerView.OnScrollListener  {
       List<String> ids = aheadLoader.idsAround(middlePosition, aheadCount/2 - 1);
 
       // check number of items already available in cache
-      int availableCount = 0;
       List<Observable<Type>> observables = new ArrayList<>();
       for (final String id : ids) {
          if (cache.get(id) == null) {

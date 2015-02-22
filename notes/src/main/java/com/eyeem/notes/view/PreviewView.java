@@ -107,13 +107,11 @@ public class PreviewView extends RelativeLayout {
 
       // chips debug
       debugCheck = (CheckBox)findViewById(R.id.debug_check);
-      debugCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-         @Override
-         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+      debugCheck.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             tv.setDebug(isChecked);
             updateTextProperties();
          }
-      });
+      );
 
       // setting up chips exit text
       textSizeSeekBar.setMax(MAX_FONT_SIZE - MIN_FONT_SIZE);
@@ -132,12 +130,10 @@ public class PreviewView extends RelativeLayout {
       paint.setColor(0xff000000); //black
       tv.setTextPaint(paint);
 
-      tv.setOnBubbleClickedListener(new ChipsTextView.OnBubbleClickedListener() {
-         @Override
-         public void onBubbleClicked(View view, BubbleSpan bubbleSpan) {
-            Toast.makeText(view.getContext(), ((Linkify.Entity) bubbleSpan.data()).id, Toast.LENGTH_LONG).show();
-         }
-      });
+      tv.setOnBubbleClickedListener(
+         (View view, BubbleSpan bubbleSpan) ->
+            Toast.makeText(view.getContext(), ((Linkify.Entity) bubbleSpan.data()).id, Toast.LENGTH_LONG).show()
+      );
       tv.requestFocus();
       updateTextProperties();
    }
