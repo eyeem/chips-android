@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="editor">Editor</string>
+    <string name="notes">Notes</string>
+    <string name="app_name">Notes</string>
+    <string name="action_mortar_hierarchy">Inspect Mortar Hierarchy</string>
+    <string name="drawer_open">Drawer Open</string>
+    <string name="drawer_close">Drawer Close</string>
+
+    <string name="edit">EDIT</string>
+    <string name="preview">PREVIEW</string>
+
+    <string name="clear_all_notes">Clear all notes</string>
+    <string name="tag_setup">Tag setup</string>
+    <string name="clear_note">Clear note</string>
+    <string name="save_note">Save note</string>
+</resources>

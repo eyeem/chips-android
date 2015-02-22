@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.eyeem.notes.view.NotesView xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <ImageButton
+        android:id="@+id/fab_button"
+        android:transitionName="fab"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:layout_gravity="bottom|right"
+        android:background="@drawable/button_round"
+        android:stateListAnimator="@anim/fab_anim"
+        android:elevation="8dp"
+        android:padding="14dp"
+        android:scaleType="fitCenter"/>
+
+</com.eyeem.notes.view.NotesView>

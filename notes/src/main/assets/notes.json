@@ -1,0 +1,48 @@
+[
+  {
+    "id": "1",
+    "text": "This is a sample app demonstrating possibilities of the chips library.",
+    "entities": [
+      {
+        "start": 56,
+        "end": 61,
+        "type": "url",
+        "data": "https://github.com/eyeem/chips-android",
+        "displayText": "chips"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "text": "The text you read right now is stored in assets/notes.json file. It goes over most interesting parts of this app.",
+    "entities": []
+  },
+  {
+    "id": "3",
+    "text": "You can click on each item on this list and go into edit mode. There you can modify contents of the selected item, preview, save your changes and go back.",
+    "entities": []
+  },
+  {
+    "id": "4",
+    "text": "ChipsTextView text layout can be rendered in a background thread, thanks to that we can reduce time spent in onBindView from up to 100ms down to 4ms and dramatically improve smoothness of scrolling.",
+    "entities": [
+      {
+        "start": 0,
+        "end": 13,
+        "type": "url",
+        "data": "https://github.com/eyeem/chips-android/blob/master/library/src/main/java/com/eyeem/chips/ChipsTextView.java",
+        "displayText": "ChipsTextView"
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "text": "You can click on each item on this list and go into edit mode. There you can modify contents of the selected item and go back.",
+    "entities": []
+  },
+  {
+    "id": "6",
+    "text": "Navigation in this app is implemented using the flow library. Mortar manages scopes of each screen and then dependencies are injected using Dagger2.",
+    "entities": []
+  }
+]

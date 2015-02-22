@@ -2,6 +2,7 @@ package com.eyeem.chips;
 
 import android.text.Editable;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.ReplacementSpan;
@@ -35,7 +36,7 @@ public class Utils {
       return ""; // sorry
    }
 
-   private static String flatten(CharSequence charSequence, HashMap<Class<?>, FlatteningFactory> factories) {
+   public static String flatten(CharSequence charSequence, HashMap<Class<?>, FlatteningFactory> factories) {
       Editable out = new SpannableStringBuilder(charSequence);
       for (Map.Entry<Class<?>, FlatteningFactory> e : factories.entrySet()) {
          Object spans[] = out.getSpans(0, out.length(), e.getKey());
@@ -43,14 +44,20 @@ public class Utils {
             int start = out.getSpanStart(span);
             int end = out.getSpanEnd(span);
             String in = out.subSequence(start, end).toString();
-            out.replace(start, end, e.getValue().out(in));
+            String replacementText = e.getValue().out(in, span);
+            out.replace(start, end, replacementText);
+
+            int diff = replacementText.length() - in.length();
+
+            e.getValue().afterReplaced(start, end + diff, replacementText, span);
          }
       }
       return out.toString();
    }
 
    public interface FlatteningFactory {
-      public String out(String in);
+      public String out(String in, Object span);
+      public void afterReplaced(int start, int end, String replacementText, Object span);
    }
 
    public static void bubblify(Editable editable, String text, int start, int end,
@@ -93,18 +100,16 @@ public class Utils {
 
    /**
     * Calculates what kind of text setup this is
-    * @param edit
+    * @param ss
     * @return TEXT_ONLY, TAGS_ONLY, MIXED, TEXT_FIRST, TAGS_FIRST, NONE
     */
-   public static String tag_setup(ChipsEditText edit) {
-      if (edit.length() == 0)
+   public static String tag_setup(SpannableString ss) {
+      if (ss == null || ss.length() == 0)
          return NONE;
-      if (edit.getBubbleCount() == 0)
+      if (ss.getSpans(0, ss.length(), BubbleSpan.class).length == 0)
          return TEXT_ONLY;
       String assumption = null;
-      Editable e = edit.getText();
-      if (null == e)
-         return NONE;
+      SpannableStringBuilder e = new SpannableStringBuilder(ss);
       boolean firstiesEnded = false;
       for (int i = 1; i <= e.length(); i++) {
          char c[] = new char[1];
