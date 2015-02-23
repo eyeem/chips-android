@@ -21,6 +21,7 @@ before_install:
 - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm
   ia32-libs ia32-libs-multiarch > /dev/null; fi
 
+- mkdir -p ~/.gradle
 - echo "sonatypeRepo=https://oss.sonatype.org/content/repositories/snapshots/" > ~/.gradle/gradle.properties
 - echo "sonatypeSnapshotRepo=https://oss.sonatype.org/content/repositories/snapshots/" >> ~/.gradle/gradle.properties
 - echo "sonatypeUsername=xxx" >> ~/.gradle/gradle.properties
