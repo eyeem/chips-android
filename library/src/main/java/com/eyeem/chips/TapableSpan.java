@@ -63,8 +63,10 @@ public class TapableSpan extends StyleSpan implements BubbleSpan {
       int currentPos = spanStart;
       for (int i = startLine; i <= endLine; i++) {
          Point startPoint = callback.getCursorPosition(currentPos);
+         if (startPoint == null) continue;
          currentPos = (i != endLine) ? callback.getLineEnd(i) : spanEnd;
          Point endPoint = callback.getCursorPosition(currentPos-1);
+         if (endPoint == null) continue;
          int h = callback.getLineHeight();
          result.add(new Rect(startPoint.x, startPoint.y, endPoint.x, endPoint.y+h));
       }

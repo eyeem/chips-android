@@ -8,9 +8,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,6 +23,8 @@ public class ChipsEditText extends MultilineEditText {
    boolean autoShow;
    int maxBubbleCount = -1;
    public CharSequence savedHint;
+
+   private BubbleStyle currentBubbleStyle;
 
    public ChipsEditText(Context context) {
       super(context);
@@ -66,8 +66,9 @@ public class ChipsEditText extends MultilineEditText {
       setOnEditorActionListener(editorActionListener);
 
       setCursorVisible(false);
-      float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1.5f, getContext().getResources().getDisplayMetrics());
-      this.cursorDrawable = new CursorDrawable(this, getTextSize()*1.5f, width, getContext());
+
+      // default bubble & cursor style
+      setCurrentBubbleStyle(DefaultBubbles.get(DefaultBubbles.GRAY_WHITE_TEXT, getContext(), (int) getTextSize()));
       this.savedHint = getHint();
    }
 
@@ -155,8 +156,8 @@ public class ChipsEditText extends MultilineEditText {
             // the text here in the meanwhile resulting in a crash
          }
       }
-      int textSize = (int)(getTextSize() - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getContext().getResources().getDisplayMetrics()));
-      Utils.bubblify(getText(), finalText, start, end, maxWidth, DefaultBubbles.get(DefaultBubbles.GRAY_WHITE_TEXT, getContext(), textSize), this, null);
+      //int textSize = (int)(getTextSize() - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getContext().getResources().getDisplayMetrics()));
+      Utils.bubblify(getText(), finalText, start, end, maxWidth, getCurrentBubbleStyle(), this, null);
       finalizing = false;
    }
 
@@ -541,5 +542,20 @@ public class ChipsEditText extends MultilineEditText {
 
    public CursorDrawable getCursorDrawable() {
       return this.cursorDrawable;
+   }
+
+   public BubbleStyle getCurrentBubbleStyle() {
+      return currentBubbleStyle;
+   }
+
+   public void setCurrentBubbleStyle(BubbleStyle currentBubbleStyle) {
+      if (this.currentBubbleStyle == currentBubbleStyle) return;
+      this.currentBubbleStyle = currentBubbleStyle;
+      float width = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1.5f, getContext().getResources().getDisplayMetrics());
+      this.cursorDrawable = new CursorDrawable(this, getTextSize()*1.5f, width, getContext());
+   }
+
+   public SpannableString snapshot() {
+      return new SpannableString(getText());
    }
 }

@@ -100,6 +100,7 @@ public class Linkify {
       public static final int CITY = 5;
       public static final int COUNTRY = 6;
       public static final int MENTION = 7;
+      public static final int UNKNOWN = 8;
 
       public int start;
       public int end;

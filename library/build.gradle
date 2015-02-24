@@ -23,6 +23,7 @@ dependencies {
         mavenLocal()
     }
 
+    compile 'io.reactivex:rxandroid:0.24.0'
     //testCompile 'junit:junit:4.10'
     //testCompile 'org.robolectric:robolectric:2.1.+'
     //testCompile 'com.squareup:fest-android:1.0.+'
@@ -39,7 +40,7 @@ android {
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-version = "0.9.3-SNAPSHOT"
+version = "0.9.4-SNAPSHOT"
 group = "com.eyeem.chips"
 
 configurations {
