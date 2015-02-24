@@ -6,38 +6,26 @@
     </declare-styleable>
 
    <!-- default bubble style -->
-   <dimen name="default_text_size">12sp</dimen>
+   <dimen name="default_text_size">16sp</dimen>
    <dimen name="default_text_pad">2sp</dimen>
    <color name="default_text_color">#FFF</color>
-   <color name="default_text_color_active">#FFF</color>
+   <color name="default_text_color_active">#888</color>
 
-   <attr name="bubbleStateActive" format="reference"/>
-   <attr name="bubbleStatePressed" format="reference"/>
-   <attr name="bubbleTextSize" format="dimension"/>
-   <attr name="bubbleTextColor" format="color"/>
-   <attr name="bubbleTextColorActive" format="color"/>
-   <attr name="bubbleTextPadding" format="dimension"/>
-
-   <declare-styleable name="bubbleStyles" >
-      <!-- bubble styles attributes -->
-      <attr name="bubbleStateActive"/>
-      <attr name="bubbleStatePressed"/>
-      <attr name="bubbleTextSize"/>
-      <attr name="bubbleTextColor"/>
-      <attr name="bubbleTextColorActive"/>
-      <attr name="bubbleTextPadding"/>
-   </declare-styleable>
-
-
+   <attr name="bubble_stateActive" format="reference|color"/>
+   <attr name="bubble_statePressed" format="reference|color"/>
+   <attr name="bubble_textSize" format="dimension"/>
+   <attr name="bubble_textColor" format="color"/>
+   <attr name="bubble_textColorActive" format="color"/>
+   <attr name="bubble_textPadding" format="dimension"/>
 
    <!-- default bubble is grey, white text, 12sp, 2sp -->
    <style name="default_bubble_style">
-      <item name="bubbleStateActive">@drawable/greybubble_background</item>
-      <item name="bubbleStatePressed">@drawable/greybubble_background_pressed</item>
-      <item name="bubbleTextSize">@dimen/default_text_size</item>
-      <item name="bubbleTextColor">@color/default_text_color</item>
-      <item name="bubbleTextColorActive">@color/default_text_color_active</item>
-      <item name="bubbleTextPadding">@dimen/default_text_pad</item>
+      <item name="bubble_stateActive">@drawable/default_bubble_background</item>
+      <item name="bubble_statePressed">@drawable/default_bubble_background_pressed</item>
+      <item name="bubble_textSize">@dimen/default_text_size</item>
+      <item name="bubble_textColor">@color/default_text_color</item>
+      <item name="bubble_textColorActive">@color/default_text_color_active</item>
+      <item name="bubble_textPadding">@dimen/default_text_pad</item>
    </style>
 
 </resources>

@@ -68,7 +68,7 @@ public class NotesAdapter extends RecyclerAdapter<Note, NoteHolder> {
       }
 
       if (bubbleStyle == null) {
-         bubbleStyle = Note.defaultBubbleStyle(appContext, (int) textPaint.getTextSize());
+         bubbleStyle = Note.defaultBubbleStyle(appContext);
       }
 
       return noteHolder;

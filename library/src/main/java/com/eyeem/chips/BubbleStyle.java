@@ -1,8 +1,8 @@
 package com.eyeem.chips;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.ContextThemeWrapper;
 
@@ -31,42 +31,35 @@ public class BubbleStyle {
       this.nextNeedsSpacing = nextNeedsSpacing;
    }
 
-   public static BubbleStyle build(Context context, int styleId) {
-      return build(context, styleId, context.getResources().getDimension(R.dimen.default_text_size));
-   }
-
-   public static BubbleStyle build(ChipsTextView textView, int styleId) {
-      return build(textView.getContext(), styleId, textView.getTextSize()); // TODO: what's not deprecated?
-   }
-
-   public static BubbleStyle build(ChipsEditText editText, int styleId) {
-      return build(editText.getContext(), styleId, editText.getTextSize());
-   }
-
    private static final int[] ATTRS = {
-      R.attr.bubbleStateActive,
-      R.attr.bubbleStatePressed,
-      R.attr.bubbleTextSize,
-      R.attr.bubbleTextColor,
-      R.attr.bubbleTextColorActive,
-      R.attr.bubbleTextPadding
+      R.attr.bubble_stateActive,
+      R.attr.bubble_statePressed,
+      R.attr.bubble_textSize,
+      R.attr.bubble_textColor,
+      R.attr.bubble_textColorActive,
+      R.attr.bubble_textPadding,
    };
 
-   private static BubbleStyle build(Context context, int styleId, float textSize) {
+   public static BubbleStyle buildDefault(Context context) {
+      return build(context, R.style.default_bubble_style);
+   }
 
-
-      context = new ContextThemeWrapper(context, styleId);
+   public static BubbleStyle build(Context context, int styleId) {
 
       Drawable temp;
+
+      context = new ContextThemeWrapper(context.getApplicationContext(), styleId);
+      Resources r = context.getResources();
       TypedArray ta = context.obtainStyledAttributes(styleId, ATTRS);
+      
       temp = ta.getDrawable(0);
-      Drawable active = temp != null ? temp : context.getResources().getDrawable(R.drawable.greybubble_background);
+      Drawable active = temp != null ? temp : r.getDrawable(R.drawable.default_bubble_background);
       temp = ta.getDrawable(1);
-      Drawable pressed = temp != null ? temp : context.getResources().getDrawable(R.drawable.greybubble_background_pressed);
-      float size = ta.getDimension(2, textSize);
-      int color = ta.getColor(3, context.getResources().getColor(R.color.default_text_color));
-      int colorActive = ta.getColor(4, context.getResources().getColor(R.color.default_text_color_active));
-      float pad = ta.getDimension(5, context.getResources().getDimension(R.dimen.default_text_pad));
+      Drawable pressed = temp != null ? temp : r.getDrawable(R.drawable.default_bubble_background_pressed);
+      float size = ta.getDimension(2, r.getDimension(R.dimen.default_text_size));
+      int color = ta.getColor(3, r.getColor(R.color.default_text_color));
+      int colorActive = ta.getColor(4, r.getColor(R.color.default_text_color_active));
+      float pad = ta.getDimension(5, r.getDimension(R.dimen.default_text_pad));
 
       BubbleStyle bs = new BubbleStyle(
          active,

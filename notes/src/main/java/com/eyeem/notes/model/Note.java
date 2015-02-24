@@ -10,6 +10,7 @@ import com.eyeem.chips.BubbleStyle;
 import com.eyeem.chips.ChipsEditText;
 import com.eyeem.chips.Linkify;
 import com.eyeem.chips.Utils;
+import com.eyeem.notes.R;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.HashMap;
@@ -78,13 +79,8 @@ public class Note {
       return out;
    }
 
-   public static BubbleStyle defaultBubbleStyle(Context context, int textSize) {
-      int padding = Math.round((float)textSize * (0.05f));
-
-      return new BubbleStyle(
-            context.getResources().getDrawable(com.eyeem.chips.R.drawable.greentext_background_active),
-            context.getResources().getDrawable(com.eyeem.chips.R.drawable.greentext_background_pressed),
-            textSize, 0xffebe0f5, 0xffebe0f5, padding);
+   public static BubbleStyle defaultBubbleStyle(Context context) {
+      return BubbleStyle.build(context, R.style.note_default_style);
    }
 
    private static class Flatten implements Utils.FlatteningFactory {

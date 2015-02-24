@@ -108,7 +108,7 @@ public class EditView extends RelativeLayout {
       });
       et.addListener(chipsListener);
 
-      BubbleStyle bubbleStyle = BubbleStyle.build(et, R.style.blue_bubble);//Note.defaultBubbleStyle(et.getContext(), (int) et.getTextSize());
+      BubbleStyle bubbleStyle = Note.defaultBubbleStyle(getContext());
       et.setText(note.textSpan(bubbleStyle, et));
       et.setCurrentBubbleStyle(bubbleStyle);
    }

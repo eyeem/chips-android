@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:bubble="http://schemas.android.com/apk/res/com.eyeem.chips">
+<resources>
+   <style name="note_default_style">
+<!--      <item name="bubble_stateActive">#472</item>
+      <item name="bubble_statePressed">@color/theme_default_primary_dark</item>
+      <item name="bubble_textSize">14sp</item>
+      <item name="bubble_textColor">@color/theme_accent</item>
+      <item name="bubble_textColorActive">#55F</item>
+      <item name="bubble_textPadding">2sp</item>-->
 
-
-   <style name="blue_bubble" parent="@style/default_bubble_style">
-      <item name="bubbleStateActive">@drawable/greybubble_background</item>
-      <item name="bubbleStatePressed">@drawable/greybubble_background_pressed</item>
-      <item name="bubbleTextSize">24sp</item>
-      <item name="bubbleTextColor">#55F</item>
-      <!--<item name="com.eyeem.chips:bubbleTextColorActive">#55F</item>-->
-
-      <item name="bubbleTextPadding">@dimen/default_text_pad</item>
+      <item name="bubble_textColor">@color/theme_accent</item>
    </style>
-
-
 </resources>

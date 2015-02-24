@@ -95,7 +95,7 @@ public class Preview extends Path implements HasParent {
             note = sourceNote;
          }
          if (note == null) return;
-         BubbleStyle style = com.eyeem.notes.model.Note.defaultBubbleStyle(getView().getContext(), (int) getView().getTv().getTextSize());
+         BubbleStyle style = com.eyeem.notes.model.Note.defaultBubbleStyle(getView().getContext());
          getView().getTv().setText(note.textSpan(style, null));
       }
    }
