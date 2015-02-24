@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+   <!--
+    that's an example of how a bubble style can be created
+    it doesn't have to have all the attributes
+    any missing attributes will be used from library:res/values/attrs.xml:default_bubble_style
+
+    to build a bubble style in Java use:
+    BubbleStyle style = BubbleStyle.build(context, R.style.<name>);
+    -->
+
    <style name="note_default_style">
-<!--      <item name="bubble_stateActive">#472</item>
+      <item name="bubble_stateActive">@color/theme_default_primary</item>
       <item name="bubble_statePressed">@color/theme_default_primary_dark</item>
       <item name="bubble_textSize">14sp</item>
-      <item name="bubble_textColor">@color/theme_accent</item>
-      <item name="bubble_textColorActive">#55F</item>
-      <item name="bubble_textPadding">2sp</item>-->
-
-      <item name="bubble_textColor">@color/theme_accent</item>
+      <item name="bubble_textColor">#eee</item>
+      <item name="bubble_textColorActive">@color/theme_accent</item>
+      <item name="bubble_textPadding">2sp</item>
    </style>
 </resources>

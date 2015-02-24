@@ -5,12 +5,15 @@
         <attr name="android:horizontalSpacing" />
     </declare-styleable>
 
+   <!-- Below is the attributes/resources/style that forms the bubble styling
+   ========================================================================== -->
    <!-- default bubble style -->
    <dimen name="default_text_size">16sp</dimen>
    <dimen name="default_text_pad">2sp</dimen>
    <color name="default_text_color">#FFF</color>
    <color name="default_text_color_active">#888</color>
 
+   <!-- attributes -->
    <attr name="bubble_stateActive" format="reference|color"/>
    <attr name="bubble_statePressed" format="reference|color"/>
    <attr name="bubble_textSize" format="dimension"/>
@@ -18,7 +21,7 @@
    <attr name="bubble_textColorActive" format="color"/>
    <attr name="bubble_textPadding" format="dimension"/>
 
-   <!-- default bubble is grey, white text, 12sp, 2sp -->
+   <!-- default bubble style -->
    <style name="default_bubble_style">
       <item name="bubble_stateActive">@drawable/default_bubble_background</item>
       <item name="bubble_statePressed">@drawable/default_bubble_background_pressed</item>
