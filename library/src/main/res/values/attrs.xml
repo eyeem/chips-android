@@ -4,4 +4,40 @@
         <attr name="android:verticalSpacing" />
         <attr name="android:horizontalSpacing" />
     </declare-styleable>
+
+   <!-- default bubble style -->
+   <dimen name="default_text_size">12sp</dimen>
+   <dimen name="default_text_pad">2sp</dimen>
+   <color name="default_text_color">#FFF</color>
+   <color name="default_text_color_active">#FFF</color>
+
+   <attr name="bubbleStateActive" format="reference"/>
+   <attr name="bubbleStatePressed" format="reference"/>
+   <attr name="bubbleTextSize" format="dimension"/>
+   <attr name="bubbleTextColor" format="color"/>
+   <attr name="bubbleTextColorActive" format="color"/>
+   <attr name="bubbleTextPadding" format="dimension"/>
+
+   <declare-styleable name="bubbleStyles" >
+      <!-- bubble styles attributes -->
+      <attr name="bubbleStateActive"/>
+      <attr name="bubbleStatePressed"/>
+      <attr name="bubbleTextSize"/>
+      <attr name="bubbleTextColor"/>
+      <attr name="bubbleTextColorActive"/>
+      <attr name="bubbleTextPadding"/>
+   </declare-styleable>
+
+
+
+   <!-- default bubble is grey, white text, 12sp, 2sp -->
+   <style name="default_bubble_style">
+      <item name="bubbleStateActive">@drawable/greybubble_background</item>
+      <item name="bubbleStatePressed">@drawable/greybubble_background_pressed</item>
+      <item name="bubbleTextSize">@dimen/default_text_size</item>
+      <item name="bubbleTextColor">@color/default_text_color</item>
+      <item name="bubbleTextColorActive">@color/default_text_color_active</item>
+      <item name="bubbleTextPadding">@dimen/default_text_pad</item>
+   </style>
+
 </resources>
