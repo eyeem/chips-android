@@ -34,9 +34,6 @@ import butterknife.OnClick;
  */
 public class NotesAdapter extends RecyclerAdapter<Note, NoteHolder> {
 
-   private final static boolean TRUNCATE = true;
-
-   TextPaint textPaint;
    BubbleStyle bubbleStyle;
    LayoutBuild.Config layoutConfig;
    int width = 0;
@@ -46,7 +43,6 @@ public class NotesAdapter extends RecyclerAdapter<Note, NoteHolder> {
    public NotesAdapter(Storage<Note>.List list, CacheOnScroll cacheOnScroll, Bus bus) {
       super(list);
       this.cacheOnScroll = cacheOnScroll;
-      this.cacheOnScroll.setAheadLoader(new LayoutAheadLoader());
       this.bus = bus;
    }
 
@@ -54,9 +50,11 @@ public class NotesAdapter extends RecyclerAdapter<Note, NoteHolder> {
 
    @Override public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
       NoteHolder noteHolder =  new NoteHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.note_row, parent, false), bus);
-
-      if (textPaint == null) {
-         textPaint = noteTextPaint(parent.getContext());
+      if(layoutConfig== null){
+         // hacky. Ahead loader calculates with the config of the 1st inflated view
+         // TODO: maybe a better way to handle that?
+         layoutConfig = noteHolder.textView.defaultConfig();
+         this.cacheOnScroll.setAheadLoader(new LayoutAheadLoader());
       }
 
       if (width <= 0) {
@@ -77,45 +75,8 @@ public class NotesAdapter extends RecyclerAdapter<Note, NoteHolder> {
    @Override public void onBindViewHolder(NoteHolder holder, final int position) {
 
       Note note = getItem(position);
-
-      // lazy init config
-      if (layoutConfig == null) {
-         if (width > 0) {
-            layoutConfig = new LayoutBuild.Config();
-            layoutConfig.lineSpacing = 1.25f;
-            layoutConfig.textPaint = textPaint;
-            layoutConfig.truncated = true;
-            if (TRUNCATE)  layoutConfig.maxLines = 2;
-            SpannableStringBuilder moreText = new SpannableStringBuilder("...more");
-            com.eyeem.chips.Utils.tapify(moreText, 0, moreText.length(), 0xff000000, 0xff000000, new Truncation());
-            layoutConfig.moreText = moreText;
-         }
-      }
-
-      if (layoutConfig != null) {
-         holder.setNote(note).textView.setLayoutBuild(cacheOnScroll.get(note.id));
-      }
-
-      if (TRUNCATE)  holder.textView.setTruncated(true);
+      holder.setNote(note).textView.setLayoutBuild(cacheOnScroll.get(note.id));
    }
-
-   private static TextPaint _noteTextPaint;
-
-   static TextPaint noteTextPaint(Context context){
-      context = context.getApplicationContext();
-      if (_noteTextPaint == null) {
-         _noteTextPaint = new TextPaint();
-         _noteTextPaint.setAntiAlias(true);
-         Resources r = context.getResources();
-         float _dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
-         _noteTextPaint.setTextSize(_dp);
-         _noteTextPaint.setColor(0xFF000000);
-      }
-      return _noteTextPaint;
-   }
-
-   public static class Truncation {
-   } // marker class
 
    public CacheOnScroll getCacheOnScroll() {
       return cacheOnScroll;

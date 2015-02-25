@@ -56,10 +56,10 @@ public class BubbleStyle {
       Drawable active = temp != null ? temp : r.getDrawable(R.drawable.default_bubble_background);
       temp = ta.getDrawable(1);
       Drawable pressed = temp != null ? temp : r.getDrawable(R.drawable.default_bubble_background_pressed);
-      float size = ta.getDimension(2, r.getDimension(R.dimen.default_text_size));
-      int color = ta.getColor(3, r.getColor(R.color.default_text_color));
-      int colorActive = ta.getColor(4, r.getColor(R.color.default_text_color_active));
-      float pad = ta.getDimension(5, r.getDimension(R.dimen.default_text_pad));
+      float size = ta.getDimension(2, r.getDimension(R.dimen.default_bubble_text_size));
+      int color = ta.getColor(3, r.getColor(R.color.default_bubble_text_color));
+      int colorActive = ta.getColor(4, r.getColor(R.color.default_bubble_text_color_active));
+      float pad = ta.getDimension(5, r.getDimension(R.dimen.default_bubble_text_pad));
 
       BubbleStyle bs = new BubbleStyle(
          active,
