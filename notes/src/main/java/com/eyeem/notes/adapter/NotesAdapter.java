@@ -50,7 +50,7 @@ public class NotesAdapter extends RecyclerAdapter<Note, NoteHolder> {
 
    @Override public NoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
       NoteHolder noteHolder =  new NoteHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.note_row, parent, false), bus);
-      if(layoutConfig== null){
+      if(layoutConfig == null){
          // hacky. Ahead loader calculates with the config of the 1st inflated view
          // TODO: maybe a better way to handle that?
          layoutConfig = noteHolder.textView.defaultConfig();
@@ -66,7 +66,7 @@ public class NotesAdapter extends RecyclerAdapter<Note, NoteHolder> {
       }
 
       if (bubbleStyle == null) {
-         bubbleStyle = Note.defaultBubbleStyle(appContext);
+         bubbleStyle = Note.defaultBubbleStyle(appContext, layoutConfig.textPaint.getTextSize());
       }
 
       return noteHolder;

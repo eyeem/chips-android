@@ -391,9 +391,9 @@ public class ChipsEditText extends MultilineEditText {
       }
       int line = layout.getLineForOffset(pos);
       int baseline = layout.getLineBaseline(line);
-      int ascent = layout.getLineAscent(line);
+      //int ascent = layout.getLineAscent(line);
       float x = layout.getPrimaryHorizontal(pos);
-      float y = baseline + ascent;
+      float y = baseline /*+ ascent*/;
       return new Point((int)x, (int)y);
    }
 

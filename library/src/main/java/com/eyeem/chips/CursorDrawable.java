@@ -33,19 +33,18 @@ public class CursorDrawable {
    public void draw(Canvas canvas, boolean blink) {
       Point p = editText.getCursorPosition();
       canvas.save();
-      canvas.translate(p.x, p.y);
+      canvas.translate(p.x, p.y - bubble.getHeight() + bubble.style.bubblePadding + bubble.baselineHeight());
       if (editText.manualModeOn) {
          // calculate cursor offset
          int x_offset = 0;
          int y_offset = bubble.style.bubblePadding;
-         int y_h = bubble.getHeight() - 2*bubble.style.bubblePadding;
-         canvas.translate(0, -BubbleSpanImpl.lineCorrectionLogic(editText.getSelectionStart(), editText, bubble, null));
+         int y_h = bubble.getHeight() - 2 * bubble.style.bubblePadding;
          if (editText.manualStart == editText.getSelectionStart()) { // empty bubble case
             // draw bubble behind
             bubble.draw(canvas);
             x_offset = - bubble.getWidth()/2;
          } else {
-            x_offset = 2*bubble.style.bubblePadding;
+            x_offset = 2 * bubble.style.bubblePadding;
          }
 
          // draw cursor inside
@@ -64,7 +63,6 @@ public class CursorDrawable {
       int x_offset = 0;
       int y_offset = 0;
       if (editText.manualModeOn) {
-         y_offset = - bubble.getHeight();
          if (editText.manualStart == editText.getSelectionStart()) { // empty bubble case
             x_offset = -bubble.getWidth() / 2;
          } else {
