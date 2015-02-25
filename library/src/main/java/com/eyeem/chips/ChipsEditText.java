@@ -206,7 +206,7 @@ public class ChipsEditText extends MultilineEditText {
          onBubbleCountChanged();
       }
       manualModeOn = false;
-      popover.hide();
+      if(popover != null) popover.hide();
       if (madeChip && getSelectionEnd() == getText().length()) {
          getText().append(" ");
          restartInput();
@@ -219,7 +219,7 @@ public class ChipsEditText extends MultilineEditText {
          getText().delete(manualStart, getSelectionEnd());
       }
       manualModeOn = false;
-      popover.hide();
+      if(popover != null) popover.hide();
    }
 
    TextWatcher autocompleteWatcher = new TextWatcher() {
@@ -278,15 +278,16 @@ public class ChipsEditText extends MultilineEditText {
             manipulatedSpan = null;
             manualModeOn = false;
          }
-         if (manualModeOn)
-            popover.reposition();
-         else
-            popover.hide();
+         if(popover != null) 
+            if (manualModeOn)
+               popover.reposition();
+            else
+               popover.hide();
       }
    };
 
    protected void setAvailableItems(ArrayList<String> items) {
-      popover.scrollToTop();
+      if(popover != null) popover.scrollToTop();
       availableItems = items;
       filter();
    }
@@ -319,17 +320,18 @@ public class ChipsEditText extends MultilineEditText {
                }
             }
       }
-      if (filteredItems.size() > 0) {
-         popover.setItems(filteredItems);
-         if (shouldShow()) {
-            popover.show();
+      if(popover != null) 
+         if (filteredItems.size() > 0) {
+            popover.setItems(filteredItems);
+            if (shouldShow()) {
+               popover.show();
+            }
+         } else {
+            if (!manualModeOn) {
+               popover.hide();
+            }
+            popover.setItems(availableItems);
          }
-      } else {
-         if (!manualModeOn) {
-            popover.hide();
-         }
-         popover.setItems(availableItems);
-      }
    }
 
    private boolean shouldShow() {
@@ -368,7 +370,7 @@ public class ChipsEditText extends MultilineEditText {
    public void hideKeyboard() {
       InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
       imm.hideSoftInputFromWindow(getWindowToken(), 0);
-      popover.hide();
+      if(popover != null) popover.hide();
    }
 
    public void showKeyboard() {
@@ -469,7 +471,7 @@ public class ChipsEditText extends MultilineEditText {
             if (canAddMoreBubbles()) {
                // we start adding a new hash tag
                startManualMode();
-               popover.show();
+               if(popover != null) popover.show();
                onHashTyped(true);
             } else {
                // no more hash tags allowed

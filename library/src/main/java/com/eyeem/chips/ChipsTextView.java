@@ -1,9 +1,12 @@
 package com.eyeem.chips;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.text.*;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -33,10 +36,12 @@ public class ChipsTextView extends View {
 
    public ChipsTextView(Context context, AttributeSet attrs) {
       super(context, attrs);
+      processAttributes(context, attrs);
    }
 
    public ChipsTextView(Context context, AttributeSet attrs, int defStyle) {
       super(context, attrs, defStyle);
+      processAttributes(context, attrs);
    }
 
    @Override public boolean onTouchEvent(MotionEvent event) {
@@ -220,8 +225,44 @@ public class ChipsTextView extends View {
          .subscribe(new LayoutSubscription(this));
    }
 
-   // TODO configuration via xml params
-   private LayoutBuild.Config defaultConfig() {
+   private void processAttributes(Context context, AttributeSet attrs){
+
+      LayoutBuild.Config config = defaultConfig();
+      
+      config.textPaint = new TextPaint();
+      config.textPaint.setAntiAlias(true);
+
+      Resources r = context.getResources();
+      TypedArray ta = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ChipsTextView, 0 ,0);
+      float textSize = ta.getDimension(R.styleable.ChipsTextView_textSize, r.getDimension(R.dimen.default_chips_text_size));
+      int textColor = ta.getColor(R.styleable.ChipsTextView_textColor, r.getColor(R.color.default_chips_text_color));
+      config.textPaint.setTextSize(textSize);
+      config.textPaint.setColor(textColor);
+
+      TypedValue outValue = new TypedValue();
+      r.getValue(R.dimen.default_chips_line_spacing, outValue, true);
+      config.lineSpacing = ta.getFloat(R.styleable.ChipsTextView_lineSpacing, outValue.getFloat());
+
+      config.truncated = ta.getBoolean(R.styleable.ChipsTextView_truncated, false);
+      if (config.truncated) {
+         config.maxLines = ta.getInt(R.styleable.ChipsTextView_maxLines, r.getInteger(R.integer.default_chips_max_lines));
+         String moreText = ta.getString(R.styleable.ChipsTextView_moreText);
+         if (moreText == null)
+            moreText = r.getString(R.string.default_chips_more_text);
+         int moreTextColor = ta.getColor(R.styleable.ChipsTextView_moreTextColor, r.getColor(R.color.default_chips_more_text_color));
+         int moreTextColorActive = ta.getColor(R.styleable.ChipsTextView_moreTextColorActive, r.getColor(R.color.default_chips_more_text_color_active));
+         SpannableStringBuilder moreTextSpan = new SpannableStringBuilder(moreText);
+         Utils.tapify(moreTextSpan, 0, moreTextSpan.length(), moreTextColorActive, moreTextColor, new Truncation());
+         config.moreText = moreTextSpan;
+      }
+
+      config.debug = ta.getBoolean(R.styleable.ChipsTextView_debug, false);
+
+      ta.recycle();
+
+   }
+
+   public LayoutBuild.Config defaultConfig() {
       if (_defaultConfig == null) {
          _defaultConfig = new LayoutBuild.Config();
       }
@@ -269,5 +310,11 @@ public class ChipsTextView extends View {
          if (tv == null) return;
          tv.setLayoutBuild(layoutBuild);
       }
+   }
+
+   /**
+    * Marker class. Marks a truncation bubble/area
+    */
+   public static class Truncation {
    }
 }

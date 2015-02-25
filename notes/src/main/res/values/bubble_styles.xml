@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <!--
+    that's an example of how the text style of ChipsTextView can be used
+    it doesn't have to have all the attributes
+    any missing attributes will be used from library:res/values/attrs.xml:default_bubble_style
+    -->
+   <style name="note_text_style" parent="@style/default_chips_text_style">
+      <item name="textSize">18sp</item>
+      <item name="textColor">#444</item>
+      <item name="lineSpacing">1.1</item>
+      <item name="maxLines">2</item>
+      <item name="truncated">true</item>
+      <item name="moreText">...open text</item>
+      <item name="moreTextColor">#22d</item>
+      <item name="moreTextColorActive">#99f</item>
+   </style>
+
+   <!--
+    that's an example of how a bubble style can be created
+    it doesn't have to have all the attributes
+    any missing attributes will be used from library:res/values/attrs.xml:default_bubble_style
+
+    to build a bubble style in Java use:
+    BubbleStyle style = BubbleStyle.build(context, R.style.<name>);
+    -->
+
+   <style name="note_default_style">
+      <item name="bubble_stateActive">@color/theme_default_primary</item>
+      <item name="bubble_statePressed">@color/theme_default_primary_dark</item>
+      <item name="bubble_textSize">14sp</item>
+      <item name="bubble_textColor">#eee</item>
+      <item name="bubble_textColorActive">@color/theme_accent</item>
+      <item name="bubble_textPadding">2sp</item>
+   </style>
+</resources>

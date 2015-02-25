@@ -1,7 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="RowLayout">
-        <attr name="android:verticalSpacing" />
-        <attr name="android:horizontalSpacing" />
-    </declare-styleable>
+   <declare-styleable name="RowLayout">
+      <attr name="android:verticalSpacing"/>
+      <attr name="android:horizontalSpacing"/>
+   </declare-styleable>
+
+   <!-- Below is the attributes to use for ChipsTextView XML declaration
+   ========================================================================== -->
+   <dimen name="default_chips_text_size">16sp</dimen>
+   <color name="default_chips_text_color">#FFF</color>
+   <item name="default_chips_line_spacing" format="float" type="dimen">1.25</item>
+   <integer name="default_chips_max_lines">4</integer>
+   <string name="default_chips_more_text">…more</string>
+   <color name="default_chips_more_text_color">#FFF</color>
+   <color name="default_chips_more_text_color_active">#888</color>
+
+   <declare-styleable name="ChipsTextView">
+      <attr name="textSize" format="dimension"/>
+      <attr name="textColor" format="color"/>
+      <attr name="lineSpacing" format="float"/>
+      <attr name="maxLines" format="integer"/>
+      <attr name="truncated" format="boolean"/>
+      <attr name="debug" format="boolean"/>
+      <attr name="moreText" format="string"/>
+      <attr name="moreTextColor" format="color"/>
+      <attr name="moreTextColorActive" format="color"/>
+   </declare-styleable>
+
+   <!-- default style for text -->
+   <style name="default_chips_text_style">
+      <item name="textSize">@dimen/default_chips_text_size</item>
+      <item name="textColor">@color/default_chips_text_color</item>
+      <item name="lineSpacing">@dimen/default_chips_line_spacing</item>
+      <item name="maxLines">@integer/default_chips_max_lines</item>
+      <item name="truncated">false</item>
+      <item name="debug">false</item>
+      <item name="moreText">@string/default_chips_more_text</item>
+      <item name="moreTextColor">@color/default_chips_more_text_color</item>
+      <item name="moreTextColorActive">@color/default_chips_more_text_color_active</item>
+   </style>
+
+   <!-- Below is the attributes/resources/style that forms the bubble styling
+   ========================================================================== -->
+   <!-- default bubble style -->
+   <dimen name="default_bubble_text_size">16sp</dimen>
+   <dimen name="default_bubble_text_pad">2sp</dimen>
+   <color name="default_bubble_text_color">#FFF</color>
+   <color name="default_bubble_text_color_active">#888</color>
+
+   <!-- attributes -->
+   <attr name="bubble_stateActive" format="reference|color"/>
+   <attr name="bubble_statePressed" format="reference|color"/>
+   <attr name="bubble_textSize" format="dimension"/>
+   <attr name="bubble_textColor" format="color"/>
+   <attr name="bubble_textColorActive" format="color"/>
+   <attr name="bubble_textPadding" format="dimension"/>
+
+   <!-- default bubble style -->
+   <style name="default_bubble_style">
+      <item name="bubble_stateActive">@drawable/default_bubble_background</item>
+      <item name="bubble_statePressed">@drawable/default_bubble_background_pressed</item>
+      <item name="bubble_textSize">@dimen/default_bubble_text_size</item>
+      <item name="bubble_textColor">@color/default_bubble_text_color</item>
+      <item name="bubble_textColorActive">@color/default_bubble_text_color_active</item>
+      <item name="bubble_textPadding">@dimen/default_bubble_text_pad</item>
+   </style>
+
 </resources>

@@ -42,7 +42,7 @@ public class NoteHolder extends RecyclerView.ViewHolder implements ChipsTextView
 
    @Override public void onBubbleClicked(View view, BubbleSpan bubbleSpan) {
 
-      if (bubbleSpan.data() instanceof NotesAdapter.Truncation) {
+      if (bubbleSpan.data() instanceof ChipsTextView.Truncation) {
          textView.expand(true);
          return;
       }
