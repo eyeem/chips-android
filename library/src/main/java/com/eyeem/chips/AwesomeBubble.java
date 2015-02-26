@@ -80,12 +80,12 @@ public class AwesomeBubble {
          style.active.setBounds(rect);
          style.active.draw(canvas);
       }
-      canvas.translate(rect.left+2*style.bubblePadding, rect.top+style.bubblePadding);
+      canvas.translate(rect.left + 2 * style.bubblePadding, rect.top + style.bubblePadding);
       text_paint.setTextSize(style.textSize);
       text_paint.setColor(isPressed ? style.textPressedColor : style.textColor);
       text_paint.setAntiAlias(true);
       textLayout.draw(canvas);
-      canvas.translate(-rect.left-2*style.bubblePadding, -rect.top-style.bubblePadding);
+      canvas.translate(-rect.left - 2 * style.bubblePadding, - rect.top - style.bubblePadding);
    }
 
    public void setPressed(boolean value) {
@@ -98,5 +98,13 @@ public class AwesomeBubble {
 
    public Rect rect() {
       return rect;
+   }
+
+   /**
+    * distance between baseline and text bottom
+    * @return
+    */
+   public int baselineHeight() {
+      return textLayout == null ? 0 : textLayout.getHeight() - textLayout.getLineBaseline(0);
    }
 }

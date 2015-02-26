@@ -73,4 +73,7 @@ public class BubbleStyle {
       return bs;
    }
 
+   public void setTextSize(int textSize) {
+      this.textSize = textSize;
+   }
 }

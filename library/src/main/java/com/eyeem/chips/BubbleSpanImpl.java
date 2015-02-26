@@ -1,6 +1,7 @@
 package com.eyeem.chips;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -32,7 +33,7 @@ public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
       canvas.save();
 
       baselineDiff = lineCorrectionLogic(start, et, bubble, this);
-      float transY = top - baselineDiff;
+      float transY = y - baselineDiff;
 
       canvas.translate(x, transY);
       bubble.draw(canvas);
@@ -98,26 +99,6 @@ public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
    }
 
    public static float lineCorrectionLogic(int start, ChipsEditText et, AwesomeBubble bubble, BubbleSpanImpl span) {
-      float baselineDiff = 0.0f;
-      if (et != null) {
-         // we do this because for some Androids the first line's bubbles
-         // get cut off by inner scroll boundary - we redraw those
-         // bubbles after onDraw passes
-         // ...also edittext's layouting is erratic and baselineDiff is something
-         // I have trouble calculating
-         float multipler = -1.8f;
-         if (et.getLayout() != null && et.getLayout().getLineForOffset(start) == 0) {
-            // especially firstline has bigger next line space than others
-            baselineDiff = ((float)bubble.style.bubblePadding) * multipler;
-         } else {
-            multipler += 1.0f;
-            baselineDiff = ((float)bubble.style.bubblePadding) * multipler;
-         }
-      } else {
-         // this is for ChipsTextView which base on StaticLayout... much less
-         // troubles here
-         baselineDiff = ((float)bubble.style.bubblePadding) * 0.6f;
-      }
-      return baselineDiff;
+      return (bubble.getHeight() - bubble.style.bubblePadding - bubble.baselineHeight());
    }
 }

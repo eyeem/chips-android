@@ -79,8 +79,10 @@ public class Note {
       return out;
    }
 
-   public static BubbleStyle defaultBubbleStyle(Context context) {
-      return BubbleStyle.build(context, R.style.note_default_style);
+   public static BubbleStyle defaultBubbleStyle(Context context, float textSize) {
+      BubbleStyle bubbleStyle = BubbleStyle.build(context, R.style.note_default_style);
+      bubbleStyle.setTextSize((int) textSize);
+      return bubbleStyle;
    }
 
    private static class Flatten implements Utils.FlatteningFactory {
