@@ -91,7 +91,6 @@ public class ChipsTextView extends View {
    }
 
    int maxAvailableWidth = 0;
-   int lastLineSpacing = 0;
 
    @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
       int widthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -109,18 +108,13 @@ public class ChipsTextView extends View {
             lb.build(maxAvailableWidth, false);
          }
 
-         StaticLayout layout = lb != null ? lb.layout() : null;
-         height = layout == null ? 0 : layout.getHeight() + getPaddingTop() + getPaddingBottom();
 
-         if (layout != null && layout.getLineCount() > 0) {
-            // subtract last line's spacing
-            lastLineSpacing = layout.getLineBottom(0) - layout.getPaint().getFontMetricsInt().descent - layout.getLineBaseline(0);
-            height -= (lastLineSpacing);
+         //StaticLayout layout = lb != null ? lb.layout() : null;
+         height = lb == null ? 0 : lb.layoutHeight() + getPaddingTop() + getPaddingBottom();
 
-            // support width wrap content
-            if (layout.getLineCount() == 1 && MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.AT_MOST) {
-               width = (int) (layout.getLineWidth(0) + getPaddingLeft() + getPaddingRight());
-            }
+         // support width wrap content
+         if (lb != null && lb.isSingleLine() && MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.AT_MOST) {
+            width = (int) (lb.lineWidth(0) + getPaddingLeft() + getPaddingRight());
          }
       }
 
@@ -146,7 +140,7 @@ public class ChipsTextView extends View {
          return;
       }
       ResizeAnimation expandAnimation = new ResizeAnimation(
-         getHeight() + l.expandedLayout().getHeight() - l.truncatedLayout().getHeight()
+         getHeight() + l.expansionHeight()
       );
       expandAnimation.setDuration(400);
       expandAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -193,12 +187,12 @@ public class ChipsTextView extends View {
 
    public void setLayoutBuild(LayoutBuild layoutBuild) {
       this._layoutBuild = layoutBuild;
-      StaticLayout sl = layoutBuild != null ? layoutBuild.layout() : null;
+      //StaticLayout sl = layoutBuild != null ? layoutBuild.layout() : null;
 
       int currentW = getWidth() - getPaddingLeft() - getPaddingRight();
-      int currentH = getHeight() - getPaddingTop() - getPaddingBottom() + lastLineSpacing;
+      int currentH = getHeight() - getPaddingTop() - getPaddingBottom();
 
-      if (sl != null && sl.getWidth() == currentW && sl.getHeight() == currentH) { // if size hasn't changed just invalidate
+      if (layoutBuild != null && layoutBuild.getBuildWidth() == currentW && layoutBuild.layoutHeight() == currentH) { // if size hasn't changed just invalidate
          invalidate();
       } else {
          requestLayout();
