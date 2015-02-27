@@ -55,16 +55,35 @@ public class LayoutBuild implements ILayoutCallback {
       buildWidth = 0;
    }
 
-   public StaticLayout layout() {
+   private StaticLayout layout() {
       return truncated ? truncatedLayout : expandedLayout;
    }
 
-   public StaticLayout truncatedLayout() {
-      return truncatedLayout;
+   public int layoutHeight() {
+      final StaticLayout l = layout();
+      return l != null ? l.getHeight() : 0;
    }
 
-   public StaticLayout expandedLayout() {
-      return expandedLayout;
+   public int lineCount() {
+      final StaticLayout l = layout();
+      return l != null ? l.getLineCount() : 0;
+   }
+
+   public float lineWidth(int lineNumber) {
+      final StaticLayout l = layout();
+      return l != null ? l.getLineWidth(lineNumber) : 0;
+   }
+
+   public boolean isSingleLine() {
+      return lineCount() == 1;
+   }
+
+   public int expansionHeight() {
+      return expandedLayout.getHeight() - truncatedLayout.getHeight();
+   }
+
+   public int getBuildWidth() {
+      return buildWidth;
    }
 
    public boolean spanContains(BubbleSpan span, int x, int y) {
