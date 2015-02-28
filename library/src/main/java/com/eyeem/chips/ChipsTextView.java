@@ -228,8 +228,8 @@ public class ChipsTextView extends View {
 
       Resources r = context.getResources();
       TypedArray ta = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ChipsTextView, 0 ,0);
-      float textSize = ta.getDimension(R.styleable.ChipsTextView_textSize, r.getDimension(R.dimen.default_chips_text_size));
-      int textColor = ta.getColor(R.styleable.ChipsTextView_textColor, r.getColor(R.color.default_chips_text_color));
+      float textSize = ta.getDimension(R.styleable.ChipsTextView_ctvTextSize, r.getDimension(R.dimen.default_chips_text_size));
+      int textColor = ta.getColor(R.styleable.ChipsTextView_ctvTextColor, r.getColor(R.color.default_chips_text_color));
       config.textPaint.setTextSize(textSize);
       config.textPaint.setColor(textColor);
 

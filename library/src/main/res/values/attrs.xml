@@ -16,8 +16,8 @@
    <color name="default_chips_more_text_color_active">#888</color>
 
    <declare-styleable name="ChipsTextView">
-      <attr name="textSize" format="dimension"/>
-      <attr name="textColor" format="color"/>
+      <attr name="ctvTextSize" format="dimension"/>
+      <attr name="ctvTextColor" format="color"/>
       <attr name="lineSpacing" format="float"/>
       <attr name="maxLines" format="integer"/>
       <attr name="truncated" format="boolean"/>
@@ -29,8 +29,8 @@
 
    <!-- default style for text -->
    <style name="default_chips_text_style">
-      <item name="textSize">@dimen/default_chips_text_size</item>
-      <item name="textColor">@color/default_chips_text_color</item>
+      <item name="ctvTextSize">@dimen/default_chips_text_size</item>
+      <item name="ctvTextColor">@color/default_chips_text_color</item>
       <item name="lineSpacing">@dimen/default_chips_line_spacing</item>
       <item name="maxLines">@integer/default_chips_max_lines</item>
       <item name="truncated">false</item>
