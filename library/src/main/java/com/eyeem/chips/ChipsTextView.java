@@ -28,6 +28,7 @@ public class ChipsTextView extends View {
 
    // default config
    boolean animating;
+   boolean dynamicTextWidth;
    LayoutBuild.Config _defaultConfig;
 
    public ChipsTextView(Context context) {
@@ -63,11 +64,20 @@ public class ChipsTextView extends View {
       return retValue;
    }
 
+   /**
+    * Use this method to set the text synchronously (slow). Useful when you don't know the
+    * width of the text ahead of time. The size of the layout and the layout itself will be
+    * figured out and calculated during onMeasure.
+    * @param text
+    */
    public void setText(final Spannable text) {
       if (text == null) {
          setLayoutBuild((LayoutBuild)null);
+         dynamicTextWidth = false;
          return;
       }
+
+      dynamicTextWidth = true;
 
       final LayoutBuild currentLayout = getLayoutBuild();
 
@@ -104,12 +114,10 @@ public class ChipsTextView extends View {
       if (!animating && maxAvailableWidth > 0) {
          final LayoutBuild lb = getLayoutBuild();
 
-         if (lb != null && lb.buildWidth <= 0)  {
-            lb.build(maxAvailableWidth, false);
+         if (lb != null && (lb.buildWidth <= 0 || (dynamicTextWidth && lb.buildWidth != maxAvailableWidth)))  {
+            lb.build(maxAvailableWidth, false); // <-- this takes time and runs on UI thread, avoid using this
          }
 
-
-         //StaticLayout layout = lb != null ? lb.layout() : null;
          height = lb == null ? 0 : lb.layoutHeight() + getPaddingTop() + getPaddingBottom();
 
          // support width wrap content
