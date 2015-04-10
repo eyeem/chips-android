@@ -35,8 +35,8 @@ dependencies {
     compile 'com.squareup.mortar:mortar:0.17-SNAPSHOT'
     compile 'com.squareup.mortar:dagger2support:0.17-SNAPSHOT'
 
-    compile 'com.google.dagger:dagger:2.0-SNAPSHOT'
-    apt 'com.google.dagger:dagger-compiler:2.0-SNAPSHOT'
+    compile 'com.google.dagger:dagger:2.0'
+    apt 'com.google.dagger:dagger-compiler:2.0'
 
     compile 'org.glassfish:javax.annotation:10.0-b28'
     compile 'com.squareup.flow:flow:0.9-SNAPSHOT'

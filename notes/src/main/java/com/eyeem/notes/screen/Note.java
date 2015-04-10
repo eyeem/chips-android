@@ -45,7 +45,7 @@ public class Note extends Path implements HasParent, DynamicModules, ActionBarOw
    }
 
    @Override public List<Object> dependencies() {
-      return Arrays.<Object>asList(module);
+      return Arrays.asList(module);
    }
 
    @Override public List<ActionBarOwner.MenuAction> menuActions() {
