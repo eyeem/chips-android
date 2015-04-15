@@ -35,10 +35,10 @@ import mortar.MortarScopeDevHelper;
 import mortar.bundler.BundleServiceRunner;
 import mortar.dagger2support.DaggerService;
 
+import static com.eyeem.notes.mortarflow.Utils.createComponent;
 import static mortar.MortarScope.buildChild;
 import static mortar.MortarScope.findChild;
 import static mortar.MortarScope.getScope;
-import static mortar.dagger2support.DaggerService.createComponent;
 
 public class MainActivity extends ActionBarActivity implements Flow.Dispatcher, ActionBarOwner.Activity {
 
@@ -89,10 +89,10 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher, 
       App.Component appComponent = getScope(getApplicationContext()).getService(DaggerService.SERVICE_NAME);
 
       if (activityScope == null) {
-         activityScope = buildChild(getApplicationContext(), getScopeName())
+         activityScope = buildChild(getApplicationContext())
             .withService(BundleServiceRunner.SERVICE_NAME, new BundleServiceRunner())
             .withService(DaggerService.SERVICE_NAME, createComponent(Component.class, appComponent))
-            .build();
+            .build(getScopeName());
       }
 
       if (activityScope.hasService(name)) return activityScope.getService(name);

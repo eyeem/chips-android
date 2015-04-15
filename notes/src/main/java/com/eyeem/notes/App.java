@@ -12,7 +12,8 @@ import com.eyeem.notes.mortarflow.ScopeSingleton;
 import mortar.MortarScope;
 import mortar.dagger2support.DaggerService;
 
-import static mortar.dagger2support.DaggerService.createComponent;
+import static com.eyeem.notes.mortarflow.Utils.createComponent;
+
 
 /**
  * Created by vishna on 27/01/15.
@@ -32,7 +33,7 @@ public class App extends Application {
       if (rootScope == null) {
          rootScope = MortarScope.buildRootScope()
             .withService(DaggerService.SERVICE_NAME, createComponent(Component.class, new AppModule(this)))
-            .build();
+            .build(App.class.getName());
       }
 
       return rootScope.hasService(name) ? rootScope.getService(name) : super.getSystemService(name);

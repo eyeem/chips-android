@@ -9,9 +9,9 @@ import java.util.List;
 import mortar.MortarScope;
 import mortar.dagger2support.DaggerService;
 
+import static com.eyeem.notes.mortarflow.Utils.createComponent;
 import static mortar.MortarScope.findChild;
 import static mortar.MortarScope.getScope;
-import static mortar.dagger2support.DaggerService.createComponent;
 
 /**
  * Creates {@link MortarScope}s for screens that may be annotated with {@link WithComponent},
@@ -47,9 +47,9 @@ public class ScreenScoper {
          Object[] dependenciesArray = new Object[dependencies.size()];
          dependencies.toArray(dependenciesArray);
 
-         childScope = parentScope.buildChild(name)
+         childScope = parentScope.buildChild()
             .withService(DaggerService.SERVICE_NAME, createComponent(withComponent.value(), dependenciesArray))
-            .build();
+            .build(name);
       }
       return childScope;
    }
