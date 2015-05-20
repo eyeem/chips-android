@@ -6,15 +6,11 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
@@ -23,28 +19,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eyeem.chips.BubbleSpan;
-import com.eyeem.chips.ChipsEditText;
 import com.eyeem.chips.ChipsTextView;
-import com.eyeem.chips.DefaultBubbles;
 import com.eyeem.chips.Linkify;
-import com.eyeem.chips.Regex;
-import com.eyeem.chips.Utils;
 import com.eyeem.notes.R;
 import com.eyeem.notes.screen.Preview;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.regex.Matcher;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import lombok.Getter;
-import mortar.dagger2support.DaggerService;
 
 import static mortar.MortarScope.getScope;
+import static com.eyeem.notes.mortarflow.Utils.DAGGER_SERVICE;
 
 /**
  * Created by vishna on 18/02/15.
@@ -83,7 +70,7 @@ public class PreviewView extends RelativeLayout {
    }
 
    private void init() {
-      getScope(getContext()).<Preview.Component>getService(DaggerService.SERVICE_NAME).inject(this);
+      getScope(getContext()).<Preview.Component>getService(DAGGER_SERVICE).inject(this);
       setSaveEnabled(true);
    }
 

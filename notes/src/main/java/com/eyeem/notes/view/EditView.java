@@ -10,15 +10,14 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.eyeem.chips.AutocompletePopover;
 import com.eyeem.chips.BubbleStyle;
 import com.eyeem.chips.ChipsEditText;
-import com.eyeem.chips.Utils;
 import com.eyeem.notes.R;
 import com.eyeem.notes.model.Note;
+import com.eyeem.notes.mortarflow.Ass;
 import com.eyeem.notes.screen.Edit;
 
 import java.util.ArrayList;
@@ -30,9 +29,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import lombok.Getter;
-import mortar.dagger2support.DaggerService;
 
 import static mortar.MortarScope.getScope;
+import static com.eyeem.notes.mortarflow.Utils.DAGGER_SERVICE;
 
 /**
  * Created by vishna on 27/01/15.
@@ -68,7 +67,7 @@ public class EditView extends RelativeLayout {
    }
 
    private void init() {
-      getScope(getContext()).<Edit.Component>getService(DaggerService.SERVICE_NAME).inject(this);
+      getScope(getContext()).<Edit.Component>getService(DAGGER_SERVICE).inject(this);
       setSaveEnabled(true);
    }
 
@@ -150,22 +149,12 @@ public class EditView extends RelativeLayout {
 ///// boiler plate code that makes saving state work http://trickyandroid.com/saving-android-view-state-correctly/
    @Override
    public Parcelable onSaveInstanceState() {
-      Parcelable superState = super.onSaveInstanceState();
-      SavedState ss = new SavedState(superState);
-      ss.childrenStates = new SparseArray();
-      for (int i = 0; i < getChildCount(); i++) {
-         getChildAt(i).saveHierarchyState(ss.childrenStates);
-      }
-      return ss;
+      return Ass.onSave(this, super.onSaveInstanceState());
    }
 
    @Override
    public void onRestoreInstanceState(Parcelable state) {
-      SavedState ss = (SavedState) state;
-      super.onRestoreInstanceState(ss.getSuperState());
-      for (int i = 0; i < getChildCount(); i++) {
-         getChildAt(i).restoreHierarchyState(ss.childrenStates);
-      }
+      super.onRestoreInstanceState(Ass.onLoad(this, state));
    }
 
    @Override
@@ -178,38 +167,5 @@ public class EditView extends RelativeLayout {
       dispatchThawSelfOnly(container);
    }
 
-   static class SavedState extends BaseSavedState {
-      SparseArray childrenStates;
 
-      SavedState(Parcelable superState) {
-         super(superState);
-      }
-
-      private SavedState(Parcel in, ClassLoader classLoader) {
-         super(in);
-         childrenStates = in.readSparseArray(classLoader);
-      }
-
-      @Override
-      public void writeToParcel(Parcel out, int flags) {
-         super.writeToParcel(out, flags);
-         out.writeSparseArray(childrenStates);
-      }
-
-      public static final ClassLoaderCreator<SavedState> CREATOR = new ClassLoaderCreator<SavedState>() {
-         @Override
-         public SavedState createFromParcel(Parcel source, ClassLoader loader) {
-            return new SavedState(source, loader);
-         }
-
-         @Override
-         public SavedState createFromParcel(Parcel source) {
-            return createFromParcel(null);
-         }
-
-         public SavedState[] newArray(int size) {
-            return new SavedState[size];
-         }
-      };
-   }
 }

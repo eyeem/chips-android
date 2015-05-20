@@ -7,8 +7,11 @@ import com.eyeem.notes.R;
 import com.eyeem.notes.core.AppDep;
 import com.eyeem.notes.core.NoteStorage;
 import com.eyeem.notes.event.PreviewRefresh;
+import com.eyeem.notes.mortarflow.BaseComponent;
 import com.eyeem.notes.mortarflow.DynamicModules;
 import com.eyeem.notes.mortarflow.FlowDep;
+import com.eyeem.notes.mortarflow.HasParent;
+import com.eyeem.notes.mortarflow.Layout;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
 import com.eyeem.notes.mortarflow.WithComponent;
 import com.eyeem.notes.view.NoteView;
@@ -22,9 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import dagger.Provides;
-import flow.HasParent;
-import flow.Layout;
-import flow.Path;
+import flow.path.Path;
 import mortar.MortarScope;
 import mortar.ViewPresenter;
 
@@ -56,7 +57,7 @@ public class Note extends Path implements HasParent, DynamicModules, ActionBarOw
       );
    }
 
-   @dagger.Component(modules = Module.class, dependencies = MainActivity.Component.class)
+   @dagger.Component(modules = Module.class, dependencies = BaseComponent.class)
    @ScopeSingleton(Component.class)
    public interface Component extends FlowDep, AppDep {
       void inject(NoteView t);

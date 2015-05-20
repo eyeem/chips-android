@@ -19,9 +19,9 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import lombok.Getter;
-import mortar.dagger2support.DaggerService;
 
 import static mortar.MortarScope.getScope;
+import static com.eyeem.notes.mortarflow.Utils.DAGGER_SERVICE;
 
 /**
  * Created by vishna on 16/02/15.
@@ -54,7 +54,7 @@ public class NoteView extends LinearLayout implements ViewPager.OnPageChangeList
    }
 
    private void init() {
-      getScope(getContext()).<Note.Component>getService(DaggerService.SERVICE_NAME).inject(this);
+      getScope(getContext()).<Note.Component>getService(DAGGER_SERVICE).inject(this);
    }
 
    @Override protected void onFinishInflate() {

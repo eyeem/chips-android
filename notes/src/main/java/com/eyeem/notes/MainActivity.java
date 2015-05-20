@@ -10,14 +10,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
 
-import com.eyeem.notes.core.StorageDep;
-import com.eyeem.notes.core.AppDep;
+import com.eyeem.notes.mortarflow.BaseComponent;
 import com.eyeem.notes.mortarflow.FlowBundler;
-import com.eyeem.notes.mortarflow.FlowDep;
 import com.eyeem.notes.mortarflow.FramePathContainerView;
 import com.eyeem.notes.mortarflow.HandlesBack;
 import com.eyeem.notes.mortarflow.HandlesUp;
+import com.eyeem.notes.mortarflow.HasParent;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
+import com.eyeem.notes.mortarflow.Utils;
 import com.eyeem.notes.screen.ActionBarOwner;
 import com.squareup.otto.Bus;
 
@@ -28,13 +28,12 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import flow.Flow;
-import flow.HasParent;
-import flow.Path;
+import flow.path.Path;
 import mortar.MortarScope;
 import mortar.MortarScopeDevHelper;
 import mortar.bundler.BundleServiceRunner;
-import mortar.dagger2support.DaggerService;
 
+import static com.eyeem.notes.mortarflow.Utils.DAGGER_SERVICE;
 import static com.eyeem.notes.mortarflow.Utils.createComponent;
 import static mortar.MortarScope.buildChild;
 import static mortar.MortarScope.findChild;
@@ -44,7 +43,7 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher, 
 
    @ScopeSingleton(Component.class)
    @dagger.Component(dependencies = App.Component.class)
-   public interface Component extends FlowDep, AppDep, StorageDep {
+   public interface Component extends BaseComponent {
       void inject(MainActivity mainActivity);
    }
 
@@ -67,7 +66,7 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher, 
 
       BundleServiceRunner.getBundleServiceRunner(this).onCreate(savedInstanceState);
 
-      DaggerService.<Component>getDaggerComponent(this).inject(this);
+      Utils.<Component>getDaggerComponent(this).inject(this);
       flow = flowBundler.onCreate(savedInstanceState);
 
       setContentView(R.layout.root_layout);
@@ -86,12 +85,12 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher, 
    @Override public Object getSystemService(String name) {
       MortarScope activityScope = findChild(getApplicationContext(), getScopeName());
 
-      App.Component appComponent = getScope(getApplicationContext()).getService(DaggerService.SERVICE_NAME);
-
       if (activityScope == null) {
+         App.Component appComponent = getScope(getApplicationContext()).getService(DAGGER_SERVICE);
+
          activityScope = buildChild(getApplicationContext())
             .withService(BundleServiceRunner.SERVICE_NAME, new BundleServiceRunner())
-            .withService(DaggerService.SERVICE_NAME, createComponent(Component.class, appComponent))
+            .withService(DAGGER_SERVICE, createComponent(Component.class, appComponent))
             .build(getScopeName());
       }
 
@@ -139,7 +138,7 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher, 
 
    @Override public void dispatch(Flow.Traversal traversal,
                                   Flow.TraversalCallback traversalCallback) {
-      Path path = traversal.destination.current();
+      Path path = traversal.destination.top();
 
       boolean hasUp = path instanceof HasParent;
       String title = path.getClass().getSimpleName();

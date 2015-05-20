@@ -16,9 +16,9 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import flow.Flow;
-import mortar.dagger2support.DaggerService;
 
 import static mortar.MortarScope.getScope;
+import static com.eyeem.notes.mortarflow.Utils.DAGGER_SERVICE;
 
 /**
  * Created by vishna on 02/02/15.
@@ -48,7 +48,7 @@ public class StartView extends LinearLayout {
    }
 
    private void init() {
-      getScope(getContext()).<Start.Component>getService(DaggerService.SERVICE_NAME).inject(this);
+      getScope(getContext()).<Start.Component>getService(DAGGER_SERVICE).inject(this);
    }
 
    @Override protected void onFinishInflate() {
@@ -67,6 +67,6 @@ public class StartView extends LinearLayout {
    }
 
    @OnClick(R.id.editor) void onEditorClick(View view) {
-      Flow.get(this).goTo(new Edit());
+      Flow.get(this).set(new Edit());
    }
 }

@@ -10,8 +10,8 @@ import com.eyeem.notes.mortarflow.FlowDep;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
 
 import mortar.MortarScope;
-import mortar.dagger2support.DaggerService;
 
+import static com.eyeem.notes.mortarflow.Utils.DAGGER_SERVICE;
 import static com.eyeem.notes.mortarflow.Utils.createComponent;
 
 
@@ -32,7 +32,7 @@ public class App extends Application {
    @Override public Object getSystemService(String name) {
       if (rootScope == null) {
          rootScope = MortarScope.buildRootScope()
-            .withService(DaggerService.SERVICE_NAME, createComponent(Component.class, new AppModule(this)))
+            .withService(DAGGER_SERVICE, createComponent(Component.class, new AppModule(this)))
             .build(App.class.getName());
       }
 

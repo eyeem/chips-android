@@ -13,8 +13,8 @@ import com.squareup.otto.Bus;
 
 import dagger.Module;
 import dagger.Provides;
-import flow.Backstack;
-import flow.Parceler;
+import flow.History;
+import flow.StateParceler;
 
 @Module
 public class AppModule {
@@ -33,10 +33,10 @@ public class AppModule {
       return new NoteStorage(app);
    }
 
-   @Provides @ScopeSingleton(App.Component.class) FlowBundler provideFlowBundler(Parceler parceler, final NoteStorage storage) {
+   @Provides @ScopeSingleton(App.Component.class) FlowBundler provideFlowBundler(StateParceler parceler, final NoteStorage storage) {
       return new FlowBundler(parceler) {
-         @Override protected Backstack getColdStartBackstack(Backstack restoredBackstack) {
-            return restoredBackstack == null ? Backstack.single(new Notes(storage.all())) : restoredBackstack;
+         @Override protected History getColdStartHistory(History restoredHistory) {
+            return restoredHistory == null ? History.single(new Notes(storage.all())) : restoredHistory;
          }
       };
    }
@@ -45,7 +45,7 @@ public class AppModule {
       return new GsonBuilder().create();
    }
 
-   @Provides @ScopeSingleton(App.Component.class) Parceler provideParcer(Gson gson) {
+   @Provides @ScopeSingleton(App.Component.class) StateParceler provideParcer(Gson gson) {
       return new GsonParceler(gson);
    }
 

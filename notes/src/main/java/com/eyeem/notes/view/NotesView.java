@@ -24,9 +24,9 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import mortar.dagger2support.DaggerService;
 
 import static mortar.MortarScope.getScope;
+import static com.eyeem.notes.mortarflow.Utils.DAGGER_SERVICE;
 
 /**
  * Created by vishna on 03/02/15.
@@ -63,7 +63,7 @@ public class NotesView extends FrameLayout {
    }
 
    private void init() {
-      getScope(getContext()).<Notes.Component>getService(DaggerService.SERVICE_NAME).inject(this);
+      getScope(getContext()).<Notes.Component>getService(DAGGER_SERVICE).inject(this);
       setSaveEnabled(true);
    }
 

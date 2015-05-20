@@ -5,6 +5,8 @@ import android.os.Bundle;
 import com.eyeem.notes.R;
 import com.eyeem.notes.event.PreviewRefresh;
 import com.eyeem.notes.event.TextSnapshotCaptured;
+import com.eyeem.notes.mortarflow.HasParent;
+import com.eyeem.notes.mortarflow.Layout;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
 import com.eyeem.notes.mortarflow.WithComponent;
 import com.eyeem.notes.view.EditView;
@@ -18,9 +20,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import dagger.Provides;
-import flow.HasParent;
-import flow.Layout;
-import flow.Path;
+import flow.path.Path;
 import mortar.MortarScope;
 import mortar.ViewPresenter;
 

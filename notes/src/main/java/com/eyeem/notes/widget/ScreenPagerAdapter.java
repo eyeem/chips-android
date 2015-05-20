@@ -5,13 +5,14 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.eyeem.notes.mortarflow.Layout;
 import com.eyeem.notes.mortarflow.ScreenScoper;
+import com.eyeem.notes.mortarflow.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import flow.Layouts;
-import flow.Path;
+import flow.path.Path;
 import mortar.MortarScope;
 
 import static mortar.MortarScope.getScope;
@@ -50,7 +51,9 @@ public class ScreenPagerAdapter extends PagerAdapter {
       MortarScope newChildScope =  screenScoper.getScreenScope(mContext, childName, screen);
 
       Context childContext = newChildScope.createContext(mContext);
-      View newChild = Layouts.createView(childContext, screen);
+
+      Layout layout = screen.getClass().getAnnotation(Layout.class);
+      View newChild = Utils.Layouts.createView(childContext, screen);
       container.addView(newChild);
       return newChild;
    }

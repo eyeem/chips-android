@@ -14,7 +14,7 @@ public class UpAndBack {
          }
       }
       // Try to go up.  If up isn't supported, go back.
-      return Flow.get(childView).goUp() || onBackPressed(childView);
+      return /*Flow.get(childView).goUp() || */onBackPressed(childView);
    }
 
    public static boolean onBackPressed(View childView) {

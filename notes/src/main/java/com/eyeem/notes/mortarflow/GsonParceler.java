@@ -5,20 +5,21 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import flow.Parceler;
-import flow.Path;
+import flow.path.Path;
+import flow.StateParceler;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-public class GsonParceler implements Parceler {
+public class GsonParceler implements StateParceler {
    private final Gson gson;
 
    public GsonParceler(Gson gson) {
       this.gson = gson;
    }
 
-   @Override public Parcelable wrap(Path instance) {
+   @Override public Parcelable wrap(Object instance) {
       try {
          String json = encode(instance);
          return new Wrapper(json);
@@ -36,7 +37,7 @@ public class GsonParceler implements Parceler {
       }
    }
 
-   private String encode(Path instance) throws IOException {
+   private String encode(Object instance) throws IOException {
       StringWriter stringWriter = new StringWriter();
       JsonWriter writer = new JsonWriter(stringWriter);
 

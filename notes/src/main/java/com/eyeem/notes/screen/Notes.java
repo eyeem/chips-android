@@ -18,6 +18,7 @@ import com.eyeem.notes.experimental.CacheOnScroll;
 import com.eyeem.notes.experimental.PausableThreadPoolExecutor;
 import com.eyeem.notes.model.Note;
 import com.eyeem.notes.mortarflow.DynamicModules;
+import com.eyeem.notes.mortarflow.Layout;
 import com.eyeem.notes.mortarflow.ScopeSingleton;
 import com.eyeem.notes.mortarflow.WithComponent;
 import com.eyeem.notes.view.NotesView;
@@ -31,8 +32,7 @@ import javax.inject.Inject;
 
 import dagger.Provides;
 import flow.Flow;
-import flow.Layout;
-import flow.Path;
+import flow.path.Path;
 import mortar.MortarScope;
 import mortar.ViewPresenter;
 import rx.Observable;
@@ -124,7 +124,7 @@ public class Notes extends Path implements DynamicModules, ActionBarOwner.MenuAc
 
       @Subscribe public void noteClicked(NoteClickedEvent noteClickedEvent) {
          Note note = noteClickedEvent.note;
-         if (hasView()) Flow.get(getView()).goTo(new com.eyeem.notes.screen.Note(noteList, note.id));
+         if (hasView()) Flow.get(getView()).set(new com.eyeem.notes.screen.Note(noteList, note.id));
       }
 
       @Subscribe public void bubbleClicked(BubbleClickedEvent bubbleClickedEvent) {
@@ -134,7 +134,7 @@ public class Notes extends Path implements DynamicModules, ActionBarOwner.MenuAc
       }
 
       @Subscribe public void newNoteClicked(NewNoteEvent newNoteEvent) {
-         Flow.get(getView().getContext()).goTo(new com.eyeem.notes.screen.Note(noteList, null));
+         Flow.get(getView().getContext()).set(new com.eyeem.notes.screen.Note(noteList, null));
       }
 
       @Subscribe public void  menuAction(ActionBarOwner.MenuAction action) {

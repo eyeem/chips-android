@@ -8,9 +8,9 @@ import android.widget.FrameLayout;
 import com.eyeem.notes.R;
 
 import flow.Flow;
-import flow.Path;
-import flow.PathContainer;
-import flow.PathContainerView;
+import flow.path.Path;
+import flow.path.PathContainer;
+import flow.path.PathContainerView;
 
 /**
  * Created by vishna on 29/01/15.
