@@ -107,6 +107,7 @@ public class Linkify {
       public String id;
       public String text;
       public int type;
+      public Serializable data;
 
       public Entity() {};
       public Entity(int start, int end, String id, String text, int type) {
