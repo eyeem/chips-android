@@ -47,7 +47,7 @@ public class ChipsTextView extends View {
 
    @Override public boolean onTouchEvent(MotionEvent event) {
       final LayoutBuild layoutBuild = getLayoutBuild();
-      if (layoutBuild == null) return false;
+      if (layoutBuild == null || !defaultConfig().clickable) return false;
       int action = event.getAction();
       int x = (int) event.getX();
       int y = (int) event.getY();
@@ -260,6 +260,8 @@ public class ChipsTextView extends View {
 
       config.debug = ta.getBoolean(R.styleable.ChipsTextView_debug, false);
 
+      config.clickable = ta.getBoolean(R.styleable.ChipsTextView_clickable, true);
+
       ta.recycle();
 
    }
@@ -297,6 +299,10 @@ public class ChipsTextView extends View {
       defaultConfig().truncated = true;
       defaultConfig().moreText = moreText;
       defaultConfig().maxLines = maxLines;
+   }
+
+   @Deprecated public void setClickable(boolean clickable) {
+      defaultConfig().clickable = clickable;
    }
 
    private static class LayoutSubscription implements Action1<LayoutBuild> {

@@ -25,6 +25,7 @@
       <attr name="moreText" format="string"/>
       <attr name="moreTextColor" format="color"/>
       <attr name="moreTextColorActive" format="color"/>
+      <attr name="clickable" format="boolean"/>
    </declare-styleable>
 
    <!-- default style for text -->
