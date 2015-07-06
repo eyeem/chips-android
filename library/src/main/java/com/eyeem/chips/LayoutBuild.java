@@ -290,5 +290,6 @@ public class LayoutBuild implements ILayoutCallback {
       public int maxLines = 0;
       public boolean truncated;
       public boolean debug;
+      public boolean clickable = true;
    }
 }
