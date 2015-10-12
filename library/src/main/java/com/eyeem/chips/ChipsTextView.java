@@ -29,6 +29,7 @@ public class ChipsTextView extends View {
    // default config
    boolean animating;
    boolean dynamicTextWidth;
+   boolean consumeAllTouchEvents;
    LayoutBuild.Config _defaultConfig;
 
    public ChipsTextView(Context context) {
@@ -61,7 +62,7 @@ public class ChipsTextView extends View {
 
       boolean retValue = layoutBuild.onTouchEvent(action, x, y, listener, this);
       invalidate();
-      return retValue;
+      return consumeAllTouchEvents || retValue;
    }
 
    /**
@@ -135,6 +136,10 @@ public class ChipsTextView extends View {
 
    public void setOnBubbleClickedListener(OnBubbleClickedListener listener) {
       this.listener = listener;
+   }
+
+   public void setConsumeAllTouchEvents(boolean value) {
+      this.consumeAllTouchEvents = value;
    }
 
    public void expand(boolean animate) {
