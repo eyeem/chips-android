@@ -53,6 +53,8 @@ public class ChipsEditText extends MultilineEditText {
 
          @Override
          public ArrayList<String> getDefaultSuggestions() {
+            if (resolver == null)
+               return null;
             return resolver.getDefaultSuggestions();
          }
 
