@@ -121,7 +121,7 @@ public class AutocompletePopover extends RelativeLayout {
 
    public void hide() {
       setVisibility(View.GONE);
-      if (et.manualModeOn)
+      if (et._manualModeOn)
          et.endManualMode();
       if (onHideListener != null)
          onHideListener.onHide(this);
@@ -200,7 +200,7 @@ public class AutocompletePopover extends RelativeLayout {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
          et.onBubbleSelected(position);
-         et.manualModeOn = false;
+         et.setManualModeOn(false);
          et.muteHashWatcher(true);
          String textToAdd = adapter.items.get(position);
          if (et.lastEditAction != null) {

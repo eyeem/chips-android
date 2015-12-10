@@ -97,15 +97,20 @@ public class ChipsEditText extends MultilineEditText {
    boolean cursorBlink;
    CursorDrawable cursorDrawable;
 
+   protected void setManualModeOn(boolean value) {
+      this._manualModeOn = value;
+      onManualModeChanged(value);
+   }
+
    @Override
    public boolean onPreDraw() {
       CharSequence hint = getHint();
       boolean empty = TextUtils.isEmpty(getText());
-      if (manualModeOn && empty) {
+      if (_manualModeOn && empty) {
          if (!TextUtils.isEmpty(hint)) {
             setHint("");
          }
-      } else if (!manualModeOn && empty && !TextUtils.isEmpty(savedHint)) {
+      } else if (!_manualModeOn && empty && !TextUtils.isEmpty(savedHint)) {
          setHint(savedHint);
       };
       return super.onPreDraw();
@@ -163,7 +168,7 @@ public class ChipsEditText extends MultilineEditText {
       finalizing = false;
    }
 
-   boolean manualModeOn;
+   boolean _manualModeOn;
    int manualStart;
 
    public void setMaxBubbleCount(int maxBubbleCount) {
@@ -192,7 +197,7 @@ public class ChipsEditText extends MultilineEditText {
          getText().insert(i+1, " ");
       }
       lastEditAction = null;
-      manualModeOn = true;
+      setManualModeOn(true);
       manualStart = getSelectionStart();
    }
 
@@ -202,12 +207,12 @@ public class ChipsEditText extends MultilineEditText {
 
    public void endManualMode() {
       boolean madeChip = false;
-      if (manualStart < getSelectionEnd() && manualModeOn) {
+      if (manualStart < getSelectionEnd() && _manualModeOn) {
          makeChip(manualStart, getSelectionEnd(), true);
          madeChip = true;
          onBubbleCountChanged();
       }
-      manualModeOn = false;
+      setManualModeOn(false);
       if(popover != null) popover.hide();
       if (madeChip && getSelectionEnd() == getText().length()) {
          getText().append(" ");
@@ -217,10 +222,10 @@ public class ChipsEditText extends MultilineEditText {
    }
 
    public void cancelManualMode() {
-      if (manualStart < getSelectionEnd() && manualModeOn) {
+      if (manualStart < getSelectionEnd() && _manualModeOn) {
          getText().delete(manualStart, getSelectionEnd());
       }
-      manualModeOn = false;
+      setManualModeOn(false);
       if(popover != null) popover.hide();
    }
 
@@ -230,7 +235,7 @@ public class ChipsEditText extends MultilineEditText {
       @Override
       public void beforeTextChanged(CharSequence s, int start, int count, int after) {
          manipulatedSpan = null;
-         if (after < count && !manualModeOn) {
+         if (after < count && !_manualModeOn) {
             ReplacementSpan[] spans = ((Spannable)s).getSpans(start, start+count, ReplacementSpan.class);
             if (spans.length == 1) {
                manipulatedSpan = spans[0];
@@ -246,7 +251,7 @@ public class ChipsEditText extends MultilineEditText {
             return;
          String textForAutocomplete = null;
          try {
-            if (manualModeOn && manualStart < start) {
+            if (_manualModeOn && manualStart < start) {
                // we do dis cause android gives us latest word and we operate on a sentence
                count += start - manualStart;
                start = manualStart;
@@ -263,14 +268,14 @@ public class ChipsEditText extends MultilineEditText {
 
       @Override
       public void afterTextChanged(Editable s) {
-         if (manualModeOn) {
+         if (_manualModeOn) {
             int end = getSelectionStart();
             if (end < manualStart) {
-               manualModeOn = false;
+               setManualModeOn(false);
             } else {
                makeChip(manualStart, end, false);
             }
-         } else if (!manualModeOn && manipulatedSpan != null) {
+         } else if (!_manualModeOn && manipulatedSpan != null) {
             int start = s.getSpanStart(manipulatedSpan);
             int end = s.getSpanEnd(manipulatedSpan);
             if (start > -1 && end > -1) {
@@ -278,10 +283,10 @@ public class ChipsEditText extends MultilineEditText {
             }
             onBubbleCountChanged();
             manipulatedSpan = null;
-            manualModeOn = false;
+            setManualModeOn(false);
          }
          if(popover != null) 
-            if (manualModeOn)
+            if (_manualModeOn)
                popover.reposition();
             else
                popover.hide();
@@ -305,7 +310,7 @@ public class ChipsEditText extends MultilineEditText {
          for (BubbleSpan span : spans) {
             int start = getText().getSpanStart(span);
             int end = getText().getSpanEnd(span);
-            if (start == -1 || end == -1 || end <= start || (manualStart == start && manualModeOn))
+            if (start == -1 || end == -1 || end <= start || (manualStart == start && _manualModeOn))
                continue;
             String text = getText().subSequence(start, end).toString().trim().toLowerCase();
             availableItems.remove(text);
@@ -317,7 +322,7 @@ public class ChipsEditText extends MultilineEditText {
          if (!TextUtils.isEmpty(text) && availableItems != null)
             for (String item : availableItems) {
                if ((text.length() > 1 && item.toLowerCase().startsWith(text))
-                  || (manualModeOn && item.toLowerCase().contains(text) && text.length() > 3)) {
+                  || (_manualModeOn && item.toLowerCase().contains(text) && text.length() > 3)) {
                   filteredItems.add(item);
                }
             }
@@ -329,7 +334,7 @@ public class ChipsEditText extends MultilineEditText {
                popover.show();
             }
          } else {
-            if (!manualModeOn) {
+            if (!_manualModeOn) {
                popover.hide();
             }
             popover.setItems(availableItems);
@@ -337,7 +342,7 @@ public class ChipsEditText extends MultilineEditText {
    }
 
    private boolean shouldShow() {
-      return autoShow || manualModeOn;
+      return autoShow || _manualModeOn;
    }
 
    public void showAutocomplete(EditAction editAction) {
@@ -352,11 +357,11 @@ public class ChipsEditText extends MultilineEditText {
             // CustomViewAbove seems to send enter keyevent for some reason (part one)
             if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED)
                actionId = EditorInfo.IME_ACTION_DONE;
-            if (actionId == EditorInfo.IME_ACTION_DONE && manualModeOn) {
+            if (actionId == EditorInfo.IME_ACTION_DONE && _manualModeOn) {
                endManualMode();
                onActionDone();
                return true;
-            } else if (actionId == EditorInfo.IME_ACTION_DONE && !manualModeOn) {
+            } else if (actionId == EditorInfo.IME_ACTION_DONE && !_manualModeOn) {
                hideKeyboard();
                onActionDone();
                return true;
@@ -462,10 +467,10 @@ public class ChipsEditText extends MultilineEditText {
             return;
          if (after.length() > before.length() && after.lastIndexOf('#') > before.lastIndexOf('#')) {
                int lastIndex = after.lastIndexOf('#');
-            if (manualModeOn || canAddMoreBubbles())
+            if (_manualModeOn || canAddMoreBubbles())
                s.delete(lastIndex, lastIndex + 1);
 
-            if (manualModeOn && manualStart < lastIndex) {
+            if (_manualModeOn && manualStart < lastIndex) {
                // here we end previous hashtag
                endManualMode();
             }
@@ -532,9 +537,20 @@ public class ChipsEditText extends MultilineEditText {
          listener.onHashTyped(start);
    }
 
+   protected void onManualModeChanged(boolean value) {
+      for (Listener listener : listeners)
+         listener.onManualModeChanged(value);
+   }
+
    public void addListener(Listener listener) {
       listeners.add(listener);
    }
+
+   public void removeListener(Listener listener) {
+      listeners.remove(listener);
+   }
+
+   public boolean isManualModeOn() { return _manualModeOn; }
 
    public interface Listener {
       public void onBubbleCountChanged();
@@ -542,6 +558,7 @@ public class ChipsEditText extends MultilineEditText {
       public void onBubbleSelected(int position);
       public void onXPressed();
       public void onHashTyped(boolean start);
+      public void onManualModeChanged(boolean enabled);
    }
 
    public CursorDrawable getCursorDrawable() {
