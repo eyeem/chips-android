@@ -32,7 +32,12 @@ dependencies {
 android {
     compileSdkVersion 21
     buildToolsVersion '21.1.2'
+
+    lintOptions {
+        abortOnError false
+    }
 }
+
 
 // SONATYPE DEPLOYMENT
 // in order to deploy, run: gradle uploadArchives
