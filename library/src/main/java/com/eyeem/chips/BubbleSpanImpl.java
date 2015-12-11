@@ -9,12 +9,13 @@ import android.text.Layout;
 import android.text.Spannable;
 import android.text.style.ReplacementSpan;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
    public Object data;
    public AwesomeBubble bubble;
-   ChipsEditText et;
+   WeakReference<ChipsEditText> _et;
    int start;
    float baselineDiff;
 
@@ -24,7 +25,7 @@ public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
 
    public BubbleSpanImpl(AwesomeBubble bubble, ChipsEditText et) {
       this.bubble = bubble;
-      this.et = et;
+      this._et = new WeakReference<>(et);
    }
 
    @Override
@@ -32,7 +33,7 @@ public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
       this.start = start;
       canvas.save();
 
-      baselineDiff = lineCorrectionLogic(start, et, bubble, this);
+      baselineDiff = lineCorrectionLogic(bubble);
       float transY = y - baselineDiff;
 
       canvas.translate(x, transY);
@@ -42,6 +43,8 @@ public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
 
    @Override
    public void redraw(Canvas canvas) {
+      ChipsEditText et = _et.get();
+      if (et == null) return;
       if (et.getScrollY() != 0)
          return;
 
@@ -98,7 +101,7 @@ public class BubbleSpanImpl extends ReplacementSpan implements BubbleSpan {
       return data;
    }
 
-   public static float lineCorrectionLogic(int start, ChipsEditText et, AwesomeBubble bubble, BubbleSpanImpl span) {
+   public static float lineCorrectionLogic(AwesomeBubble bubble) {
       return (bubble.getHeight() - bubble.style.bubblePadding - bubble.baselineHeight());
    }
 }

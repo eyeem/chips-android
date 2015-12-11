@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class ChipsEditText extends MultilineEditText {
@@ -86,14 +87,25 @@ public class ChipsEditText extends MultilineEditText {
       removeCallbacks(cursorRunnable);
    }
 
-   Runnable cursorRunnable = new Runnable() {
-      @Override
-      public void run() {
-         cursorBlink = !cursorBlink;
-         postInvalidate();
-         postDelayed(cursorRunnable, 500);
+   Runnable cursorRunnable = new CursorRunnable(this);
+
+   static class CursorRunnable implements Runnable {
+
+      WeakReference<ChipsEditText> _et;
+
+      public CursorRunnable(ChipsEditText et) {
+         this._et = new WeakReference<ChipsEditText>(et);
       }
-   };
+
+      @Override public void run() {
+         ChipsEditText et = _et.get();
+         if (et == null) return;
+         et.cursorBlink = !et.cursorBlink;
+         et.postInvalidate();
+         et.postDelayed(this, 500);
+      }
+   }
+
    boolean cursorBlink;
    CursorDrawable cursorDrawable;
 
