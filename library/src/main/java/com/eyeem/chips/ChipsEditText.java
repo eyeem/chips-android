@@ -16,11 +16,7 @@ import java.util.ArrayList;
 
 public class ChipsEditText extends MultilineEditText {
 
-   ArrayList<String> availableItems = new ArrayList<String>();
-   ArrayList<String> filteredItems = new ArrayList<String>();
    EditAction lastEditAction;
-   AutocompletePopover popover;
-   AutocompleteManager manager;
    boolean autoShow;
    int maxBubbleCount = -1;
    public CharSequence savedHint;
@@ -43,27 +39,6 @@ public class ChipsEditText extends MultilineEditText {
    }
 
    void init() {
-      manager = new AutocompleteManager();
-      manager.setResolver(new AutocompleteManager.Resolver() {
-         @Override
-         public ArrayList<String> getSuggestions(String query) throws Exception {
-            if (resolver == null)
-               return null;
-            return resolver.getSuggestions(query);
-         }
-
-         @Override
-         public ArrayList<String> getDefaultSuggestions() {
-            if (resolver == null)
-               return null;
-            return resolver.getDefaultSuggestions();
-         }
-
-         @Override
-         public void update(String query, ArrayList<String> results) {
-            setAvailableItems(results);
-         }
-      });
       addTextChangedListener(hashWatcher);
       addTextChangedListener(autocompleteWatcher);
       setOnEditorActionListener(editorActionListener);
@@ -138,11 +113,7 @@ public class ChipsEditText extends MultilineEditText {
 
    public void resetAutocompleList() {
       lastEditAction = null;
-      manager.search("");
-   }
-
-   public void setAutocomplePopover(AutocompletePopover popover) {
-      this.popover = popover;
+      onBubbleType("");
    }
 
    public void addBubble(String text, int start) {
@@ -225,7 +196,7 @@ public class ChipsEditText extends MultilineEditText {
          onBubbleCountChanged();
       }
       setManualModeOn(false);
-      if(popover != null) popover.hide();
+      onBubbleType("");
       if (madeChip && getSelectionEnd() == getText().length()) {
          getText().append(" ");
          restartInput();
@@ -238,7 +209,7 @@ public class ChipsEditText extends MultilineEditText {
          getText().delete(manualStart, getSelectionEnd());
       }
       setManualModeOn(false);
-      if(popover != null) popover.hide();
+      onBubbleType("");
    }
 
    TextWatcher autocompleteWatcher = new TextWatcher() {
@@ -269,11 +240,10 @@ public class ChipsEditText extends MultilineEditText {
                start = manualStart;
             }
             textForAutocomplete = s.toString().substring(start, start+count);
-            if (resolver != null)
-               manager.search(textForAutocomplete);
-            if (!TextUtils.isEmpty(textForAutocomplete)) {
-               showAutocomplete(new EditAction(textForAutocomplete, start, before, count));
-            }
+            onBubbleType(textForAutocomplete);
+//            if (!TextUtils.isEmpty(textForAutocomplete)) {
+//               showAutocomplete(new EditAction(textForAutocomplete, start, before, count));
+//            }
          } catch (Exception e) {
          }
       }
@@ -297,69 +267,11 @@ public class ChipsEditText extends MultilineEditText {
             manipulatedSpan = null;
             setManualModeOn(false);
          }
-         if(popover != null) 
-            if (_manualModeOn)
-               popover.reposition();
-            else
-               popover.hide();
       }
    };
 
-   protected void setAvailableItems(ArrayList<String> items) {
-      if(popover != null) popover.scrollToTop();
-      availableItems = items;
-      filter();
-   }
-
-   private void filter() {
-      ArrayList<String> availableItems = new ArrayList<String>();
-      if (this.availableItems != null) {
-         for (String item : this.availableItems)
-            availableItems.add(item.trim().toLowerCase());
-      }
-      if (availableItems != null && availableItems.size() > 0) {
-         BubbleSpan[] spans = getText().getSpans(0, getText().length(), BubbleSpan.class);
-         for (BubbleSpan span : spans) {
-            int start = getText().getSpanStart(span);
-            int end = getText().getSpanEnd(span);
-            if (start == -1 || end == -1 || end <= start || (manualStart == start && _manualModeOn))
-               continue;
-            String text = getText().subSequence(start, end).toString().trim().toLowerCase();
-            availableItems.remove(text);
-         }
-      }
-      filteredItems.clear();
-      if (lastEditAction != null) {
-         String text = lastEditAction.text.toLowerCase();
-         if (!TextUtils.isEmpty(text) && availableItems != null)
-            for (String item : availableItems) {
-               if ((text.length() > 1 && item.toLowerCase().startsWith(text))
-                  || (_manualModeOn && item.toLowerCase().contains(text) && text.length() > 3)) {
-                  filteredItems.add(item);
-               }
-            }
-      }
-      if(popover != null) 
-         if (filteredItems.size() > 0) {
-            popover.setItems(filteredItems);
-            if (shouldShow()) {
-               popover.show();
-            }
-         } else {
-            if (!_manualModeOn) {
-               popover.hide();
-            }
-            popover.setItems(availableItems);
-         }
-   }
-
    private boolean shouldShow() {
       return autoShow || _manualModeOn;
-   }
-
-   public void showAutocomplete(EditAction editAction) {
-      lastEditAction = editAction;
-      filter();
    }
 
    TextView.OnEditorActionListener editorActionListener = new TextView.OnEditorActionListener() {
@@ -389,7 +301,7 @@ public class ChipsEditText extends MultilineEditText {
    public void hideKeyboard() {
       InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
       imm.hideSoftInputFromWindow(getWindowToken(), 0);
-      if(popover != null) popover.hide();
+      onBubbleType("");
    }
 
    public void showKeyboard() {
@@ -439,17 +351,6 @@ public class ChipsEditText extends MultilineEditText {
       }
    }
 
-   public void setAutocompleteResolver(AutocompleteResolver resolver) {
-      this.resolver = resolver;
-   }
-
-   private AutocompleteResolver resolver;
-
-   public interface AutocompleteResolver {
-      public ArrayList<String> getSuggestions(String query) throws Exception;
-      public ArrayList<String> getDefaultSuggestions();
-   }
-
    boolean muteHashWatcher;
    void muteHashWatcher(boolean value) {
       muteHashWatcher = value;
@@ -490,7 +391,7 @@ public class ChipsEditText extends MultilineEditText {
             if (canAddMoreBubbles()) {
                // we start adding a new hash tag
                startManualMode();
-               if(popover != null) popover.show();
+               onBubbleType("");
                onHashTyped(true);
             } else {
                // no more hash tags allowed
@@ -522,7 +423,8 @@ public class ChipsEditText extends MultilineEditText {
       }
    }
 
-   ArrayList<Listener> listeners = new ArrayList<Listener>();
+   ArrayList<Listener> listeners = new ArrayList<>();
+   ArrayList<BubbleTextWatcher> bubbleTextWatchers = new ArrayList<>();
 
    protected void onBubbleCountChanged() {
       for (Listener listener : listeners)
@@ -532,16 +434,6 @@ public class ChipsEditText extends MultilineEditText {
    protected void onActionDone() {
       for (Listener listener : listeners)
          listener.onActionDone();
-   }
-
-   protected void onBubbleSelected(int position) {
-      for (Listener listener : listeners)
-         listener.onBubbleSelected(position);
-   }
-
-   protected void onXPressed() {
-      for (Listener listener : listeners)
-         listener.onXPressed();
    }
 
    protected void onHashTyped(boolean start) {
@@ -554,6 +446,11 @@ public class ChipsEditText extends MultilineEditText {
          listener.onManualModeChanged(value);
    }
 
+   protected void onBubbleType(String value) {
+      for (BubbleTextWatcher watcher : bubbleTextWatchers)
+         watcher.onType(value);
+   }
+
    public void addListener(Listener listener) {
       listeners.add(listener);
    }
@@ -562,13 +459,19 @@ public class ChipsEditText extends MultilineEditText {
       listeners.remove(listener);
    }
 
+   public void addBubbleTextWatcher(BubbleTextWatcher watcher) {
+      bubbleTextWatchers.add(watcher);
+   }
+
+   public void removeBubbleTextWatcher(BubbleTextWatcher watcher) {
+      bubbleTextWatchers.remove(watcher);
+   }
+
    public boolean isManualModeOn() { return _manualModeOn; }
 
    public interface Listener {
       public void onBubbleCountChanged();
       public void onActionDone();
-      public void onBubbleSelected(int position);
-      public void onXPressed();
       public void onHashTyped(boolean start);
       public void onManualModeChanged(boolean enabled);
    }
@@ -590,5 +493,9 @@ public class ChipsEditText extends MultilineEditText {
 
    public SpannableString snapshot() {
       return new SpannableString(getText());
+   }
+
+   public interface BubbleTextWatcher {
+      public void onType(String query);
    }
 }
