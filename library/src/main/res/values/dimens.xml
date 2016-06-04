@@ -6,4 +6,5 @@
     <dimen name="bubble_radius">2dp</dimen>
     <dimen name="bubble_v_spacing">3dp</dimen>
     <dimen name="bubble_h_spacing">3dp</dimen>
+    <dimen name="photo_options_width">240dp</dimen>
 </resources>
