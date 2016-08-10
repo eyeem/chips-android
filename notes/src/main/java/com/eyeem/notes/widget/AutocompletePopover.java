@@ -67,13 +67,7 @@ public class AutocompletePopover extends RelativeLayout implements
       LayoutInflater.from(getContext()).inflate(R.layout.autocomplete_popover, this, true);
       // below was a ListView but there were rendering issues on older Androids thus this ugly code
       scrollView = (ScrollView)findViewById(R.id.suggestions);
-      boolean isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-      if (isLandscape) {
-         vg = new RowLayout(getContext(), null);
-      } else {
-         vg = new LinearLayout(getContext());
-         ((LinearLayout) vg).setOrientation(LinearLayout.VERTICAL);
-      }
+      vg = new RowLayout(getContext(), null);
       scrollView.addView(vg, -2, -2);
       adapter = new Adapter(vg);
       adapter.onItemClickListener = onItemClickListener;
@@ -107,7 +101,6 @@ public class AutocompletePopover extends RelativeLayout implements
    public void reposition() {
       Point p = et.getCursorPosition();
       Point bOff = et.getCursorDrawable().bubble_offset();
-      Log.d("reposition", "p = " + p.toString() + " bOff = " + bOff.toString() + " scrollY = " + et.getScrollY());
       p.offset(-bOff.x, -bOff.y);
       p.y -= et.getScrollY();
 
