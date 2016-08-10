@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
  * Created by vishna on 10/08/16.
  */
 public class AutocompletePopover extends RelativeLayout implements
-   ViewTreeObserver.OnGlobalLayoutListener, TextWatcher {
+   ViewTreeObserver.OnGlobalLayoutListener, TextWatcher, ChipsEditText.BubbleTextWatcher {
 
    ViewGroup vg;
    RelativeLayout root;
@@ -42,6 +43,8 @@ public class AutocompletePopover extends RelativeLayout implements
    int bgColor = 0xFF000000;
    double triAngle = Math.PI / 2.0; // 90 degrees
    Paint bgPaint;
+
+   AutocompleteHelper helper;
 
    public AutocompletePopover(Context context) {
       super(context);
@@ -88,27 +91,38 @@ public class AutocompletePopover extends RelativeLayout implements
       });
    }
 
+   public void setResolver(Resolver resolver) {
+      this.helper = new AutocompleteHelper(resolver, adapter);
+   }
+
    public void setChipsEditText(ChipsEditText et) {
       this.et = et;
       this.et.addTextChangedListener(this);
-   }
-
-   public void setItems(ArrayList<String> items) {
-      adapter.setItems(items);
+      this.et.addBubbleTextWatcher(this);
    }
 
    public void reposition() {
       Point p = et.getCursorPosition();
       Point bOff = et.getCursorDrawable().bubble_offset();
+      Log.d("reposition", "p = " + p.toString() + " bOff = " + bOff.toString() + " scrollY = " + et.getScrollY());
       p.offset(-bOff.x, -bOff.y);
       p.y -= et.getScrollY();
 
       int topMargin = et.getTop() + p.y;
       if (topMargin > et.getBottom()) topMargin = et.getBottom();
-      ((RelativeLayout.LayoutParams)getLayoutParams()).topMargin = topMargin;
-      getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+      RelativeLayout.LayoutParams lp = ((RelativeLayout.LayoutParams)getLayoutParams());
+
+      boolean topMarginChanged = lp.topMargin != topMargin;
+      lp.topMargin = topMargin;
+      lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
       xTriOffset = p.x + et.getLeft();
-      invalidate();
+
+      // if top margin is different, then request layout, otherwise just invalidate
+      if (topMarginChanged) {
+         requestLayout();
+      } else {
+         invalidate();
+      }
    }
 
    public void show() {
@@ -136,6 +150,13 @@ public class AutocompletePopover extends RelativeLayout implements
    @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
    @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
    @Override public void afterTextChanged(Editable s) {
+      reposition();
+   }
+
+   @Override public void onType(String query) {
+      if (helper != null) {
+         helper.search(query);
+      }
       reposition();
    }
 
@@ -268,5 +289,10 @@ public class AutocompletePopover extends RelativeLayout implements
       canvas.drawPath(path, bgPaint);
 
       super.dispatchDraw(canvas);
+   }
+
+   public interface Resolver {
+      public ArrayList<String> getSuggestions(String query) throws Exception;
+      public ArrayList<String> getDefaultSuggestions();
    }
 }

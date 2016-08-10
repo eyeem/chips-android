@@ -104,17 +104,17 @@ public class EditView extends RelativeLayout {
       popover.setChipsEditText(et);
 
       final ArrayList<String> availableItems = new ArrayList<String>(suggestions);
-//      et.setAutocompleteResolver(new ChipsEditText.AutocompleteResolver() {
-//         @Override
-//         public ArrayList<String> getSuggestions(String query) throws Exception {
-//            return new ArrayList<String>();
-//         }
-//
-//         @Override
-//         public ArrayList<String> getDefaultSuggestions() {
-//            return availableItems;
-//         }
-//      });
+      popover.setResolver(new AutocompletePopover.Resolver() {
+         @Override
+         public ArrayList<String> getSuggestions(String query) throws Exception {
+            return new ArrayList<String>();
+         }
+
+         @Override
+         public ArrayList<String> getDefaultSuggestions() {
+            return availableItems;
+         }
+      });
       et.addListener(chipsListener);
 
       BubbleStyle bubbleStyle = Note.defaultBubbleStyle(getContext(), et.getTextSize());
