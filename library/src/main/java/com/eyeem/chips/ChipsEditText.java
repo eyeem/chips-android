@@ -283,11 +283,11 @@ public class ChipsEditText extends MultilineEditText {
                actionId = EditorInfo.IME_ACTION_DONE;
             if (actionId == EditorInfo.IME_ACTION_DONE && _manualModeOn) {
                endManualMode();
-               onActionDone();
+               onActionDone(true);
                return true;
             } else if (actionId == EditorInfo.IME_ACTION_DONE && !_manualModeOn) {
                hideKeyboard();
-               onActionDone();
+               onActionDone(false);
                return true;
             }
          } else if (keyEvent != null && actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
@@ -431,9 +431,9 @@ public class ChipsEditText extends MultilineEditText {
          listener.onBubbleCountChanged();
    }
 
-   protected void onActionDone() {
+   protected void onActionDone(boolean wasManualModeOn) {
       for (Listener listener : listeners)
-         listener.onActionDone();
+         listener.onActionDone(wasManualModeOn);
    }
 
    protected void onHashTyped(boolean start) {
@@ -471,7 +471,7 @@ public class ChipsEditText extends MultilineEditText {
 
    public interface Listener {
       public void onBubbleCountChanged();
-      public void onActionDone();
+      public void onActionDone(boolean wasManualModeOn);
       public void onHashTyped(boolean start);
       public void onManualModeChanged(boolean enabled);
    }

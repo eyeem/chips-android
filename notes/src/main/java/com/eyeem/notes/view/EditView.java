@@ -9,7 +9,6 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.eyeem.chips.BubbleStyle;
 import com.eyeem.chips.ChipsEditText;
@@ -17,6 +16,8 @@ import com.eyeem.notes.R;
 import com.eyeem.notes.model.Note;
 import com.eyeem.notes.mortarflow.Ass;
 import com.eyeem.notes.screen.Edit;
+import com.eyeem.notes.utils.KeyboardDetector;
+import com.eyeem.notes.widget.AutocompletePopover;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +42,10 @@ public class EditView extends RelativeLayout {
    @Inject Note note;
 
    @InjectView(R.id.chipsMultiAutoCompleteTextview1) @Getter ChipsEditText et;
-   // @InjectView(R.id.popover) AutocompletePopover popover;
+   @InjectView(R.id.popover) AutocompletePopover popover;
    @InjectView(R.id.edit) Button edit;
+
+   KeyboardDetector keyboardDetector;
 
    public EditView(Context context) {
       super(context);
@@ -78,18 +81,27 @@ public class EditView extends RelativeLayout {
    @Override protected void onAttachedToWindow() {
       super.onAttachedToWindow();
       presenter.takeView(this);
+      keyboardDetector.attachToView(this, new KeyboardDetector.KeyboardListener() {
+         @Override public void onKeyboardShow(int height) {
+
+         }
+
+         @Override public void onKeyboardHide(int height) {
+            popover.hide();
+         }
+      });
    }
 
    @Override protected void onDetachedFromWindow() {
       super.onDetachedFromWindow();
       presenter.dropView(this);
+      keyboardDetector.detachFromView();
    }
 
    public void setup() {
-      // et.setAutocomplePopover(popover);
-      et.setMaxBubbleCount(4);
+      et.setMaxBubbleCount(25);
       et.setLineSpacing(1.0f, 1.25f);
-      // popover.setChipsEditText(et);
+      popover.setChipsEditText(et);
 
       final ArrayList<String> availableItems = new ArrayList<String>(suggestions);
 //      et.setAutocompleteResolver(new ChipsEditText.AutocompleteResolver() {
@@ -108,34 +120,38 @@ public class EditView extends RelativeLayout {
       BubbleStyle bubbleStyle = Note.defaultBubbleStyle(getContext(), et.getTextSize());
       et.setText(note.textSpan(bubbleStyle, et));
       et.setCurrentBubbleStyle(bubbleStyle);
+
+      popover.setOnVisibilityChanged(visible -> edit.setVisibility(visible ? GONE : VISIBLE));
+      keyboardDetector = new KeyboardDetector();
    }
 
    @OnClick(R.id.edit) public void toggleEdit(View view) {
       et.resetAutocompleList();
       et.startManualMode();
-//      popover.show();
+      popover.show();
       et.postDelayed(() -> et.showKeyboard(), 100);
    }
 
    ChipsEditText.Listener chipsListener = new ChipsEditText.Listener() {
       @Override
-      public void onBubbleCountChanged() {
-
-      }
+      public void onBubbleCountChanged() {}
 
       @Override
-      public void onActionDone() {
-
+      public void onActionDone(boolean wasManualModeOn) {
+         if (wasManualModeOn) {
+            // we just ended manual mode, so create a new bubble
+            et.startManualMode();
+         } else {
+            popover.hide();
+         }
       }
 
       @Override
       public void onHashTyped(boolean start) {
-         Toast.makeText(getContext(), "onHashTyped, start = "+start, Toast.LENGTH_SHORT).show();
+         popover.show();
       }
 
-      @Override public void onManualModeChanged(boolean enabled) {
-
-      }
+      @Override public void onManualModeChanged(boolean enabled) {}
    };
 
 ///// boiler plate code that makes saving state work http://trickyandroid.com/saving-android-view-state-correctly/
@@ -158,6 +174,4 @@ public class EditView extends RelativeLayout {
    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
       dispatchThawSelfOnly(container);
    }
-
-
 }

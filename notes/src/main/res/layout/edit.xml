@@ -38,4 +38,11 @@
             android:layout_height="wrap_content"
             />
 
+    <com.eyeem.notes.widget.AutocompletePopover
+            android:paddingTop="12dp"
+            android:id="@+id/popover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
 </com.eyeem.notes.view.EditView>
