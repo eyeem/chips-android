@@ -1,20 +1,16 @@
+sudo: false
 language: android
 android:
    components:
    - platform-tools
-   - android-21
-   - build-tools-21.1.2
+   - android-23
+   - build-tools-23.0.3
    - extra
 
 jdk: oraclejdk8
 
 notifications:
   email: false
-  hipchat:
-    rooms:
-      secure: coAicb4gDk5m03J7BZLE7AtHXql1nFg4Uxv5jtGlUGLV9srNZ8X3SNZK+CnMywcKtMJlvJMi573TdrvUna4VP1XQkIEsZtL+xRvNkXszTjWmOlUW4EXTUZJoeywLhOAbtVYf0aaVtOCoFvxovamG7rNL+ylxBuxTcjcbHJywpHM=
-    room:
-      secure: qFah5+8qh68F7uKueL9mB7BbrxDwIu8ca5Edpf8IkJG2Nh0VbGXO3DD9Dxsvdts0SJhkNXS+aLavQcZuxT+olKpp5MX1RdhAjvX0EmDQQ9w7fKFonzgGI+2pBCG80HRG/KrL+txPRRuhNPT7VCKxNtPh7OQf1lIQMIrPsqo5aPk=
 
 before_install:
 - sudo apt-get update -qq

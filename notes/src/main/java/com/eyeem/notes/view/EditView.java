@@ -3,7 +3,6 @@ package com.eyeem.notes.view;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -12,7 +11,6 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.eyeem.chips.AutocompletePopover;
 import com.eyeem.chips.BubbleStyle;
 import com.eyeem.chips.ChipsEditText;
 import com.eyeem.notes.R;
@@ -43,7 +41,7 @@ public class EditView extends RelativeLayout {
    @Inject Note note;
 
    @InjectView(R.id.chipsMultiAutoCompleteTextview1) @Getter ChipsEditText et;
-   @InjectView(R.id.popover) AutocompletePopover popover;
+   // @InjectView(R.id.popover) AutocompletePopover popover;
    @InjectView(R.id.edit) Button edit;
 
    public EditView(Context context) {
@@ -88,23 +86,23 @@ public class EditView extends RelativeLayout {
    }
 
    public void setup() {
-      et.setAutocomplePopover(popover);
+      // et.setAutocomplePopover(popover);
       et.setMaxBubbleCount(4);
       et.setLineSpacing(1.0f, 1.25f);
-      popover.setChipsEditText(et);
+      // popover.setChipsEditText(et);
 
       final ArrayList<String> availableItems = new ArrayList<String>(suggestions);
-      et.setAutocompleteResolver(new ChipsEditText.AutocompleteResolver() {
-         @Override
-         public ArrayList<String> getSuggestions(String query) throws Exception {
-            return new ArrayList<String>();
-         }
-
-         @Override
-         public ArrayList<String> getDefaultSuggestions() {
-            return availableItems;
-         }
-      });
+//      et.setAutocompleteResolver(new ChipsEditText.AutocompleteResolver() {
+//         @Override
+//         public ArrayList<String> getSuggestions(String query) throws Exception {
+//            return new ArrayList<String>();
+//         }
+//
+//         @Override
+//         public ArrayList<String> getDefaultSuggestions() {
+//            return availableItems;
+//         }
+//      });
       et.addListener(chipsListener);
 
       BubbleStyle bubbleStyle = Note.defaultBubbleStyle(getContext(), et.getTextSize());
@@ -115,7 +113,7 @@ public class EditView extends RelativeLayout {
    @OnClick(R.id.edit) public void toggleEdit(View view) {
       et.resetAutocompleList();
       et.startManualMode();
-      popover.show();
+//      popover.show();
       et.postDelayed(() -> et.showKeyboard(), 100);
    }
 
@@ -131,18 +129,12 @@ public class EditView extends RelativeLayout {
       }
 
       @Override
-      public void onBubbleSelected(int position) {
-
-      }
-
-      @Override
-      public void onXPressed() {
-
-      }
-
-      @Override
       public void onHashTyped(boolean start) {
          Toast.makeText(getContext(), "onHashTyped, start = "+start, Toast.LENGTH_SHORT).show();
+      }
+
+      @Override public void onManualModeChanged(boolean enabled) {
+
       }
    };
 
