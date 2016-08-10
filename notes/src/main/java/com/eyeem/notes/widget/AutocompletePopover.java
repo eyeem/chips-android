@@ -23,6 +23,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.asolutions.widget.RowLayout;
+import com.eyeem.chips.BubbleSpan;
+import com.eyeem.chips.BubbleSpanImpl;
 import com.eyeem.chips.ChipsEditText;
 import com.eyeem.notes.R;
 
@@ -32,7 +34,7 @@ import java.util.ArrayList;
  * Created by vishna on 10/08/16.
  */
 public class AutocompletePopover extends RelativeLayout implements
-   ViewTreeObserver.OnGlobalLayoutListener, TextWatcher, ChipsEditText.BubbleTextWatcher {
+   ViewTreeObserver.OnGlobalLayoutListener, TextWatcher, ChipsEditText.BubbleTextWatcher, ChipsEditText.Listener {
 
    ViewGroup vg;
    RelativeLayout root;
@@ -99,6 +101,7 @@ public class AutocompletePopover extends RelativeLayout implements
       this.et = et;
       this.et.addTextChangedListener(this);
       this.et.addBubbleTextWatcher(this);
+      this.et.addListener(this);
    }
 
    public void reposition() {
@@ -160,9 +163,18 @@ public class AutocompletePopover extends RelativeLayout implements
       reposition();
    }
 
+   @Override public void onBubbleCountChanged() {
+      adapter.setSelectedItems(getSelectedItems());
+   }
+
+   @Override public void onActionDone(boolean wasManualModeOn) {}
+   @Override public void onHashTyped(boolean start) {}
+   @Override public void onManualModeChanged(boolean enabled) {}
+
    public static class Adapter extends BaseAdapter {
 
       ArrayList<String> items = new ArrayList<String>();
+      ArrayList<String> selectedItems = new ArrayList<String>();
       LayoutInflater li;
       ViewGroup vg;
 
@@ -176,8 +188,25 @@ public class AutocompletePopover extends RelativeLayout implements
          if (items == null) {
             items = new ArrayList<String>();
          }
-         this.items = items;
+         this.items = filterOut(items);
          notifyDataSetChanged();
+      }
+
+      public void setSelectedItems(ArrayList<String> selectedItems) {
+         this.selectedItems = selectedItems;
+         setItems(this.items);
+      }
+
+      private ArrayList<String> filterOut(final ArrayList<String> items) {
+         final ArrayList<String> selectedItems = this.selectedItems;
+         if (items == null || selectedItems == null) return items;
+         ArrayList<String> filtered = new ArrayList<>();
+         for (String item : items) {
+            if (!selectedItems.contains(item)) {
+               filtered.add(item);
+            }
+         }
+         return filtered;
       }
 
       @Override public int getCount() { return items.size(); }
@@ -289,6 +318,23 @@ public class AutocompletePopover extends RelativeLayout implements
       canvas.drawPath(path, bgPaint);
 
       super.dispatchDraw(canvas);
+   }
+
+   ArrayList<String> getSelectedItems() {
+      ArrayList<String> selectedTags = new ArrayList<>();
+
+      try {
+         BubbleSpan[] spans = et.getText().getSpans(0, et.getText().length(), BubbleSpan.class);
+         for (BubbleSpan span : spans) {
+            BubbleSpanImpl impl = (BubbleSpanImpl) span;
+            String tag = impl.bubble.text().trim();
+            if (!selectedTags.contains(tag)) {
+               selectedTags.add(tag);
+            }
+         }
+      } catch (Exception e) {}
+
+      return selectedTags;
    }
 
    public interface Resolver {
