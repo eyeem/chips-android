@@ -64,6 +64,7 @@ android {
     lintOptions {
         // lint keeps complaining about okio not being included
         disable 'InvalidPackage'
+        abortOnError false
     }
 
     compileOptions {
