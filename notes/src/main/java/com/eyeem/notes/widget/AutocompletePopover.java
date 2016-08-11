@@ -7,9 +7,11 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +19,6 @@ import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -160,8 +161,25 @@ public class AutocompletePopover extends RelativeLayout implements
       adapter.setSelectedItems(getSelectedItems());
    }
 
-   @Override public void onActionDone(boolean wasManualModeOn) {}
-   @Override public void onHashTyped(boolean start) {}
+   @Override public void onActionDone(boolean wasManualModeOn, String chipText) {
+      if (wasManualModeOn) {
+         // we just ended manual mode
+         if (TextUtils.isEmpty(chipText) || chipText.trim().length() == 0) {
+            // the bubble was empty so dismiss the overlay
+            hide();
+            // we also need to hide keyboard
+            et.hideKeyboard();
+         } else {
+            // make us add another popover
+            et.startManualMode();
+         }
+      } else {
+         hide();
+      }
+   }
+   @Override public void onHashTyped(boolean start) {
+      show();
+   }
    @Override public void onManualModeChanged(boolean enabled) {}
 
    public static class Adapter extends BaseAdapter {

@@ -10,7 +10,10 @@ import com.eyeem.notes.mortarflow.ScreenScoper;
 import com.eyeem.notes.mortarflow.Utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import flow.path.Path;
 import mortar.MortarScope;
@@ -24,12 +27,14 @@ public class ScreenPagerAdapter extends PagerAdapter {
 
    private final Context mContext;
    private final List<Path> screens;
+   private final WeakHashMap<View, Integer> viewsCache;
    private ScreenScoper screenScoper;
 
    public ScreenPagerAdapter(Context context) {
       mContext = context;
       this.screens = new ArrayList<>();
       this.screenScoper = new ScreenScoper();
+      this.viewsCache = new WeakHashMap<>();
    }
 
    public void addScreen(Path... newScreens) {
@@ -55,6 +60,9 @@ public class ScreenPagerAdapter extends PagerAdapter {
       Layout layout = screen.getClass().getAnnotation(Layout.class);
       View newChild = Utils.Layouts.createView(childContext, screen);
       container.addView(newChild);
+
+      viewsCache.put(newChild, position);
+
       return newChild;
    }
 
@@ -75,5 +83,14 @@ public class ScreenPagerAdapter extends PagerAdapter {
 
    @Override public boolean isViewFromObject(View view, Object object) {
       return view.equals(object);
+   }
+
+   public View getViewForPosition(int position) {
+      for (Map.Entry<View, Integer> e : viewsCache.entrySet()) {
+         if (e.getValue() == position) {
+            return e.getKey();
+         }
+      }
+      return null;
    }
 }

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.eyeem.chips.ChipsEditText;
 import com.eyeem.notes.R;
 import com.eyeem.notes.model.Note;
 import com.eyeem.notes.mortarflow.Ass;
+import com.eyeem.notes.mortarflow.HandlesBack;
 import com.eyeem.notes.screen.Edit;
 import com.eyeem.notes.utils.KeyboardDetector;
 import com.eyeem.notes.widget.AutocompletePopover;
@@ -35,7 +37,7 @@ import static com.eyeem.notes.mortarflow.Utils.DAGGER_SERVICE;
 /**
  * Created by vishna on 27/01/15.
  */
-public class EditView extends RelativeLayout {
+public class EditView extends RelativeLayout implements HandlesBack {
 
    @Inject Edit.Presenter presenter;
    @Inject List<String> suggestions;
@@ -87,7 +89,7 @@ public class EditView extends RelativeLayout {
          }
 
          @Override public void onKeyboardHide(int height) {
-            popover.hide();
+            // popover.hide();
          }
       });
    }
@@ -115,7 +117,6 @@ public class EditView extends RelativeLayout {
             return availableItems;
          }
       });
-      et.addListener(chipsListener);
 
       BubbleStyle bubbleStyle = Note.defaultBubbleStyle(getContext(), et.getTextSize());
       et.setText(note.textSpan(bubbleStyle, et));
@@ -131,28 +132,6 @@ public class EditView extends RelativeLayout {
       popover.show();
       et.postDelayed(() -> et.showKeyboard(), 100);
    }
-
-   ChipsEditText.Listener chipsListener = new ChipsEditText.Listener() {
-      @Override
-      public void onBubbleCountChanged() {}
-
-      @Override
-      public void onActionDone(boolean wasManualModeOn) {
-         if (wasManualModeOn) {
-            // we just ended manual mode, so create a new bubble
-            et.startManualMode();
-         } else {
-            popover.hide();
-         }
-      }
-
-      @Override
-      public void onHashTyped(boolean start) {
-         popover.show();
-      }
-
-      @Override public void onManualModeChanged(boolean enabled) {}
-   };
 
 ///// boiler plate code that makes saving state work http://trickyandroid.com/saving-android-view-state-correctly/
    @Override
@@ -173,5 +152,13 @@ public class EditView extends RelativeLayout {
    @Override
    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
       dispatchThawSelfOnly(container);
+   }
+
+   @Override public boolean onBackPressed() {
+      if (popover.isShown()) {
+         popover.hide();
+         return true;
+      }
+      return false;
    }
 }

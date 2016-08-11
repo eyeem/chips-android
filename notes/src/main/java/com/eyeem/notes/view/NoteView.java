@@ -4,11 +4,14 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.eyeem.notes.R;
+import com.eyeem.notes.mortarflow.HandlesBack;
 import com.eyeem.notes.screen.Edit;
 import com.eyeem.notes.screen.Note;
 import com.eyeem.notes.screen.Preview;
@@ -19,6 +22,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import lombok.Getter;
+import mortar.MortarScope;
 
 import static mortar.MortarScope.getScope;
 import static com.eyeem.notes.mortarflow.Utils.DAGGER_SERVICE;
@@ -26,7 +30,7 @@ import static com.eyeem.notes.mortarflow.Utils.DAGGER_SERVICE;
 /**
  * Created by vishna on 16/02/15.
  */
-public class NoteView extends LinearLayout implements ViewPager.OnPageChangeListener {
+public class NoteView extends LinearLayout implements ViewPager.OnPageChangeListener, HandlesBack {
 
    @InjectView(R.id.screens_pager) @Getter ViewPager pager;
    ScreenPagerAdapter pagerAdapter;
@@ -102,5 +106,16 @@ public class NoteView extends LinearLayout implements ViewPager.OnPageChangeList
    @Override protected void onDetachedFromWindow() {
       super.onDetachedFromWindow();
       presenter.dropView(this);
+   }
+
+   @Override public boolean onBackPressed() {
+      int currentPosition = pager.getCurrentItem();
+
+      View view = pagerAdapter.getViewForPosition(currentPosition);
+      if (view instanceof HandlesBack) {
+         return ((HandlesBack)view).onBackPressed();
+      }
+
+      return false;
    }
 }

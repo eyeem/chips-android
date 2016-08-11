@@ -108,7 +108,7 @@ public class MainActivity extends ActionBarActivity implements Flow.Dispatcher, 
    }
 
    @Override public void onBackPressed() {
-      boolean handled = Flow.get(container.getCurrentChild()).goBack();
+      boolean handled = container.onBackPressed();
       if (!handled) {
          finish();
       }

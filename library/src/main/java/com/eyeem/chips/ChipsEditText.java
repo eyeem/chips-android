@@ -127,9 +127,9 @@ public class ChipsEditText extends MultilineEditText {
 
    boolean finalizing;
 
-   public void makeChip(int start, int end, boolean finalize) {
+   public String makeChip(int start, int end, boolean finalize) {
       if (finalizing)
-         return;
+         return null;
       int maxWidth = getWidth() - getPaddingLeft() - getPaddingRight();
       String finalText = null;
       if (finalize) {
@@ -141,7 +141,7 @@ public class ChipsEditText extends MultilineEditText {
             finalText = getText().subSequence(start + 1, end - 1).toString();
          } catch (java.lang.IndexOutOfBoundsException e) {
             finalizing = false;
-            return;
+            return null;
             // possibly some other entity (Random Shit Keyboard™) is changing
             // the text here in the meanwhile resulting in a crash
          }
@@ -149,6 +149,7 @@ public class ChipsEditText extends MultilineEditText {
       //int textSize = (int)(getTextSize() - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getContext().getResources().getDisplayMetrics()));
       Utils.bubblify(getText(), finalText, start, end, maxWidth, getCurrentBubbleStyle(), this, null);
       finalizing = false;
+      return finalText;
    }
 
    boolean _manualModeOn;
@@ -188,10 +189,11 @@ public class ChipsEditText extends MultilineEditText {
       return getText().getSpans(position, position+1, BubbleSpanImpl.class).length > 0;
    }
 
-   public void endManualMode() {
+   public String endManualMode() {
       boolean madeChip = false;
+      String chipText = null;
       if (manualStart < getSelectionEnd() && _manualModeOn) {
-         makeChip(manualStart, getSelectionEnd(), true);
+         chipText = makeChip(manualStart, getSelectionEnd(), true);
          madeChip = true;
          onBubbleCountChanged();
       }
@@ -202,6 +204,7 @@ public class ChipsEditText extends MultilineEditText {
          restartInput();
          setSelection(getText().length());
       }
+      return chipText;
    }
 
    public void cancelManualMode() {
@@ -282,12 +285,12 @@ public class ChipsEditText extends MultilineEditText {
             if (actionId == EditorInfo.IME_ACTION_UNSPECIFIED)
                actionId = EditorInfo.IME_ACTION_DONE;
             if (actionId == EditorInfo.IME_ACTION_DONE && _manualModeOn) {
-               endManualMode();
-               onActionDone(true);
+               String text = endManualMode();
+               onActionDone(true, text);
                return true;
             } else if (actionId == EditorInfo.IME_ACTION_DONE && !_manualModeOn) {
                hideKeyboard();
-               onActionDone(false);
+               onActionDone(false, null);
                return true;
             }
          } else if (keyEvent != null && actionId == EditorInfo.IME_ACTION_UNSPECIFIED) {
@@ -431,9 +434,9 @@ public class ChipsEditText extends MultilineEditText {
          listener.onBubbleCountChanged();
    }
 
-   protected void onActionDone(boolean wasManualModeOn) {
+   protected void onActionDone(boolean wasManualModeOn, String text) {
       for (Listener listener : listeners)
-         listener.onActionDone(wasManualModeOn);
+         listener.onActionDone(wasManualModeOn, text);
    }
 
    protected void onHashTyped(boolean start) {
@@ -471,7 +474,7 @@ public class ChipsEditText extends MultilineEditText {
 
    public interface Listener {
       public void onBubbleCountChanged();
-      public void onActionDone(boolean wasManualModeOn);
+      public void onActionDone(boolean wasManualModeOn, String text);
       public void onHashTyped(boolean start);
       public void onManualModeChanged(boolean enabled);
    }
