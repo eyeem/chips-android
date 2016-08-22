@@ -116,18 +116,18 @@ public class ChipsEditText extends MultilineEditText {
       onBubbleType("");
    }
 
-   public void addBubble(String text, int start) {
+   public void addBubble(String text, int start, Object data) {
       if (start > getText().length()) {
          start = getText().length();
       }
       getText().insert(start, text);
-      makeChip(start, start+text.length(), true);
+      makeChip(start, start+text.length(), true, data);
       onBubbleCountChanged();
    }
 
    boolean finalizing;
 
-   public String makeChip(int start, int end, boolean finalize) {
+   public String makeChip(int start, int end, boolean finalize, Object data) {
       if (finalizing)
          return null;
       int maxWidth = getWidth() - getPaddingLeft() - getPaddingRight();
@@ -147,7 +147,7 @@ public class ChipsEditText extends MultilineEditText {
          }
       }
       //int textSize = (int)(getTextSize() - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getContext().getResources().getDisplayMetrics()));
-      Utils.bubblify(getText(), finalText, start, end, maxWidth, getCurrentBubbleStyle(), this, null);
+      Utils.bubblify(getText(), finalText, start, end, maxWidth, getCurrentBubbleStyle(), this, data);
       finalizing = false;
       return finalText;
    }
@@ -193,7 +193,7 @@ public class ChipsEditText extends MultilineEditText {
       boolean madeChip = false;
       String chipText = null;
       if (manualStart < getSelectionEnd() && _manualModeOn) {
-         chipText = makeChip(manualStart, getSelectionEnd(), true);
+         chipText = makeChip(manualStart, getSelectionEnd(), true, null);
          madeChip = true;
          onBubbleCountChanged();
       }
@@ -258,7 +258,7 @@ public class ChipsEditText extends MultilineEditText {
             if (end < manualStart) {
                setManualModeOn(false);
             } else {
-               makeChip(manualStart, end, false);
+               makeChip(manualStart, end, false, null);
             }
          } else if (!_manualModeOn && manipulatedSpan != null) {
             int start = s.getSpanStart(manipulatedSpan);

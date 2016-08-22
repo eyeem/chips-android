@@ -277,7 +277,7 @@ public class AutocompletePopover extends RelativeLayout implements
          if (et.isManualModeOn()) {
             et.cancelManualMode();
          }
-         et.addBubble(textToAdd, et.getSelectionStart());
+         et.addBubble(textToAdd, et.getSelectionStart(), "CLICKED ITEM");
          et.append(" ");
       }
    };
