@@ -22,6 +22,8 @@ public class ChipsEditText extends MultilineEditText {
    public CharSequence savedHint;
 
    private BubbleStyle currentBubbleStyle;
+   private Rect visibleRect;
+   private Point activitySize;
 
    public ChipsEditText(Context context) {
       super(context);
@@ -39,6 +41,8 @@ public class ChipsEditText extends MultilineEditText {
    }
 
    void init() {
+      visibleRect = new Rect();
+      activitySize = Utils.activitySize(Utils.findActivity(getContext()));
       addTextChangedListener(hashWatcher);
       addTextChangedListener(autocompleteWatcher);
       setOnEditorActionListener(editorActionListener);
@@ -69,14 +73,16 @@ public class ChipsEditText extends MultilineEditText {
       WeakReference<ChipsEditText> _et;
 
       public CursorRunnable(ChipsEditText et) {
-         this._et = new WeakReference<ChipsEditText>(et);
+         this._et = new WeakReference<>(et);
       }
 
       @Override public void run() {
          ChipsEditText et = _et.get();
          if (et == null) return;
          et.cursorBlink = !et.cursorBlink;
-         et.postInvalidate();
+         if (et.areWeVisible()) { // skip invalidation if we're not visible, pointless and causes unnecessary redraws
+            et.postInvalidate();
+         }
          et.postDelayed(this, 500);
       }
    }
@@ -99,7 +105,7 @@ public class ChipsEditText extends MultilineEditText {
          }
       } else if (!_manualModeOn && empty && !TextUtils.isEmpty(savedHint)) {
          setHint(savedHint);
-      };
+      }
       return super.onPreDraw();
    }
 
@@ -500,5 +506,9 @@ public class ChipsEditText extends MultilineEditText {
 
    public interface BubbleTextWatcher {
       public void onType(String query);
+   }
+
+   protected boolean areWeVisible() {
+      return Utils.areWeInScreen(this, visibleRect, activitySize);
    }
 }

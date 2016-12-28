@@ -1,11 +1,18 @@
 package com.eyeem.chips;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.ReplacementSpan;
+import android.util.DisplayMetrics;
+import android.view.View;
 import android.widget.EditText;
 
 import java.util.HashMap;
@@ -144,5 +151,47 @@ public class Utils {
          return  TAGS_ONLY;
       }
       return assumption;
+   }
+
+   public static boolean areWeInScreen(View view, Rect rect, Point size) {
+      try {
+         view.getGlobalVisibleRect(rect);
+         return view.getVisibility() == View.VISIBLE
+            && rect.left >= 0 && rect.right <= size.x
+            && rect.top >= 0 && rect.bottom <= size.y;
+      } catch (Throwable t) {
+         return false;
+      }
+   }
+
+   public static Activity findActivity(Context context) {
+      // find activity
+      while (true) {
+         if (context instanceof Activity) {
+            return (Activity) context;
+         }
+         else if (context instanceof ContextWrapper) {
+            context = ((ContextWrapper)context).getBaseContext();
+         }
+         else {
+            return null;
+         }
+      }
+   }
+
+   public static Point activitySize(Context context) {
+      Activity activity = findActivity(context);
+      if (activity == null) {
+         return null;
+      }
+
+      DisplayMetrics displaymetrics = new DisplayMetrics();
+      activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+      int height = displaymetrics.heightPixels;
+      int width = displaymetrics.widthPixels;
+      Point point = new Point();
+      point.x = width;
+      point.y = height;
+      return point;
    }
 }

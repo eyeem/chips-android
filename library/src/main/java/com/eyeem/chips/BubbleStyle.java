@@ -76,4 +76,48 @@ public class BubbleStyle {
    public void setTextSize(int textSize) {
       this.textSize = textSize;
    }
+
+   public Drawable getActive() {
+      return active;
+   }
+
+   public void setActive(Drawable active) {
+      this.active = active;
+   }
+
+   public Drawable getPressed() {
+      return pressed;
+   }
+
+   public void setPressed(Drawable pressed) {
+      this.pressed = pressed;
+   }
+
+   public int getTextSize() {
+      return textSize;
+   }
+
+   public int getTextColor() {
+      return textColor;
+   }
+
+   public void setTextColor(int textColor) {
+      this.textColor = textColor;
+   }
+
+   public int getTextPressedColor() {
+      return textPressedColor;
+   }
+
+   public void setTextPressedColor(int textPressedColor) {
+      this.textPressedColor = textPressedColor;
+   }
+
+   public int getBubblePadding() {
+      return bubblePadding;
+   }
+
+   public void setBubblePadding(int bubblePadding) {
+      this.bubblePadding = bubblePadding;
+   }
 }
