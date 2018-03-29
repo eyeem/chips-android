@@ -28,6 +28,9 @@ public class AwesomeBubble {
          return this;
       this.containerWidth = containerWidth;
       text_paint.setTextSize(style.textSize);
+      if (style.typeface != null) {
+         text_paint.setTypeface(style.typeface);
+      }
 
       int correction = 0;
       if (android.os.Build.VERSION.SDK_INT >= 18) {

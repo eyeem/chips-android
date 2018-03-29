@@ -26,6 +26,7 @@
       <attr name="moreTextColor" format="color"/>
       <attr name="moreTextColorActive" format="color"/>
       <attr name="clickable" format="boolean"/>
+      <attr name="customFont" format="string"/>
    </declare-styleable>
 
    <!-- default style for text -->
@@ -56,6 +57,7 @@
    <attr name="bubble_textColor" format="color"/>
    <attr name="bubble_textColorActive" format="color"/>
    <attr name="bubble_textPadding" format="dimension"/>
+   <attr name="bubble_customFont" format="string"/>
 
    <!-- default bubble style -->
    <style name="default_bubble_style">
