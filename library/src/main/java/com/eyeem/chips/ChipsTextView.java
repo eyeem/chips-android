@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Typeface;
 import android.text.*;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -235,7 +236,7 @@ public class ChipsTextView extends View {
    private void processAttributes(Context context, AttributeSet attrs){
 
       LayoutBuild.Config config = defaultConfig();
-      
+
       config.textPaint = new TextPaint();
       config.textPaint.setAntiAlias(true);
 
@@ -245,6 +246,10 @@ public class ChipsTextView extends View {
       int textColor = ta.getColor(R.styleable.ChipsTextView_ctvTextColor, r.getColor(R.color.default_chips_text_color));
       config.textPaint.setTextSize(textSize);
       config.textPaint.setColor(textColor);
+      String fontName = ta.getString(R.styleable.ChipsTextView_customFont);
+      if (fontName != null) {
+         config.textPaint.setTypeface(FontCache.getTypeface(context, fontName));
+      }
 
       TypedValue outValue = new TypedValue();
       r.getValue(R.dimen.default_chips_line_spacing, outValue, true);
