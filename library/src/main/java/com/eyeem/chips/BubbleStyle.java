@@ -3,6 +3,7 @@ package com.eyeem.chips;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.view.ContextThemeWrapper;
 
@@ -14,6 +15,13 @@ public class BubbleStyle {
    int textPressedColor;
    int bubblePadding;
    boolean nextNeedsSpacing;
+   Typeface typeface;
+
+   public BubbleStyle(Drawable active, Drawable pressed, int textSize,
+                      int textColor, int textPressedColor, int bubblePadding, Typeface tf) {
+      this(active, pressed, textSize, textColor, textPressedColor, bubblePadding, true);
+      this.typeface = tf;
+   }
 
    public BubbleStyle(Drawable active, Drawable pressed, int textSize,
                       int textColor, int textPressedColor, int bubblePadding) {
@@ -38,6 +46,7 @@ public class BubbleStyle {
       R.attr.bubble_textColor,
       R.attr.bubble_textColorActive,
       R.attr.bubble_textPadding,
+      R.attr.bubble_customFont
    };
 
    public static BubbleStyle buildDefault(Context context) {
@@ -60,6 +69,12 @@ public class BubbleStyle {
       int color = ta.getColor(3, r.getColor(R.color.default_bubble_text_color));
       int colorActive = ta.getColor(4, r.getColor(R.color.default_bubble_text_color_active));
       float pad = ta.getDimension(5, r.getDimension(R.dimen.default_bubble_text_pad));
+      String fontName = ta.getString(6);
+      Typeface tf = null;
+      if (fontName != null) {
+         tf = FontCache.getTypeface(context, fontName);
+      }
+
 
       BubbleStyle bs = new BubbleStyle(
          active,
@@ -67,7 +82,8 @@ public class BubbleStyle {
          (int) size,
          color,
          colorActive,
-         (int) pad);
+         (int) pad,
+         tf);
 
       ta.recycle();
       return bs;

@@ -15,6 +15,7 @@
       <item name="moreText">...open text</item>
       <item name="moreTextColor">#22d</item>
       <item name="moreTextColorActive">#99f</item>
+      <item name="customFont">sailec_light.otf</item>
    </style>
 
    <!--
@@ -34,4 +35,5 @@
       <item name="bubble_textColorActive">@color/theme_accent</item>
       <item name="bubble_textPadding">2sp</item>
    </style>
+      <!--<item name="bubble_customFont">sailec_light.otf</item>-->
 </resources>
