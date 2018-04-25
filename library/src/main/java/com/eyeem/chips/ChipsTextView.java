@@ -254,6 +254,8 @@ public class ChipsTextView extends View {
       TypedValue outValue = new TypedValue();
       r.getValue(R.dimen.default_chips_line_spacing, outValue, true);
       config.lineSpacing = ta.getFloat(R.styleable.ChipsTextView_lineSpacing, outValue.getFloat());
+      float lineSpacingExtraSp = ta.getFloat(R.styleable.ChipsTextView_lineSpacingExtra, 0f);
+      config.lineSpacingExtra = spToPx(lineSpacingExtraSp, context);
 
       config.truncated = ta.getBoolean(R.styleable.ChipsTextView_truncated, false);
       if (config.truncated) {
@@ -274,6 +276,10 @@ public class ChipsTextView extends View {
 
       ta.recycle();
 
+   }
+
+   public static int spToPx(float sp, Context context) {
+      return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.getResources().getDisplayMetrics());
    }
 
    public LayoutBuild.Config defaultConfig() {
