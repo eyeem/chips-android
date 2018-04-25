@@ -10,6 +10,7 @@
       <item name="ctvTextSize">18sp</item>
       <item name="ctvTextColor">#444</item>
       <item name="lineSpacing">1.1</item>
+      <item name="lineSpacingExtra">8</item>
       <item name="maxLines">2</item>
       <item name="truncated">true</item>
       <item name="moreText">...open text</item>

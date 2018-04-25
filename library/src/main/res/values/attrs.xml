@@ -19,6 +19,7 @@
       <attr name="ctvTextSize" format="dimension"/>
       <attr name="ctvTextColor" format="color"/>
       <attr name="lineSpacing" format="float"/>
+      <attr name="lineSpacingExtra" format="float"/>
       <attr name="maxLines" format="integer"/>
       <attr name="truncated" format="boolean"/>
       <attr name="debug" format="boolean"/>

@@ -35,6 +35,7 @@ public class LayoutBuild implements ILayoutCallback {
    private StaticLayout expandedLayout;
    private boolean truncated;
    float lineSpacing = 1.25f;
+   float lineSpacingExtra = 0f;
    int maxLines = 0;
    boolean debug;
    boolean spansPositioned;
@@ -47,6 +48,7 @@ public class LayoutBuild implements ILayoutCallback {
    public LayoutBuild(Spannable text, Config config) {
       this.text = text;
       lineSpacing = config.lineSpacing;
+      lineSpacingExtra = config.lineSpacingExtra;
       maxLines = config.maxLines;
       textPaint = config.textPaint;
       moreText = config.moreText;
@@ -199,13 +201,13 @@ public class LayoutBuild implements ILayoutCallback {
       // render + save positions of bubbles
       resetSpans(width);
       try {
-         truncatedLayout = expandedLayout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, 1, false);
+         truncatedLayout = expandedLayout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, lineSpacingExtra, false);
          if (maxLines > 0 && truncatedLayout.getLineCount() > maxLines) {
             int lineEnd = truncatedLayout.getLineEnd(maxLines - 1);
 
             // ... more
             int offset = -1;
-            StaticLayout sl = new StaticLayout(moreText, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, 1, false);
+            StaticLayout sl = new StaticLayout(moreText, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, lineSpacingExtra, false);
             sl.getWidth();
             while (truncatedLayout.getLineCount() > maxLines && lineEnd > 0) {
                if (offset == -1 && truncatedLayout.getLineWidth(maxLines - 1) + sl.getLineWidth(0) > width) { // means we also need to truncate last line
@@ -217,7 +219,7 @@ public class LayoutBuild implements ILayoutCallback {
 
                SpannableStringBuilder textTruncated = new SpannableStringBuilder(text.subSequence(0, lineEnd));
                textTruncated.append(moreText);
-               truncatedLayout = new StaticLayout(textTruncated, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, 1, false);
+               truncatedLayout = new StaticLayout(textTruncated, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, lineSpacingExtra, false);
             }
          }
       } catch (java.lang.ArrayIndexOutOfBoundsException e) {
@@ -286,6 +288,7 @@ public class LayoutBuild implements ILayoutCallback {
    public static class Config {
       public TextPaint textPaint;
       public float lineSpacing = 1.25f;
+      public float lineSpacingExtra = 0f;
       public Spannable moreText;
       public int maxLines = 0;
       public boolean truncated;
