@@ -49,9 +49,9 @@ public class BubbleStyle {
       R.attr.bubble_customFont
    };
 
-   public static BubbleStyle buildDefault(Context context) {
-      return build(context, R.style.default_bubble_style);
-   }
+   // public static BubbleStyle buildDefault(Context context) {
+   //    return build(context, R.style.default_bubble_style);
+   // }
 
    public static BubbleStyle build(Context context, int styleId) {
 
@@ -62,9 +62,9 @@ public class BubbleStyle {
       TypedArray ta = context.obtainStyledAttributes(styleId, ATTRS);
       
       temp = ta.getDrawable(0);
-      Drawable active = temp != null ? temp : r.getDrawable(R.drawable.default_bubble_background);
+      Drawable active = temp;
       temp = ta.getDrawable(1);
-      Drawable pressed = temp != null ? temp : r.getDrawable(R.drawable.default_bubble_background_pressed);
+      Drawable pressed = temp;
       float size = ta.getDimension(2, r.getDimension(R.dimen.default_bubble_text_size));
       int color = ta.getColor(3, r.getColor(R.color.default_bubble_text_color));
       int colorActive = ta.getColor(4, r.getColor(R.color.default_bubble_text_color_active));

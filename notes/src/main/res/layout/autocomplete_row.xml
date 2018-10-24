@@ -10,7 +10,7 @@
             android:clickable="true"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:background="@drawable/greybubble_background_states"
+            
             android:hapticFeedbackEnabled="true"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"

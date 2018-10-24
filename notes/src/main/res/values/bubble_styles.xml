@@ -9,9 +9,9 @@
    <style name="note_text_style" parent="@style/default_chips_text_style">
       <item name="ctvTextSize">18sp</item>
       <item name="ctvTextColor">#444</item>
-      <item name="lineSpacing">1.1</item>
-      <item name="lineSpacingExtra">8</item>
-      <item name="maxLines">2</item>
+      <item name="ctvLineSpacing">1.1</item>
+      <item name="ctvLineSpacingExtra">8</item>
+      <item name="ctvMaxLines">2</item>
       <item name="truncated">true</item>
       <item name="moreText">...open text</item>
       <item name="moreTextColor">#22d</item>
@@ -37,4 +37,13 @@
       <item name="bubble_textPadding">2sp</item>
    </style>
       <!--<item name="bubble_customFont">sailec_light.otf</item>-->
+
+   <style name="default_bubble_style">
+      <item name="bubble_stateActive">@color/theme_default_primary</item>
+      <item name="bubble_statePressed">@color/theme_default_primary_dark</item>
+      <item name="bubble_textSize">14sp</item>
+      <item name="bubble_textColor">#eee</item>
+      <item name="bubble_textColorActive">@color/theme_accent</item>
+      <item name="bubble_textPadding">2sp</item>
+   </style>
 </resources>

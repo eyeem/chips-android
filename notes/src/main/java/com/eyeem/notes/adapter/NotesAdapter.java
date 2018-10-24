@@ -75,7 +75,7 @@ public class NotesAdapter extends RecyclerAdapter<Note, NoteHolder> {
    @Override public void onBindViewHolder(NoteHolder holder, final int position) {
 
       Note note = getItem(position);
-      holder.setNote(note).textView.setLayoutBuild(cacheOnScroll.get(note.id));
+      // holder.setNote(note).textView.setLayoutBuild(cacheOnScroll.get(note.id));
    }
 
    public CacheOnScroll getCacheOnScroll() {

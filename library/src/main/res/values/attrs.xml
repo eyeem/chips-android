@@ -18,9 +18,9 @@
    <declare-styleable name="ChipsTextView">
       <attr name="ctvTextSize" format="dimension"/>
       <attr name="ctvTextColor" format="color"/>
-      <attr name="lineSpacing" format="float"/>
-      <attr name="lineSpacingExtra" format="float"/>
-      <attr name="maxLines" format="integer"/>
+      <attr name="ctvLineSpacing" format="float"/>
+      <attr name="ctvLineSpacingExtra" format="float"/>
+      <attr name="ctvMaxLines" format="integer"/>
       <attr name="truncated" format="boolean"/>
       <attr name="debug" format="boolean"/>
       <attr name="moreText" format="string"/>
@@ -34,8 +34,8 @@
    <style name="default_chips_text_style">
       <item name="ctvTextSize">@dimen/default_chips_text_size</item>
       <item name="ctvTextColor">@color/default_chips_text_color</item>
-      <item name="lineSpacing">@dimen/default_chips_line_spacing</item>
-      <item name="maxLines">@integer/default_chips_max_lines</item>
+      <item name="ctvLineSpacing">@dimen/default_chips_line_spacing</item>
+      <item name="ctvMaxLines">@integer/default_chips_max_lines</item>
       <item name="truncated">false</item>
       <item name="debug">false</item>
       <item name="moreText">@string/default_chips_more_text</item>
@@ -59,15 +59,5 @@
    <attr name="bubble_textColorActive" format="color"/>
    <attr name="bubble_textPadding" format="dimension"/>
    <attr name="bubble_customFont" format="string"/>
-
-   <!-- default bubble style -->
-   <style name="default_bubble_style">
-      <item name="bubble_stateActive">@drawable/default_bubble_background</item>
-      <item name="bubble_statePressed">@drawable/default_bubble_background_pressed</item>
-      <item name="bubble_textSize">@dimen/default_bubble_text_size</item>
-      <item name="bubble_textColor">@color/default_bubble_text_color</item>
-      <item name="bubble_textColorActive">@color/default_bubble_text_color_active</item>
-      <item name="bubble_textPadding">@dimen/default_bubble_text_pad</item>
-   </style>
 
 </resources>

@@ -15,10 +15,10 @@ import android.view.animation.Transformation;
 
 import java.lang.ref.WeakReference;
 
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
+// import rx.Observable;
+// import rx.Subscription;
+// import rx.android.schedulers.AndroidSchedulers;
+// import rx.functions.Action1;
 
 /**
  * ChipsTextView
@@ -213,25 +213,25 @@ public class ChipsTextView extends View {
       }
    }
 
-   Subscription lastSubscription;
+   // Subscription lastSubscription;
 
-   public void setLayoutBuild(Observable<LayoutBuild> layoutBuildObservable) {
+   // public void setLayoutBuild(Observable<LayoutBuild> layoutBuildObservable) {
 
-      if (lastSubscription != null) {
-         lastSubscription.unsubscribe();
-         _layoutBuild = null;
-         lastSubscription = null;
-         invalidate();
-      }
+   //    if (lastSubscription != null) {
+   //       lastSubscription.unsubscribe();
+   //       _layoutBuild = null;
+   //       lastSubscription = null;
+   //       invalidate();
+   //    }
 
-      if (layoutBuildObservable == null) {
-         return;
-      }
+   //    if (layoutBuildObservable == null) {
+   //       return;
+   //    }
 
-      lastSubscription = layoutBuildObservable
-         .observeOn(AndroidSchedulers.mainThread())
-         .subscribe(new LayoutSubscription(this));
-   }
+   //    lastSubscription = layoutBuildObservable
+   //       .observeOn(AndroidSchedulers.mainThread())
+   //       .subscribe(new LayoutSubscription(this));
+   // }
 
    private void processAttributes(Context context, AttributeSet attrs){
 
@@ -253,13 +253,13 @@ public class ChipsTextView extends View {
 
       TypedValue outValue = new TypedValue();
       r.getValue(R.dimen.default_chips_line_spacing, outValue, true);
-      config.lineSpacing = ta.getFloat(R.styleable.ChipsTextView_lineSpacing, outValue.getFloat());
-      float lineSpacingExtraSp = ta.getFloat(R.styleable.ChipsTextView_lineSpacingExtra, 0f);
+      config.lineSpacing = ta.getFloat(R.styleable.ChipsTextView_ctvLineSpacing, outValue.getFloat());
+      float lineSpacingExtraSp = ta.getFloat(R.styleable.ChipsTextView_ctvLineSpacingExtra, 0f);
       config.lineSpacingExtra = spToPx(lineSpacingExtraSp, context);
 
       config.truncated = ta.getBoolean(R.styleable.ChipsTextView_truncated, false);
       if (config.truncated) {
-         config.maxLines = ta.getInt(R.styleable.ChipsTextView_maxLines, r.getInteger(R.integer.default_chips_max_lines));
+         config.maxLines = ta.getInt(R.styleable.ChipsTextView_ctvMaxLines, r.getInteger(R.integer.default_chips_max_lines));
          String moreText = ta.getString(R.styleable.ChipsTextView_moreText);
          if (moreText == null)
             moreText = r.getString(R.string.default_chips_more_text);
@@ -321,20 +321,20 @@ public class ChipsTextView extends View {
       defaultConfig().clickable = clickable;
    }
 
-   private static class LayoutSubscription implements Action1<LayoutBuild> {
+   // private static class LayoutSubscription implements Action1<LayoutBuild> {
 
-      final WeakReference<ChipsTextView> _tv;
+   //    final WeakReference<ChipsTextView> _tv;
 
-      LayoutSubscription(ChipsTextView textView) {
-         _tv = new WeakReference<ChipsTextView>(textView);
-      }
+   //    LayoutSubscription(ChipsTextView textView) {
+   //       _tv = new WeakReference<ChipsTextView>(textView);
+   //    }
 
-      @Override public void call(LayoutBuild layoutBuild) {
-         ChipsTextView tv = _tv.get();
-         if (tv == null) return;
-         tv.setLayoutBuild(layoutBuild);
-      }
-   }
+   //    @Override public void call(LayoutBuild layoutBuild) {
+   //       ChipsTextView tv = _tv.get();
+   //       if (tv == null) return;
+   //       tv.setLayoutBuild(layoutBuild);
+   //    }
+   // }
 
    /**
     * Marker class. Marks a truncation bubble/area
