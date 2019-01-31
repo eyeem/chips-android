@@ -73,6 +73,14 @@ public class ChipsTextView extends View {
     * @param text
     */
    public void setText(final Spannable text) {
+      setText(text, text);
+   }
+
+   /**
+    * Allows adding custom constraints to truncated text besides maxLines, e.g. developer
+    * can provide shortText that only has 10 characters and then moreText is applied at the very end
+    */
+   public void setText(final Spannable text, final Spannable shortText) {
       if (text == null) {
          setLayoutBuild((LayoutBuild)null);
          dynamicTextWidth = false;
@@ -85,11 +93,11 @@ public class ChipsTextView extends View {
 
       if (currentLayout != null && text.equals(currentLayout.getSpannable())) return;
 
-      doBuild(text);
+      doBuild(text, shortText);
    }
 
-   private void doBuild(final Spannable text) {
-      LayoutBuild futureLayout = new LayoutBuild(text, defaultConfig());
+   private void doBuild(final Spannable text, final Spannable shortText) {
+      LayoutBuild futureLayout = new LayoutBuild(text, shortText, defaultConfig());
       futureLayout.build(maxAvailableWidth, false);
       setLayoutBuild(futureLayout);
    }

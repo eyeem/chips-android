@@ -28,6 +28,7 @@ public class LayoutBuild implements ILayoutCallback {
    HashMap<BubbleSpan, ArrayList<Rect>> positions = new HashMap<BubbleSpan, ArrayList<Rect>>();
 
    final Spannable text;
+   final Spannable shortText;
    final Spannable moreText;
 
    TextPaint textPaint;
@@ -46,7 +47,12 @@ public class LayoutBuild implements ILayoutCallback {
    int buildWidth;
 
    public LayoutBuild(Spannable text, Config config) {
+      this(text, text, config);
+   }
+
+   public LayoutBuild(Spannable text, Spannable shortText, Config config) {
       this.text = text;
+      this.shortText = shortText;
       lineSpacing = config.lineSpacing;
       lineSpacingExtra = config.lineSpacingExtra;
       maxLines = config.maxLines;
@@ -201,8 +207,18 @@ public class LayoutBuild implements ILayoutCallback {
       // render + save positions of bubbles
       resetSpans(width);
       try {
-         truncatedLayout = expandedLayout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, lineSpacingExtra, false);
-         if (maxLines > 0 && truncatedLayout.getLineCount() > maxLines) {
+         expandedLayout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, lineSpacingExtra, false);
+
+         // if we supply shorter text, we know we need to append moreText
+         if (shortText.length() < text.length()) {
+            SpannableStringBuilder textTruncated = new SpannableStringBuilder(shortText);
+            textTruncated.append(moreText);
+            truncatedLayout = new StaticLayout(textTruncated, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, lineSpacingExtra, false);
+         } else {
+            truncatedLayout = expandedLayout;
+         }
+
+         if ((maxLines > 0 && truncatedLayout.getLineCount() > maxLines)) {
             int lineEnd = truncatedLayout.getLineEnd(maxLines - 1);
 
             // ... more
@@ -217,7 +233,7 @@ public class LayoutBuild implements ILayoutCallback {
                   lineEnd--;
                }
 
-               SpannableStringBuilder textTruncated = new SpannableStringBuilder(text.subSequence(0, lineEnd));
+               SpannableStringBuilder textTruncated = new SpannableStringBuilder(shortText.subSequence(0, lineEnd));
                textTruncated.append(moreText);
                truncatedLayout = new StaticLayout(textTruncated, textPaint, width, Layout.Alignment.ALIGN_NORMAL, lineSpacing, lineSpacingExtra, false);
             }
